@@ -89,6 +89,8 @@
           <select id="eventsExportType" aria-label="Export events type filter">
             <option value="">All event types</option><option value="opened">opened</option><option value="clicked">clicked</option><option value="submitted">submitted</option>
           </select>
+          <input id="eventsExportFrom" type="date" aria-label="Export events from date" />
+          <input id="eventsExportTo" type="date" aria-label="Export events to date" />
           <a id="eventsExportLink" class="btn small secondary" href="/api/events/export.csv">Export Events CSV</a>
           <button id="clearExportFiltersBtn" class="btn small secondary" type="button">Clear filters</button>
           <button id="loadMoreTargetsBtn" class="btn small secondary">Load more</button>

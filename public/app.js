@@ -432,6 +432,8 @@ $('#clearExportFiltersBtn')?.addEventListener('click', () => {
   if ($('#targetExportCampaign')) $('#targetExportCampaign').value = '';
   if ($('#targetExportStatus')) $('#targetExportStatus').value = '';
   if ($('#eventsExportType')) $('#eventsExportType').value = '';
+  if ($('#eventsExportFrom')) $('#eventsExportFrom').value = '';
+  if ($('#eventsExportTo')) $('#eventsExportTo').value = '';
   updateEventsExportLink();
   updateTargetsExportLink();
   loadTargets(true).catch((e) => toast(`Targets filter failed: ${e.message}`, 'error'));
@@ -439,14 +441,20 @@ $('#clearExportFiltersBtn')?.addEventListener('click', () => {
 function updateEventsExportLink() {
   const type = String($('#eventsExportType')?.value || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
+  const from = String($('#eventsExportFrom')?.value || '').trim();
+  const to = String($('#eventsExportTo')?.value || '').trim();
   const a = $('#eventsExportLink');
   if (!a) return;
   const p = new URLSearchParams();
   if (type) p.set('type', type);
   if (targetId) p.set('targetId', targetId);
+  if (from) p.set('from', from);
+  if (to) p.set('to', to);
   a.href = '/api/events/export.csv' + (p.toString() ? `?${p}` : '');
 }
 $('#eventsExportType')?.addEventListener('change', updateEventsExportLink);
+$('#eventsExportFrom')?.addEventListener('change', updateEventsExportLink);
+$('#eventsExportTo')?.addEventListener('change', updateEventsExportLink);
 $('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#eventsTargetFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#clearEventsFilterBtn')?.addEventListener('click', () => {
