@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:37Z — Phase 8 expansion: target pagination
-- `GET /api/targets/recent` now returns `{ items,total,limit,offset }` (backward-compatible fields consumed via `items` in UI). Dashboard has "Load more" and count metadata.
-- Added pagination regression test; `node --test --test-concurrency=1` — 9/9 passing. Commit/push in progress.
+## 2026-11-07 10:38Z — Phase 8 expansion: stats timeline filters
+- Added `from`/`to` date filtering to global and per-campaign stats timeline (`/api/stats`, `/api/campaigns/:id/stats`); response includes `filter`.
+- Added regression test; `node --test --test-concurrency=1` — 10/10 passing. Commit/push in progress.

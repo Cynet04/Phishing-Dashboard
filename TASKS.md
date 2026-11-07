@@ -38,11 +38,11 @@
 - 2026-11-07 08:27Z: Initial blockers (no Node/npm, no push auth) resolved by environment fix.
 - 2026-11-07 09:14Z: Verified Node v26.13.0 at `C:\Program Files\nodejs`. Smoke tests pass (2/2). End-to-end server sanity check passed (health, create campaign, send simulation, stats). Local commits pushed/synced to `origin/main`.
 
-## Phase 8 — Advanced Analytics (expansion, active)
-- [x] Add CSV export for campaign/global targets (API + dashboard action) with tests — 8/8 passing
-- [x] Add recent targets pagination (`limit`/`offset`) and UI "Load more" with tests — 9/9 passing
-- [ ] Add campaign stats timeline filtering by date range (API) with tests
-- [ ] Run verification, docs/log updates, commit/push per item
+## Phase 8 — Advanced Analytics (complete)
+- [x] Add CSV export for campaign/global targets (API + dashboard action) with tests — 8/8 passing (`ea9c73e`)
+- [x] Add recent targets pagination (`limit`/`offset`) and UI "Load more" with tests — 9/9 passing (`a2dc520`)
+- [x] Add campaign stats timeline filtering by date range (API) with tests — 10/10 passing
+- [x] Run verification, docs/log updates, commit/push per item
 
 ## Phase 9 — Template Management (expansion)
 - [ ] CRUD API for email templates (stored in JSON DB) with tests

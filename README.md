@@ -31,9 +31,9 @@ node --test --test-concurrency=1
 ## API
 - `GET /api/health`
 - `GET /api/templates`
-- `GET /api/stats`
+- `GET /api/stats?from=YYYY-MM-DD&to=YYYY-MM-DD`
 - `GET /api/campaigns`, `POST /api/campaigns`
-- `GET /api/campaigns/:id`, `DELETE /api/campaigns/:id` (demo hygiene), `GET /api/campaigns/:id/stats`, `GET /api/campaigns/:id/export.csv`
+- `GET /api/campaigns/:id`, `DELETE /api/campaigns/:id` (demo hygiene), `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`
 - `POST /api/campaigns/:id/send`
 - `GET /api/targets/recent?limit=&offset=`, `GET /api/targets/export.csv`, `POST /api/targets/:id/click`
 - `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`)

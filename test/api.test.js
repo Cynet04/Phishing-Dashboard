@@ -165,6 +165,16 @@ test('recent targets endpoint supports pagination envelope', async () => {
   });
 });
 
+test('stats endpoint accepts timeline date filters', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/stats?from=2000-01-01&to=2000-01-02');
+    assert.equal(r.status, 200);
+    assert.equal(Array.isArray(r.data.timeline), true);
+    assert.equal(r.data.filter.from, '2000-01-01');
+    assert.equal(r.data.filter.to, '2000-01-02');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

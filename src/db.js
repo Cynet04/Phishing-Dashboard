@@ -136,11 +136,15 @@ function recordEvent(input = {}) {
   return event;
 }
 
-function stats(id) {
+function stats(id, opts = {}) {
   const db = load();
   const targets = id ? db.targets.filter(t => t.campaignId === String(id)) : db.targets;
   const campaigns = id ? db.campaigns.filter(c => c.id === String(id)) : db.campaigns;
-  const events = id ? db.events.filter(e => e.campaignId === String(id)) : db.events;
+  let events = id ? db.events.filter(e => e.campaignId === String(id)) : db.events;
+  const from = opts.from ? String(opts.from).slice(0, 10) : '';
+  const to = opts.to ? String(opts.to).slice(0, 10) : '';
+  if (from) events = events.filter(e => String(e.at).slice(0, 10) >= from);
+  if (to) events = events.filter(e => String(e.at).slice(0, 10) <= to);
   const totalTargets = targets.length;
   const sent = targets.filter(t => ['sent', 'opened', 'clicked', 'submitted'].includes(t.status)).length;
   const opened = targets.filter(t => ['opened', 'clicked', 'submitted'].includes(t.status)).length;
@@ -169,6 +173,7 @@ function stats(id) {
       submitted,
     },
     timeline: Object.values(byDay).sort((a, b) => a.day.localeCompare(b.day)).slice(-14),
+    filter: { from: from || null, to: to || null },
   };
 }
 
