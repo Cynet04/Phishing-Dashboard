@@ -265,7 +265,11 @@
 - [x] Frontend UI: added global targets CSV export filters (campaign/status) with live export-link updates and campaign option population — 51/51 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 58 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/events/export.csv?type=` filter support and regression test (backward-compatible)
+## Phase 58 — Expansion (complete)
+- [x] Backend/API: `GET /api/events/export.csv` now supports `type` filter (backward-compatible); regression test added — 52/52 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 59 — Expansion (active, in progress)
+- [~] Frontend UI: add global events export type filter control (matches recent events type filter) updating `/api/events/export.csv` link
 - [ ] Run verification, docs/log updates, commit/push per item
 

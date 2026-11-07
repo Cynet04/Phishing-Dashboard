@@ -674,6 +674,20 @@ test('global targets CSV supports campaignId and status filters', async () => {
   });
 });
 
+test('global events CSV supports type filter', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EventsCsvType', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    await fetch(`${base}/login-simulation?target=${encodeURIComponent(detail.data.targets[1].id)}`);
+    const csv = await req(base, `/api/events/export.csv?campaignId=${created.data.id}&type=clicked`);
+    assert.equal(csv.status, 200);
+    assert.match(csv.raw, /clicked/);
+    assert.doesNotMatch(csv.raw, /,opened,/);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
