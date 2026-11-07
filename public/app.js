@@ -132,6 +132,7 @@ async function selectCampaign(id, quiet) {
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
       <button class="btn small secondary" id="copyLandingBtn" ${c.targets[0]?.id ? '' : 'disabled'}>Copy Landing Link</button>
+      <button class="btn small secondary" id="viewCampaignEventsBtn" type="button">View Campaign Events</button>
       <a class="btn small secondary" id="campaignFilteredTargetsExport" href="/api/campaigns/${encodeURIComponent(id)}/targets/export.csv${state.campaignStatus ? `?status=${encodeURIComponent(state.campaignStatus)}` : ''}">Export Filtered Targets</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/export.csv">Export All Targets</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/events.csv">Export Events CSV</a>
@@ -151,6 +152,16 @@ async function selectCampaign(id, quiet) {
       toast(`Imported ${r.added} target(s).`);
       await refresh();
     } catch (e) { toast(e.message, 'error'); }
+  });
+  $('#viewCampaignEventsBtn')?.addEventListener('click', async () => {
+    try {
+      if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
+      if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = '';
+      state.eventsType = '';
+      state.eventsTargetId = '';
+      await loadCampaignEvents(id);
+      document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
   });
   $('#copyLandingBtn')?.addEventListener('click', async () => {
     const targetId = c.targets[0]?.id;
@@ -205,6 +216,31 @@ async function loadTargets(reset = false) {
   const shown = Math.min(state.targetsOffset + targets.length, state.targetsTotal);
   $('#targetsMeta').textContent = state.targetsTotal ? `Showing ${shown} of ${state.targetsTotal}` : '';
   $('#loadMoreTargetsBtn').disabled = shown >= state.targetsTotal;
+}
+
+async function loadCampaignEvents(campaignId) {
+  if (!campaignId) return loadEvents(true);
+  state.eventsOffset = 0;
+  const type = String($('#eventsTypeFilter')?.value || '').trim();
+  const targetId = String($('#eventsTargetFilter')?.value || '').trim();
+  state.eventsType = type;
+  state.eventsTargetId = targetId;
+  const params = new URLSearchParams({ limit: String(state.eventsLimit), offset: '0' });
+  if (type) params.set('type', type);
+  if (targetId) params.set('targetId', targetId);
+  const page = await api(`/api/campaigns/${encodeURIComponent(campaignId)}/events?${params.toString()}`);
+  state.eventsTotal = page.total || 0;
+  const events = page.items || [];
+  $('#eventsBody').innerHTML = events.length ? events.map(e => `
+    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
+  $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
+    if (!btn.dataset.id || !confirm('Delete this event?')) return;
+    try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadCampaignEvents(campaignId); await loadSystemStatus(); }
+    catch (e) { toast(e.message, 'error'); }
+  }));
+  const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
+  $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
+  $('#loadMoreEventsBtn').disabled = true; // campaign-scoped quick view; clear/load global to paginate
 }
 
 async function loadEvents(reset = false) {

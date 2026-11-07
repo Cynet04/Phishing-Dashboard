@@ -341,7 +341,11 @@
 - [x] Backend/API: `GET /api/campaigns/:id/events` now passes through `targetId` filter (with existing type/limit/offset) and regression coverage added — 60/60 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 77 — Expansion (active, in progress)
-- [~] Frontend UI: in campaign detail view, add quick “View events” action/link that pre-fills Recent Events target/type filters (or opens scoped events) for selected campaign context
+## Phase 77 — Expansion (complete)
+- [x] Frontend UI: campaign detail adds **View Campaign Events** quick action that scopes Recent Events to the selected campaign (clears local event filters, scrolls to panel); scoped quick view uses campaign events endpoint — 60/60 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 78 — Expansion (active, in progress)
+- [~] Frontend UI: make Recent Events pagination/filter controls recover cleanly from campaign-scoped quick view (restore global `/api/events` behavior and Load More state)
 - [ ] Run verification, docs/log updates, commit/push per item
 
