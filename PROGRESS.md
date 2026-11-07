@@ -137,3 +137,9 @@ ode --test --test-concurrency=1 — 60/60 passing. Committed/pushed. Dashboard: 
 ## 2026-11-07 13:57Z — Phase 82: Recent Targets Events quick action
 - Recent Targets rows now include an **Events** quick action. It reuses the global-scope target-events recovery flow (Phase 80/78): prefills Recent Events `targetId` filter, clears campaign-scoped/type state, reloads global `/api/events`, and scrolls to the panel.
 - `node --check` (ui); `node --test --test-concurrency=1` — 61/61 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Targets** → row **Events**.
+
+## 2026-11-07 14:15Z � Phase 83: campaign-scoped events Global list recovery
+- Recent Events adds **Global list** control when campaign-scoped quick view is active. It clears scope/filters and reloads global /api/events with normal pagination; control hides in global view.
+- 
+ode --check (ui); 
+ode --test --test-concurrency=1 � 61/61 passing. Committed/pushed. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign **View Campaign Events** ? **Global list**.
