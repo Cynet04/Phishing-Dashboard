@@ -277,7 +277,11 @@
 - [x] Backend/DB/API: `GET /api/targets/recent` supports `campaignId` and `status` filters (backward-compatible); regression test added — 53/53 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 61 — Expansion (active, in progress)
-- [~] Frontend UI: add Recent Targets table filters (campaign/status) wired to `/api/targets/recent` (reset pagination on filter change) and keep export controls in sync
+## Phase 61 — Expansion (complete)
+- [x] Frontend UI: Recent Targets table now uses campaign/status filters (shared controls) to query `/api/targets/recent`, resets pagination on filter changes, and keeps export link in sync — 53/53 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 62 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/campaigns/:id/targets/export.csv?status=` convenience route (uses existing export logic) and tests for parity/404
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -93,8 +93,8 @@ function updateTargetsExportLink() {
   const href = '/api/targets/export.csv' + (p.toString() ? `?${p}` : '');
   const a = $('#targetsExportLink'); if (a) a.href = href;
 }
-$('#targetExportCampaign')?.addEventListener('change', updateTargetsExportLink);
-$('#targetExportStatus')?.addEventListener('change', updateTargetsExportLink);
+$('#targetExportCampaign')?.addEventListener('change', () => { updateTargetsExportLink(); loadTargets(true).catch((e) => toast(`Targets filter failed: ${e.message}`, 'error')); });
+$('#targetExportStatus')?.addEventListener('change', () => { updateTargetsExportLink(); loadTargets(true).catch((e) => toast(`Targets filter failed: ${e.message}`, 'error')); });
 
 async function loadCampaigns() {
   const q = String($('#campaignSearch')?.value || '').trim();
@@ -166,7 +166,12 @@ async function selectCampaign(id, quiet) {
 
 async function loadTargets(reset = false) {
   if (reset) { state.targetsOffset = 0; }
-  const page = await api(`/api/targets/recent?limit=${state.targetsLimit}&offset=${state.targetsOffset}`);
+  const campaignId = String($('#targetExportCampaign')?.value || '').trim();
+  const status = String($('#targetExportStatus')?.value || '').trim();
+  const q = new URLSearchParams({ limit: String(state.targetsLimit), offset: String(state.targetsOffset) });
+  if (campaignId) q.set('campaignId', campaignId);
+  if (status) q.set('status', status);
+  const page = await api(`/api/targets/recent?${q}`);
   state.targetsTotal = page.total || 0;
   const targets = page.items || [];
   $('#targetsBody').innerHTML = targets.length ? targets.map(t => `
@@ -176,7 +181,7 @@ async function loadTargets(reset = false) {
       <td><span class="pill ${esc(t.status)}">${esc(t.status)}</span></td>
       <td class="muted">${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</td>
       <td><span class="row">${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : ''}<button class="btn small secondary view-target" data-id="${esc(t.id)}">Details</button></span></td>
-    </tr>`).join('') : '<tr><td colspan="5" class="muted">No targets yet.</td></tr>';
+    </tr>`).join('') : '<tr><td colspan="5" class="muted">No targets match.</td></tr>';
   $('#targetsBody').querySelectorAll('.sim-click').forEach(btn => btn.addEventListener('click', async () => {
     try { await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' }); toast('Click simulated.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   }));
