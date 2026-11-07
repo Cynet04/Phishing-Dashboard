@@ -285,3 +285,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 18:25Z — Phase 120: /api/healthz alias
 - Added `GET /api/healthz` alias (auth-exempt, same payload/headers as `/api/health`) in `src/server.js`. Health test asserts alias. README updated. 75/75 passing. Committed/pushed.
+
+## 2026-11-07 18:35Z — Phase 121: X-Response-Time-Ms header
+- Added `X-Response-Time-Ms` header on API/static responses (handler start timestamp, `send()`/static). Health regression asserts numeric header. 75/75 passing. Committed/pushed.

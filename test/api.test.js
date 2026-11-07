@@ -41,6 +41,7 @@ test('health endpoint', async () => {
     assert.match(JSON.stringify(r.headers), /x-content-type-options/i);
     assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
     assert.match(String(r.headers['x-request-id'] || ''), /^[A-Za-z0-9._:-]{8,128}$/);
+    assert.match(String(r.headers['x-response-time-ms'] || ''), /^\d+$/);
 
     const echoed = await req(base, '/api/health', { headers: { 'x-request-id': 'req-test-12345' } });
     assert.equal(String(echoed.headers['x-request-id'] || ''), 'req-test-12345');

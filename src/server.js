@@ -23,12 +23,15 @@ function send(res, status, body, headers = {}, req) {
   const r = req || res.req;
   const isObj = body !== null && typeof body === 'object' && !Buffer.isBuffer(body);
   const data = isObj ? JSON.stringify(body) : body;
+  const start = r && r._startAt ? Number(r._startAt) : null;
+  const rt = start ? Math.max(0, Date.now() - start) : null;
   res.writeHead(status, {
     'Content-Type': isObj ? 'application/json; charset=utf-8' : 'text/plain; charset=utf-8',
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'no-referrer',
     'X-Request-Id': headers['X-Request-Id'] || requestId(r),
+    ...(rt != null ? { 'X-Response-Time-Ms': String(rt) } : {}),
     ...(isObj ? { 'Cache-Control': 'no-store' } : {}),
     ...headers,
   });
@@ -68,7 +71,7 @@ function serveStatic(req, res, pathname) {
   if (!resolved.startsWith(path.resolve(PUBLIC))) return send(res, 403, { error: 'forbidden' });
   if (!fs.existsSync(resolved) || fs.statSync(resolved).isDirectory()) return false;
   const ext = path.extname(resolved).toLowerCase();
-  res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff', 'X-Request-Id': requestId(req) });
+  res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff', 'X-Request-Id': requestId(req), 'X-Response-Time-Ms': String(Math.max(0, Date.now() - (req._startAt || Date.now()))) });
   if (req.method === 'HEAD') return res.end(), true;
   fs.createReadStream(resolved).pipe(res);
   return true;
@@ -151,6 +154,7 @@ function loginSimulationPage(targetId) {
 async function handler(req, res) {
   try {
     res.req = req;
+    req._startAt = Date.now();
     db.ensure();
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const { pathname, searchParams } = url;
