@@ -29,7 +29,7 @@ function send(res, status, body, headers = {}) {
 function readJson(req) {
   return new Promise((resolve, reject) => {
     let raw = '';
-    req.on('data', c => { raw += c; if (raw.length > 1e6) req.destroy(); });
+    req.on('data', c => { raw += c; if (raw.length > 1e6) { reject(Object.assign(new Error('request body too large'), { status: 413 })); req.destroy(); } });
     req.on('end', () => { try { resolve(raw ? JSON.parse(raw) : {}); } catch (e) { reject(Object.assign(new Error('invalid json'), { status: 400 })); } });
     req.on('error', reject);
   });
@@ -38,7 +38,7 @@ function readJson(req) {
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let raw = '';
-    req.on('data', c => { raw += c; if (raw.length > 1e6) req.destroy(); });
+    req.on('data', c => { raw += c; if (raw.length > 1e6) { reject(Object.assign(new Error('request body too large'), { status: 413 })); req.destroy(); } });
     req.on('end', () => {
       const type = String(req.headers['content-type'] || '').toLowerCase();
       try {

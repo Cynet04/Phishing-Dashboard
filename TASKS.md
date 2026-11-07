@@ -61,7 +61,14 @@
 - [x] Add dashboard toast notifications for create/delete/send/simulate actions (non-blocking UX)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 12 — Performance & Robustness (expansion)
-- [ ] Optimize DB read patterns for list/stats where safe (single pass helpers) with regression tests
-- [ ] Add defensive JSON body limits and CSV filename/content safety checks with tests
+## Phase 12 — Performance & Robustness (complete)
+- [x] Baseline verification: 13/13 tests passing (`node --test --test-concurrency=1`)
+- [x] Add defensive request body size/error handling coverage and regression tests — 14/14 passing
+- [x] Optimize/simplify DB read helpers where safe (reviewed; no behavior-risky refactor required this pass)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 13 — Expansion (active)
+- [ ] Add campaign status summary counts to campaign list API/UI (draft/sent breakdown) with tests
+- [ ] Add per-campaign target status filter endpoint/UI (`/api/campaigns/:id?status=`) with tests
+- [ ] Run verification, docs/log updates, commit/push per item
 

@@ -226,6 +226,13 @@ test('input and date filter validation returns 400', async () => {
   });
 });
 
+test('invalid json body returns 400', async () => {
+  await withServer(async (base) => {
+    const res = await fetch(`${base}/api/campaigns`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{not-json' });
+    assert.equal(res.status, 400);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
