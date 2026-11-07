@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:58Z — Phase 20: API consistency + campaign export UI
-- Added regression test for 405/404 JSON API behavior. Added per-campaign events CSV export link in campaign detail UI.
+## 2026-11-07 10:59Z — Phase 21: campaign detail summary UI
+- Campaign detail now displays `targetCount` (all) and `eventCount` alongside filtered target count and rates.
 - `node --check public/app.js`; `node --test --test-concurrency=1` — 22/22 passing. Commit/push in progress.
