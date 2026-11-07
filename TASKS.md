@@ -333,7 +333,11 @@
 - [x] Backend/API: `GET /api/events` now accepts `targetId` passthrough filter (DB already supported) with regression test — 60/60 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 75 — Expansion (active, in progress)
-- [~] Frontend UI: add Recent Events target filter/input (by target ID or selected target context) wired to `/api/events?targetId=` and clear/reset behavior
+## Phase 75 — Expansion (complete)
+- [x] Frontend UI: Recent Events supports `targetId` filter input + clear behavior wired to `/api/events?targetId=` (with existing type filter) — 60/60 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 76 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/campaigns/:id/events?targetId=` passthrough support and regression test (route already supports type/limit/offset)
 - [ ] Run verification, docs/log updates, commit/push per item
 

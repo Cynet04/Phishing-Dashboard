@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '' };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '', eventsTargetId: '' };
 const THEME_KEY = 'pd-theme';
 function applyTheme(theme) {
   const t = theme === 'light' ? 'light' : 'dark';
@@ -210,8 +210,13 @@ async function loadTargets(reset = false) {
 async function loadEvents(reset = false) {
   if (reset) state.eventsOffset = 0;
   const type = String($('#eventsTypeFilter')?.value || state.eventsType || '').trim();
+  const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
   state.eventsType = type;
-  const q = `/api/events?limit=${state.eventsLimit}&offset=${state.eventsOffset}` + (type ? `&type=${encodeURIComponent(type)}` : '');
+  state.eventsTargetId = targetId;
+  const params = new URLSearchParams({ limit: String(state.eventsLimit), offset: String(state.eventsOffset) });
+  if (type) params.set('type', type);
+  if (targetId) params.set('targetId', targetId);
+  const q = `/api/events?${params.toString()}`;
   const page = await api(q);
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
@@ -223,7 +228,8 @@ async function loadEvents(reset = false) {
     catch (e) { toast(e.message, 'error'); }
   }));
   const shown = state.eventsOffset + events.length;
-  $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (type ? ` · type=${type}` : '');
+  const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
+  $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
 }
 
@@ -282,6 +288,12 @@ $('#eventsExportType')?.addEventListener('change', () => {
   const a = $('#eventsExportLink'); if (a) a.href = '/api/events/export.csv' + (type ? `?type=${encodeURIComponent(type)}` : '');
 });
 $('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
+$('#eventsTargetFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
+$('#clearEventsFilterBtn')?.addEventListener('click', () => {
+  if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
+  if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = '';
+  loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error'));
+});
 $('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
 
 $('#loadMoreTargetsBtn').addEventListener('click', async () => {
