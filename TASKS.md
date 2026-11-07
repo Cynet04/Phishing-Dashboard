@@ -94,7 +94,7 @@
 - [x] Run verification, docs/log updates, commit/push per item
 
 ## Phase 19 — Expansion (active)
-- [ ] Add campaign detail API to include `statusCounts` and optional event count summary (backward-compatible)
-- [ ] Add tests for campaign detail summary fields
+- [x] Add campaign detail API to include `statusCounts`, `targetCount`, and `eventCount` summary (backward-compatible)
+- [x] Add tests for campaign detail summary fields — 21/21 passing
 - [ ] Run verification, docs/log updates, commit/push per item
 

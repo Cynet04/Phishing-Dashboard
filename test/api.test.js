@@ -309,6 +309,18 @@ test('template delete returns 404 for missing template id', async () => {
   });
 });
 
+test('campaign detail includes summary counts', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Summary', template: 'generic', targets: 's1@example.com,s2@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    assert.equal(detail.status, 200);
+    assert.equal(detail.data.targetCount, 2);
+    assert.equal(typeof detail.data.eventCount, 'number');
+    assert.ok(detail.data.statusCounts && detail.data.statusCounts.sent >= 1);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

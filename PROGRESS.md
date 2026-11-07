@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:56Z — Phase 18: regression coverage
-- Added regression tests for per-campaign events CSV export and missing template delete (404). Full suite green.
-- `node --test --test-concurrency=1` — 20/20 passing. Commit/push in progress.
+## 2026-11-07 10:57Z — Phase 19: campaign detail summary fields
+- Added backward-compatible campaign detail summary fields: `targetCount`, `statusCounts`, `eventCount`.
+- Added regression test; `node --test --test-concurrency=1` — 21/21 passing. Commit/push in progress.

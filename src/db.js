@@ -139,13 +139,19 @@ function getCampaign(id, opts = {}) {
   const campaign = db.campaigns.find(c => c.id === String(id));
   if (!campaign) throw Object.assign(new Error('campaign not found'), { status: 404 });
   const status = opts.status ? String(opts.status).trim().toLowerCase() : '';
-  let targets = db.targets.filter(t => t.campaignId === campaign.id);
+  const allTargets = db.targets.filter(t => t.campaignId === campaign.id);
+  const events = db.events.filter(e => e.campaignId === campaign.id);
+  const statusCounts = allTargets.reduce((acc, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc; }, {});
+  let targets = allTargets;
   if (status) targets = targets.filter(t => t.status === status);
   return {
     ...campaign,
     statusFilter: status || null,
+    targetCount: allTargets.length,
+    statusCounts,
+    eventCount: events.length,
     targets,
-    events: db.events.filter(e => e.campaignId === campaign.id).slice(0, 200),
+    events: events.slice(0, 200),
   };
 }
 
