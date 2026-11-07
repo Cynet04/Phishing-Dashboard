@@ -320,9 +320,9 @@ async function loadCampaignEvents(campaignId, reset = false) {
   $('#eventsBody').innerHTML = events.length ? renderEventsRows(events) : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
   wireEventsRowActions(() => loadCampaignEvents(state.eventsCampaignId || campaignId));
   const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
-  $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped campaign view';
+  $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped campaign view (use Global list for pagination)';
   const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = `Scope: campaign-scoped (campaign ${state.eventsCampaignId || campaignId})`;
-  $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination
+  const loadMore = $('#loadMoreEventsBtn'); if (loadMore) { loadMore.disabled = true; loadMore.textContent = 'Load more (global)'; loadMore.title = 'Pagination is available in global events scope'; }
   $('#returnGlobalEventsBtn')?.classList.remove('hidden');
   updateEventsExportLink();
   updateEventsTargetDetailButton();
@@ -352,7 +352,7 @@ async function loadEvents(reset = false) {
   const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
   const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = 'Scope: global';
-  $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
+  const loadMore = $('#loadMoreEventsBtn'); if (loadMore) { loadMore.disabled = shown >= state.eventsTotal; loadMore.textContent = 'Load more'; loadMore.title = ''; }
   $('#returnGlobalEventsBtn')?.classList.add('hidden');
   updateEventsExportLink();
   updateEventsTargetDetailButton();
