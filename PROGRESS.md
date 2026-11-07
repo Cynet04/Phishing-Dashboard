@@ -354,3 +354,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 00:00Z — Phase 145: Recent Events scope/copy-link clarity
 - Added scope hint in Recent Events and campaign-aware copy-link toasts (CSV/JSON) while preserving scope/filter-aware link behavior. UI syntax checked, 82/82 passing. Committed/pushed.
+
+## 2026-11-08 00:15Z — Phase 146: campaign-scoped Recent Events pagination UX clarity
+- Clarified campaign-scoped Recent Events quick view: meta notes pagination is in global scope; Load more is disabled with global-only label/title. 82/82 passing. Committed/pushed.
