@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:28Z — Phase 50: campaign targets method handling
-- Added explicit 405 handling for unsupported methods on `/api/campaigns/:id/targets` (GET/POST remain supported) and regression test.
+## 2026-11-07 11:29Z — Phase 51: health endpoint metadata
+- `/api/health` now includes `uptimeSeconds` and `node` (backward-compatible). Health test asserts new fields.
 - `node --check` (server/tests); `node --test --test-concurrency=1` — 48/48 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

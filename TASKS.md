@@ -237,7 +237,11 @@
 - [x] Backend/testing: `GET|POST /api/campaigns/:id/targets` supported; other methods now return 405 (regression test added) — 48/48 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 51 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/health` extended info (uptime/node version) and test; keep backward-compatible shape
+## Phase 51 — Expansion (complete)
+- [x] Backend/API: extended `GET /api/health` with `uptimeSeconds` and `node` (backward-compatible) and strengthened health test assertions — 48/48 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 52 — Expansion (active, in progress)
+- [~] Frontend UI: add dashboard auto-refresh toggle (interval) with safe cleanup and visible state; keep manual refresh
 - [ ] Run verification, docs/log updates, commit/push per item
 

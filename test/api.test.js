@@ -33,6 +33,10 @@ test('health endpoint', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/health');
     assert.equal(r.status, 200);
+    assert.equal(r.data.ok, true);
+    assert.equal(r.data.service, 'phishing-dashboard');
+    assert.equal(typeof r.data.uptimeSeconds, 'number');
+    assert.match(String(r.data.node || ''), /^v\d+/);
     assert.match(JSON.stringify(r.headers), /x-content-type-options/i);
 
     const missing = await req(base, '/api/campaigns/9999');
