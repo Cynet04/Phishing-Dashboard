@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Phishing Dashboard</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Phishing Dashboard</h1>
+      <p class="muted">Educational simulation environment — no real credentials collected.</p>
+    </div>
+    <button id="refreshBtn" class="btn secondary">Refresh</button>
+  </header>
+
+  <main class="container">
+    <section class="grid metrics" id="metrics">
+      <div class="card"><div class="label">Total Campaigns</div><div class="value" id="mCampaigns">0</div></div>
+      <div class="card"><div class="label">Emails Sent</div><div class="value" id="mSent">0</div></div>
+      <div class="card"><div class="label">Click Rate</div><div class="value" id="mClickRate">0%</div></div>
+      <div class="card"><div class="label">Data Submitted Rate</div><div class="value" id="mSubmitRate">0%</div></div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <h2>Create Campaign</h2>
+        <form id="campaignForm" class="stack">
+          <label>Campaign Name <input name="name" required placeholder="Q4 Awareness Test" /></label>
+          <label>Template
+            <select name="template" id="templateSelect"></select>
+          </label>
+          <label>Target Email List (one per line or comma-separated)
+            <textarea name="targets" rows="5" placeholder="alice@example.com&#10;bob@example.com"></textarea>
+          </label>
+          <button class="btn" type="submit">Create Campaign</button>
+          <div id="formMsg" class="muted"></div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Activity Chart</h2>
+        <p class="muted">Clicks/submits by day (recent events).</p>
+        <div id="chart" class="chart"></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <h2>Campaigns</h2>
+        <div id="campaigns" class="list"></div>
+      </div>
+      <div class="card">
+        <h2>Campaign Detail</h2>
+        <div id="detail" class="muted">Select a campaign.</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Recent Targets</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Campaign</th><th>Email</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+          <tbody id="targetsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
