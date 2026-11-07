@@ -556,9 +556,10 @@ $('#copyTargetEventsLink')?.addEventListener('click', async () => {
 $('#applyTargetDetailDates')?.addEventListener('click', async () => { targetDetailType = String($('#targetDetailType')?.value || '').trim(); targetDetailFrom = String($('#targetDetailFrom')?.value || '').trim(); targetDetailTo = String($('#targetDetailTo')?.value || '').trim(); syncTargetDetailExportLink(); try { await refreshTargetDetailEvents(true); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); } });
 $('#clearTargetDetailDates')?.addEventListener('click', async () => { targetDetailType = ''; targetDetailFrom = ''; targetDetailTo = ''; ['#targetDetailFrom','#targetDetailTo','#targetDetailType'].forEach(id => { const el = $(id); if (el) el.value = ''; }); syncTargetDetailExportLink(); try { await refreshTargetDetailEvents(true); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); } });
 $('#targetDetailEventsMore')?.addEventListener('click', async () => { try { await refreshTargetDetailEvents(false); } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); } });
-async function showTargetEventsInRecent(targetId) {
+async function showTargetEventsInRecent(targetId, campaignId = '') {
   if (!targetId) return toast('No target selected.', 'error');
-  state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsResolvedCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsFrom = ''; state.eventsTo = ''; state.eventsOffset = 0;
+  const resolvedCampaignId = String(campaignId || '').trim();
+  state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsResolvedCampaignId = resolvedCampaignId; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsFrom = ''; state.eventsTo = ''; state.eventsOffset = 0;
   if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
   if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = targetId;
   if ($('#eventsFromFilter')) $('#eventsFromFilter').value = '';
@@ -568,7 +569,8 @@ async function showTargetEventsInRecent(targetId) {
 }
 $('#showTargetInEvents')?.addEventListener('click', async () => {
   if (!targetDetailId) return toast('No target selected.', 'error');
-  try { closeTargetDetail(); await showTargetEventsInRecent(targetDetailId); }
+  const resolved = targetDetailCampaignId || targetDetailResolvedCampaignId || '';
+  try { closeTargetDetail(); await showTargetEventsInRecent(targetDetailId, resolved); }
   catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
 });
 $('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target?.id === 'targetDetailModal') closeTargetDetail(); });
