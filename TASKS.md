@@ -401,7 +401,11 @@
 - [x] Backend/API: added campaign-scoped target detail `GET /api/campaigns/:id/targets/:targetId` (`db.getCampaignTarget`, ownership/404-safe, GET-only 405) with regression coverage for cross-campaign mismatch/method/unknown campaign; README updated. Fixed route guard to preserve `targets/export.csv`. — 65/65 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 93 — Expansion (active, in progress)
-- [~] Frontend UI: use campaign-scoped target detail when opening target details from campaign context (optional enhancement) or add quick-open campaign target details from campaign picker
+## Phase 93 — Expansion (complete)
+- [x] Frontend UI: refactored target detail modal to top-level `openTargetDetail(targetId, campaignId?)`; campaign detail picker adds **Target Details** using campaign-scoped endpoint `/api/campaigns/:id/targets/:targetId`; Recent Targets **Details** still uses global target detail. Fixed loadTargets structure after partial edit. — 65/65 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 94 — Expansion (active, in progress)
+- [~] Frontend UI: show campaign scope indicator in target detail modal when opened from campaign context and ensure export/events actions remain correct
 - [ ] Run verification, docs/log updates, commit/push per item
 

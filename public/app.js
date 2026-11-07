@@ -133,6 +133,7 @@ async function selectCampaign(id, quiet) {
         ${c.targets.length ? c.targets.map(t => `<option value="${esc(t.id)}">${esc(t.email || t.id)} · ${esc(t.status || 'pending')}</option>`).join('') : '<option value="">No targets in current filter</option>'}
       </select>
       <button class="btn small secondary" id="showCampaignTargetEventsBtn" type="button" ${c.targets.length ? '' : 'disabled'}>Show Target Events</button>
+      <button class="btn small secondary" id="showCampaignTargetDetailBtn" type="button" ${c.targets.length ? '' : 'disabled'}>Target Details</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
@@ -159,6 +160,13 @@ async function selectCampaign(id, quiet) {
       toast(`Imported ${r.added} target(s).`);
       await refresh();
     } catch (e) { toast(e.message, 'error'); }
+  });
+  $('#showCampaignTargetDetailBtn')?.addEventListener('click', async () => {
+    try {
+      const targetId = String($('#campaignTargetPicker')?.value || c.targets[0]?.id || '').trim();
+      if (!targetId) return toast('No target available.', 'error');
+      await openTargetDetail(targetId, id);
+    } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); }
   });
   $('#showCampaignTargetEventsBtn')?.addEventListener('click', async () => {
     try {
@@ -220,23 +228,30 @@ async function loadTargets(reset = false) {
   $('#targetsBody').querySelectorAll('.sim-click').forEach(btn => btn.addEventListener('click', async () => {
     try { await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' }); toast('Click simulated.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   }));
+async function openTargetDetail(targetId, campaignId = '') {
+  const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
+  targetDetailJson = '';
+  targetDetailId = String(targetId || '').trim();
+  if (!targetDetailId) return toast('No target selected.', 'error');
+  const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = `/api/events/export.csv?targetId=${encodeURIComponent(targetDetailId)}`;
+  modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
+  $('#closeTargetDetail')?.focus?.();
+  try {
+    const detailPath = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}` : `/api/targets/${encodeURIComponent(targetDetailId)}`;
+    const [t, ev] = await Promise.all([api(detailPath), api(`/api/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`)]);
+    targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
+    const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
+    const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
+    const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
+    body.className = '';
+    body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
+}
+
   $('#targetsBody').querySelectorAll('.view-target').forEach(btn => btn.addEventListener('click', async () => {
-    const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
-    targetDetailJson = '';
-    targetDetailId = btn.dataset.id || '';
-    const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = targetDetailId ? `/api/events/export.csv?targetId=${encodeURIComponent(targetDetailId)}` : '#';
-    modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
-    $('#closeTargetDetail')?.focus?.();
-    try {
-      const [t, ev] = await Promise.all([api(`/api/targets/${targetDetailId}`), api(`/api/targets/${targetDetailId}/events?limit=20`)]);
-      targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
-      const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
-      const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
-      const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
-      body.className = '';
-      body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
-    }
-    catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
+    try { await openTargetDetail(btn.dataset.id || ''); }
+    catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); }
   }));
   $('#targetsBody').querySelectorAll('.view-target-events').forEach(btn => btn.addEventListener('click', async () => {
     try { await showTargetEventsInRecent(btn.dataset.id || ''); }
@@ -331,6 +346,26 @@ async function refresh() {
 let targetDetailJson = '';
 let targetDetailId = '';
 function closeTargetDetail() { $('#targetDetailModal')?.classList.add('hidden'); targetDetailJson = ''; targetDetailId = ''; const a = $('#exportTargetEventsLink'); if (a) a.href = '#'; }
+async function openTargetDetail(targetId, campaignId = '') {
+  const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
+  targetDetailJson = '';
+  targetDetailId = String(targetId || '').trim();
+  if (!targetDetailId) return toast('No target selected.', 'error');
+  const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = `/api/events/export.csv?targetId=${encodeURIComponent(targetDetailId)}`;
+  modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
+  $('#closeTargetDetail')?.focus?.();
+  try {
+    const detailPath = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}` : `/api/targets/${encodeURIComponent(targetDetailId)}`;
+    const [t, ev] = await Promise.all([api(detailPath), api(`/api/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`)]);
+    targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
+    const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
+    const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
+    const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
+    body.className = '';
+    body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
+}
 $('#closeTargetDetail')?.addEventListener('click', closeTargetDetail);
 $('#copyTargetDetail')?.addEventListener('click', async () => {
   if (!targetDetailJson) return toast('No target details to copy.', 'error');
