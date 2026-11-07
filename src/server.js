@@ -2,11 +2,14 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
+const crypto = require('crypto');
 const db = require('./db');
 const { allTemplates } = require('./templates');
 
 const PUBLIC = path.join(__dirname, '..', 'public');
 const PORT = Number(process.env.PORT || 3000);
+const SESSION_TTL_MS = 1000 * 60 * 60 * 12;
+function adminPassword() { return process.env.ADMIN_PASSWORD || ''; }
 
 const MIME = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml' };
 
@@ -62,6 +65,50 @@ function serveStatic(req, res, pathname) {
   return true;
 }
 
+function parseCookies(req) {
+  const raw = String(req.headers.cookie || '');
+  return Object.fromEntries(raw.split(';').map(p => p.trim()).filter(Boolean).map(p => {
+    const i = p.indexOf('='); return i < 0 ? [p, ''] : [decodeURIComponent(p.slice(0, i)), decodeURIComponent(p.slice(i + 1))];
+  }));
+}
+
+function sign(value) {
+  return crypto.createHmac('sha256', adminPassword()).update(value).digest('hex');
+}
+
+function makeSession() {
+  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + SESSION_TTL_MS })).toString('base64url');
+  return `${payload}.${sign(payload)}`;
+}
+
+function validSession(token) {
+  if (!adminPassword() || !token || !token.includes('.')) return false;
+  const [payload, sig] = token.split('.');
+  if (sig !== sign(payload)) return false;
+  try { const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')); return Number(data.exp) > Date.now(); } catch { return false; }
+}
+
+function authed(req) {
+  if (!adminPassword()) return true;
+  return validSession(parseCookies(req).pd_session);
+}
+
+function authRequired(pathname) {
+  if (!adminPassword()) return false;
+  if (pathname === '/api/health' || pathname === '/api/auth/login' || pathname === '/api/auth/status') return false;
+  if (pathname === '/login-simulation' || pathname === '/login-simulation/submit' || pathname === '/education') return false;
+  if (pathname.startsWith('/api/')) return true;
+  if (pathname === '/' || pathname.endsWith('.html') || pathname.endsWith('.js') || pathname.endsWith('.css')) return true;
+  return false;
+}
+
+function loginPage() {
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard Login</title>
+  <style>body{font-family:system-ui;background:#0b1020;color:#e8eefc;display:grid;place-items:center;min-height:100vh;margin:0}.box{background:#141b33;border:1px solid #263159;padding:24px;border-radius:12px;width:min(92vw,360px)}input,button{width:100%;padding:10px;margin-top:10px;box-sizing:border-box}button{background:#60a5fa;color:#081225;border:0;border-radius:8px;font-weight:600}</style></head>
+  <body><form class="box" method="POST" action="/api/auth/login"><h2>Admin Login</h2><p style="color:#9fb0d0">Educational dashboard access</p>
+  <input name="password" type="password" placeholder="Admin password" required><button type="submit">Sign in</button></form></body></html>`;
+}
+
 function educationPage(targetId) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simulation Complete</title>
   <style>body{font-family:system-ui,Segoe UI,Arial;background:#0b1020;color:#e8eefc;display:grid;place-items:center;min-height:100vh;margin:0}.card{max-width:680px;background:#141b33;border:1px solid #263159;border-radius:14px;padding:28px}h1{margin:0 0 10px;color:#7dd3fc}li{margin:8px 0;color:#c7d2fe}a{color:#93c5fd}</style></head>
@@ -84,6 +131,23 @@ async function handler(req, res) {
     db.ensure();
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const { pathname, searchParams } = url;
+    if (req.method === 'GET' && pathname === '/api/auth/status') return send(res, 200, { authEnabled: !!adminPassword(), authenticated: authed(req) });
+    if (req.method === 'POST' && pathname === '/api/auth/login') {
+      if (!adminPassword()) { res.writeHead(302, { Location: '/' }); return res.end(); }
+      const body = await readBody(req).catch(() => ({}));
+      if (String(body.password || '') !== adminPassword()) return send(res, 401, loginPage(), { 'Content-Type': 'text/html; charset=utf-8' });
+      res.writeHead(302, { 'Set-Cookie': `pd_session=${encodeURIComponent(makeSession())}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`, Location: '/' });
+      return res.end();
+    }
+    if (req.method === 'POST' && pathname === '/api/auth/logout') {
+      res.writeHead(302, { 'Set-Cookie': 'pd_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0', Location: adminPassword() ? '/login' : '/' });
+      return res.end();
+    }
+    if (adminPassword() && req.method === 'GET' && pathname === '/login') return send(res, 200, loginPage(), { 'Content-Type': 'text/html; charset=utf-8' });
+    if (authRequired(pathname) && !authed(req)) {
+      if (pathname.startsWith('/api/')) return send(res, 401, { error: 'unauthorized' });
+      res.writeHead(302, { Location: '/login' }); return res.end();
+    }
     if (req.method === 'GET' && pathname === '/api/health') return send(res, 200, { ok: true, service: 'phishing-dashboard', time: new Date().toISOString() });
     if (req.method === 'GET' && pathname === '/api/templates') return send(res, 200, allTemplates(db));
     if (req.method === 'POST' && pathname === '/api/templates') return send(res, 201, db.saveCustomTemplate(await readJson(req)));

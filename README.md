@@ -28,6 +28,16 @@ node --test --test-concurrency=1
 
 > Note (Windows PowerShell): `npm.ps1` may be blocked by execution policy in some environments. Use `node --test` or `npm.cmd test`.
 
+## Optional admin auth
+Set `ADMIN_PASSWORD` to protect the dashboard and management APIs with a simple signed session cookie.
+```bash
+# PowerShell
+$env:ADMIN_PASSWORD='change-me'; npm start
+# bash
+ADMIN_PASSWORD=change-me npm start
+```
+Public endpoints remain available for the educational simulation flow: `/api/health`, `/login-simulation*`, `/education`.
+
 ## API
 - `GET /api/health`
 - `GET /api/templates`, `POST /api/templates`, `PUT /api/templates/:id`, `DELETE /api/templates/:id`

@@ -191,6 +191,30 @@ test('template CRUD stores custom templates', async () => {
   });
 });
 
+test('optional admin auth protects API when enabled', async () => {
+  process.env.ADMIN_PASSWORD = 'secret123';
+  const { createServer: cs } = require('../src/server');
+  const db = require('../src/db');
+  db.resetForTests(tmpDb());
+  const server = cs();
+  await new Promise(r => server.listen(0, '127.0.0.1', r));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const blocked = await fetch(`${base}/api/campaigns`);
+    assert.equal(blocked.status, 401);
+    const health = await fetch(`${base}/api/health`);
+    assert.equal(health.status, 200);
+    const login = await fetch(`${base}/api/auth/login`, { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: 'secret123' }) });
+    assert.equal(login.status, 302);
+    const cookie = login.headers.get('set-cookie') || '';
+    const ok = await fetch(`${base}/api/campaigns`, { headers: { cookie } });
+    assert.equal(ok.status, 200);
+  } finally {
+    delete process.env.ADMIN_PASSWORD;
+    await new Promise(r => server.close(r));
+  }
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

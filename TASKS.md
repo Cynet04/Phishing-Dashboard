@@ -50,8 +50,10 @@
 - [x] Dashboard template management UI + live preview of selected template
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 10 — Security & Auth (expansion)
-- [ ] Optional admin login screen/token for dashboard/API (env-configured) with tests
+## Phase 10 — Security & Auth (active)
+- [x] Add optional admin auth via `ADMIN_PASSWORD` env: login/status/logout endpoints, signed session cookie, protect dashboard/API routes (`/api/health` and simulation pages exempt) with tests — 12/12 passing
+- [ ] Add dashboard login/logout UI affordance and graceful auth-disabled behavior
+- [ ] Update docs/logs and commit/push per item
 
 ## Phase 11 — UI/UX Polish (expansion)
 - [ ] Toast notifications, dark/light toggle persistence, responsive refinements

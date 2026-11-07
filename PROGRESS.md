@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:40Z — Phase 9: template management
-- Added custom template persistence in JSON DB and CRUD API (`/api/templates`) while preserving default template IDs. Dashboard supports template save/edit selection and live preview.
-- Added template CRUD regression test; `node --test --test-concurrency=1` — 11/11 passing. Commit/push in progress.
+## 2026-11-07 10:41Z — Phase 10: optional admin auth API
+- Added env-configured admin auth (`ADMIN_PASSWORD`): signed cookie session, `/api/auth/status|login|logout`, `/login` page, dashboard/API protection while keeping health/simulation pages public.
+- Added auth regression test (401 without cookie, 200 with session; health remains public). `node --test --test-concurrency=1` — 12/12 passing. Commit/push in progress.
