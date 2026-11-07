@@ -79,3 +79,7 @@
 ## 2026-11-07 11:46Z — Phase 68: target detail export-events action
 - Target detail modal includes **Export Events CSV** for the selected target (`/api/events/export.csv?targetId=`), alongside Copy JSON and accessibility behavior.
 - `node --check` (ui/app.js); `node --test --test-concurrency=1` — 56/56 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets ? **Details** ? **Export Events CSV**.
+
+## 2026-11-07 11:48Z — Phase 70: Recent Events delete UI
+- Recent Events table now includes per-row **Delete** (confirm) calling `DELETE /api/events/:id`, then reloads events and system status with toast/error handling.
+- `node --check` (ui); `node --test --test-concurrency=1` — 57/57 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Events** ? **Delete** on a row.
