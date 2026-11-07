@@ -235,3 +235,7 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 ## 2026-11-07 16:40Z — Phase 104: target detail export uses target events.csv
 - Target detail modal **Export Events CSV** link now uses `GET /api/targets/:id/events.csv` (target-scoped endpoint). Existing modal actions/scope behavior preserved.
 - `node --check public/app.js`; `node --test --test-concurrency=1` — 69/69 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 16:46Z — Phase 105: campaign-scoped target events.csv
+- Added `GET /api/campaigns/:id/targets/:targetId/events.csv?type=` (ownership-validated via `getCampaignTarget`, GET-only 405, attachment filename) in `src/server.js`. README updated. Regression test added.
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 70/70 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

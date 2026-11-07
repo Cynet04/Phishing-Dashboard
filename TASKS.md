@@ -453,7 +453,11 @@
 - [x] Backend/API: added `GET /api/campaigns/:id/targets/:targetId/events.csv?type=` (ownership-validated, 404/405-safe, attachment filename) with regression test and README update — 70/70 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 106 — Expansion (active, in progress)
-- [~] Frontend UI: when target detail modal is opened in campaign scope, use campaign-scoped export link `GET /api/campaigns/:id/targets/:targetId/events.csv` (global fallback preserved)
+## Phase 106 — Expansion (complete)
+- [x] Frontend UI: target detail modal export link uses campaign-scoped `GET /api/campaigns/:id/targets/:targetId/events.csv` when opened in campaign context (global fallback preserved) — 70/70 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 107 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/health` extended dependency/readiness field `dataFile` (safe path label, no secrets) and keep existing fields; add/adjust regression test
 - [ ] Run verification, docs/log updates, commit/push per item
 
