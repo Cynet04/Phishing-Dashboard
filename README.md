@@ -53,6 +53,10 @@ Public endpoints remain available for the educational simulation flow: `/api/hea
 
 `/api/*` responses use JSON error objects and return `405` for known campaign routes with unsupported methods. The server adds basic security headers and safe static-file resolution.
 
+## UI notes
+- Target detail modal: campaign-scoped/global scope label, target metadata, recent events with `type`/`from`/`to` filters, **Apply/Clear**, pagination (**Load more events**, shown/total), **Export Events CSV**, **Copy CSV link**, **Copy events link** (JSON with active filters), **Copy JSON**, and **Show in Recent Events**.
+- Recent Events toolbar/panel: scope indicator, filters (including from/to + target in global scope), export link, **Copy CSV link**, **Copy JSON link**, **Load more**, and row **Details** modal via `GET /api/events/:id`.
+
 ## Swapping the database
 `src/db.js` exposes plain functions (`createCampaign`, `listCampaigns`, `recordEvent`, `stats`, etc.). Replace JSON reads/writes with SQLite/Postgres calls while keeping the same function contracts used by `src/server.js`.
 
