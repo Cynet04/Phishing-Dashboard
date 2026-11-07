@@ -186,3 +186,9 @@ ode --test --test-concurrency=1 â€” 64/64 passing. Committed/pushed (10beea1). D
 - 
 ode --check (db/server/tests); 
 ode --test --test-concurrency=1 — 65/65 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 15:00Z — Phase 93: campaign-scoped target details from campaign picker (reset/continued)
+- Refactored target detail modal into top-level openTargetDetail(targetId, campaignId?). Campaign detail target picker now includes **Target Details** (uses campaign-scoped /api/campaigns/:id/targets/:targetId); Recent Targets **Details** uses global target detail. Repaired loadTargets structure after partial edit.
+- 
+ode --check (ui); 
+ode --test --test-concurrency=1 — 65/65 passing. Committed/pushed (6e2fb8). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign detail ? pick target ? **Target Details**.
