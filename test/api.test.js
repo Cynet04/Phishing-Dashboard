@@ -1281,3 +1281,23 @@ test('POST /api/targets/:id/click supports optional campaignId ownership validat
     assert.equal(legacy.status, 201); assert.equal(legacy.data.campaignId, c2.data.id);
   });
 });
+
+
+test('POST /api/events supports optional campaignId ownership validation', async () => {
+  await withServer(async (base) => {
+    const c1 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EVOWN1', template: 'generic', targets: 'evown1@example.com' }) });
+    const c2 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EVOWN2', template: 'generic', targets: 'evown2@example.com' }) });
+    const d1 = await req(base, `/api/campaigns/${c1.data.id}`);
+    const d2 = await req(base, `/api/campaigns/${c2.data.id}`);
+    const t1 = d1.data.targets[0].id; const t2 = d2.data.targets[0].id;
+    const ok = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: t1, type: 'clicked', campaignId: c1.data.id }) });
+    assert.equal(ok.status, 201); assert.equal((ok.data.event || ok.data).campaignId, c1.data.id);
+    const wrong = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: t2, type: 'clicked', campaignId: c1.data.id }) });
+    assert.equal(wrong.status, 404);
+    const badCampaign = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: t1, type: 'clicked', campaignId: 'nope' }) });
+    assert.equal(badCampaign.status, 404);
+    // backward-compatible default
+    const legacy = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: t2, type: 'opened' }) });
+    assert.equal(legacy.status, 201); assert.equal((legacy.data.event || legacy.data).campaignId, c2.data.id);
+  });
+});
