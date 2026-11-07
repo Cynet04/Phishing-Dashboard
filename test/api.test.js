@@ -277,6 +277,18 @@ test('events list endpoint supports filtering and pagination', async () => {
   });
 });
 
+test('campaign target import appends deduplicated targets', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Import', template: 'generic', targets: 'a@example.com' }) });
+    const added = await req(base, `/api/campaigns/${created.data.id}/targets`, { method: 'POST', body: JSON.stringify({ targets: 'a@example.com,b@example.com,c@example.com' }) });
+    assert.equal(added.status, 201);
+    assert.equal(added.data.added, 2);
+    assert.equal(added.data.total, 3);
+    const dup = await req(base, `/api/campaigns/${created.data.id}/targets`, { method: 'POST', body: JSON.stringify({ targets: 'b@example.com' }) });
+    assert.equal(dup.status, 400);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

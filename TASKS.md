@@ -82,8 +82,8 @@
 - [x] Add basic events table in dashboard (recent events) with load controls
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 17 — Expansion (active)
-- [ ] Add campaign target CSV upload/import endpoint (append targets with validation/dedup) and tests
-- [ ] Add dashboard UI for importing targets into a campaign
+## Phase 17 — Expansion (in progress)
+- [x] Add campaign target CSV/upload-style import endpoint (`POST /api/campaigns/:id/targets`) with validation/dedup and tests — 18/18 passing
+- [ ] Add dashboard UI for importing targets into a selected campaign
 - [ ] Run verification, docs/log updates, commit/push per item
 

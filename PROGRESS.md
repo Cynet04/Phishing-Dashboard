@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:53Z — Phase 16: events list API/UI
-- Added `GET /api/events` with campaign/type/limit/offset filtering and dashboard "Recent Events" table with load-more.
-- Added regression test; `node --test --test-concurrency=1` — 17/17 passing. Commit/push in progress.
+## 2026-11-07 10:54Z — Phase 17: campaign target import API
+- Added `POST /api/campaigns/:id/targets` to append validated/deduplicated targets to an existing campaign (rejects when no new emails added).
+- Added regression test; `node --test --test-concurrency=1` — 18/18 passing. Commit/push in progress.

@@ -167,6 +167,24 @@ function sendSimulation(id) {
   return { campaignId: campaign.id, sent };
 }
 
+function addTargets(campaignId, rawInput) {
+  const db = load();
+  const campaign = db.campaigns.find(c => c.id === String(campaignId));
+  if (!campaign) throw Object.assign(new Error('campaign not found'), { status: 404 });
+  const existing = new Set(db.targets.filter(t => t.campaignId === campaign.id).map(t => t.email));
+  const emails = normalizeEmails(rawInput);
+  let added = 0;
+  for (const email of emails) {
+    if (existing.has(email)) continue;
+    existing.add(email);
+    db.targets.push({ id: nextId(db, 'target'), campaignId: campaign.id, email, status: 'pending', createdAt: now(), updatedAt: now() });
+    added++;
+  }
+  if (!added) throw Object.assign(new Error('no new valid target emails to add'), { status: 400 });
+  save(db);
+  return { campaignId: campaign.id, added, total: db.targets.filter(t => t.campaignId === campaign.id).length };
+}
+
 function recordEvent(input = {}) {
   const type = String(input.type || '').trim().toLowerCase();
   const allowed = new Set(['opened', 'clicked', 'submitted']);
@@ -321,7 +339,7 @@ function exportEventsCsv(opts = {}) {
   return eventsToCsv(rows);
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 
