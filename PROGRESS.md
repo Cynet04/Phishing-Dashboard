@@ -294,3 +294,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 18:55Z — Phase 123: /api/version endpoint
 - Added auth-exempt `GET /api/version` (safe service/version/node/time) in `src/server.js` with `package.json` metadata. README updated. Regression test added. 76/76 passing. Committed/pushed.
+
+## 2026-11-07 19:05Z — Phase 124: System Status version
+- System Status fetches `/api/version` and displays app version (`#sysVersion`) with existing fields/refresh preserved. `node --check`; 76/76 passing. Committed/pushed.
