@@ -305,7 +305,11 @@
 - [x] Backend/API: `GET /api/events/export.csv` supports `targetId` filter (404-safe for unknown target; backward-compatible) and regression test added — 56/56 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 68 — Expansion (active, in progress)
-- [~] Frontend UI: add “Export Target Events CSV” action in target detail modal using `/api/events/export.csv?targetId=`; keep modal UX polished
+## Phase 68 — Expansion (complete)
+- [x] Frontend UI: target detail modal adds **Export Events CSV** action linked to `/api/events/export.csv?targetId=` for the selected target — 56/56 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 69 — Expansion (active, in progress)
+- [~] Backend/API: add `DELETE /api/events/:id` for demo hygiene (404-safe) and test; keep API method consistency
 - [ ] Run verification, docs/log updates, commit/push per item
 

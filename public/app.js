@@ -189,10 +189,12 @@ async function loadTargets(reset = false) {
   $('#targetsBody').querySelectorAll('.view-target').forEach(btn => btn.addEventListener('click', async () => {
     const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
     targetDetailJson = '';
+    targetDetailId = btn.dataset.id || '';
+    const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = targetDetailId ? `/api/events/export.csv?targetId=${encodeURIComponent(targetDetailId)}` : '#';
     modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
     $('#closeTargetDetail')?.focus?.();
     try {
-      const [t, ev] = await Promise.all([api(`/api/targets/${btn.dataset.id}`), api(`/api/targets/${btn.dataset.id}/events?limit=20`)]);
+      const [t, ev] = await Promise.all([api(`/api/targets/${targetDetailId}`), api(`/api/targets/${targetDetailId}/events?limit=20`)]);
       targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
       const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
       body.className = '';
@@ -243,7 +245,8 @@ async function refresh() {
 }
 
 let targetDetailJson = '';
-function closeTargetDetail() { $('#targetDetailModal')?.classList.add('hidden'); targetDetailJson = ''; }
+let targetDetailId = '';
+function closeTargetDetail() { $('#targetDetailModal')?.classList.add('hidden'); targetDetailJson = ''; targetDetailId = ''; const a = $('#exportTargetEventsLink'); if (a) a.href = '#'; }
 $('#closeTargetDetail')?.addEventListener('click', closeTargetDetail);
 $('#copyTargetDetail')?.addEventListener('click', async () => {
   if (!targetDetailJson) return toast('No target details to copy.', 'error');
