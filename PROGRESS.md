@@ -219,3 +219,7 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 ## 2026-11-07 16:15Z — Phase 100: Recent Events scope indicator
 - Added visible Recent Events scope indicator (`#eventsScopeIndicator`) showing `global` or `campaign-scoped (campaign <id>)`; synced in `loadEvents`/`loadCampaignEvents` while preserving filters/export/actions and global recovery.
 - `node --check public/app.js`; `node --test --test-concurrency=1` — 67/67 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 16:22Z — Phase 101: event detail endpoint
+- Added `db.getEvent(id)` and `GET /api/events/:id` (returns event with `campaignName`, 404/405-safe). README updated. Regression test added.
+- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 68/68 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

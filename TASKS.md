@@ -433,7 +433,11 @@
 - [x] Frontend UI: visible Recent Events scope indicator (`global` vs `campaign-scoped` + campaign ID) in `index.html`/`app.js`, synced with campaign/global scope recovery and actions; filters/export behavior preserved — 67/67 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 101 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/events/:id` read endpoint (404/405-safe, returns event with `campaignName`) with regression test and README/docs update
+## Phase 101 — Expansion (complete)
+- [x] Backend/API: added `GET /api/events/:id` (returns event with `campaignName`, 404/405-safe) via `db.getEvent`/server route, with regression test and README update — 68/68 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 102 — Expansion (active, in progress)
+- [~] Frontend UI: add Recent Events **Details** action/button that fetches `GET /api/events/:id` and shows event JSON/details in an alert-style modal or existing detail pattern (read-only)
 - [ ] Run verification, docs/log updates, commit/push per item
 

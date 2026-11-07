@@ -189,6 +189,7 @@ async function handler(req, res) {
     if (pathname.startsWith('/api/events/') && !pathname.endsWith('/export.csv')) {
       const id = decodeURIComponent(pathname.split('/')[3] || '');
       if (!id) return send(res, 404, { error: 'not found' });
+      if (req.method === 'GET') return send(res, 200, db.getEvent(id));
       if (req.method === 'DELETE') return send(res, 200, db.deleteEvent(id));
       return send(res, 405, { error: 'method not allowed' });
     }

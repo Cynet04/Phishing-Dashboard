@@ -938,3 +938,26 @@ test('campaign-scoped target events endpoint validates ownership, pagination, an
     assert.equal(m.status, 405);
   });
 });
+
+
+test('event detail endpoint returns event and enforces 404/405', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EventDetail', template: 'generic', targets: 'ev@example.com' }) });
+    const campaignId = created.data.id;
+    await req(base, `/api/campaigns/${campaignId}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${campaignId}`);
+    const targetId = detail.data.targets[0].id;
+    await req(base, `/api/targets/${targetId}/click`, { method: 'POST', body: '{}' });
+    const events = await req(base, `/api/events?campaignId=${campaignId}&type=clicked`);
+    const eventId = events.data.items[0].id;
+    const ok = await req(base, `/api/events/${eventId}`);
+    assert.equal(ok.status, 200);
+    assert.equal(ok.data.id, eventId);
+    assert.equal(ok.data.type, 'clicked');
+    assert.equal(ok.data.campaignName, 'EventDetail');
+    const m = await req(base, `/api/events/${eventId}`, { method: 'POST', body: '{}' });
+    assert.equal(m.status, 405);
+    const nf = await req(base, '/api/events/nope');
+    assert.equal(nf.status, 404);
+  });
+});
