@@ -91,3 +91,11 @@
 ## 2026-11-07 11:50Z — Phase 72: target route method consistency
 - `GET /api/targets/:id` and `GET /api/targets/:id/events` enforce GET-only handling (405 for unsupported methods). Added regression test.
 - `node --check` (server/tests); `node --test --test-concurrency=1` — 59/59 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 11:51Z — Phase 73: export/targets toolbar clear filters
+- Added **Clear filters** for Recent Targets/export toolbar; reorganized controls and wired clear to reset campaign/status/events-export filters and reload targets.
+- `node --check` (ui); `node --test --test-concurrency=1` — 59/59 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets toolbar ? **Clear filters**.
+
+## 2026-11-07 11:50Z — Phase 72: target route method consistency
+- `GET /api/targets/:id` and `GET /api/targets/:id/events` enforce GET-only handling (405 for unsupported methods). Added regression test.
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 59/59 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

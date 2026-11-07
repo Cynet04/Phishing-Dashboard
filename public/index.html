@@ -83,11 +83,12 @@
             <option value="">All statuses</option><option value="pending">pending</option><option value="sent">sent</option><option value="opened">opened</option><option value="clicked">clicked</option><option value="submitted">submitted</option>
           </select>
           <a id="targetsExportLink" class="btn small secondary" href="/api/targets/export.csv">Export Targets CSV</a>
-          <button id="loadMoreTargetsBtn" class="btn small secondary">Load more</button>
           <select id="eventsExportType" aria-label="Export events type filter">
             <option value="">All event types</option><option value="opened">opened</option><option value="clicked">clicked</option><option value="submitted">submitted</option>
           </select>
           <a id="eventsExportLink" class="btn small secondary" href="/api/events/export.csv">Export Events CSV</a>
+          <button id="clearExportFiltersBtn" class="btn small secondary" type="button">Clear filters</button>
+          <button id="loadMoreTargetsBtn" class="btn small secondary">Load more</button>
         </div>
       </div>
       <div class="table-wrap" style="margin-top:12px">

@@ -325,7 +325,11 @@
 - [x] Backend/API: `GET /api/targets/:id` and `GET /api/targets/:id/events` now enforce GET-only method handling (405 for unsupported methods) with regression test — 59/59 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 73 — Expansion (active, in progress)
-- [~] Frontend UI: add “Clear filters” action for Recent Targets/events export controls and improve responsive layout for export/filter toolbar
+## Phase 73 — Expansion (complete)
+- [x] Frontend UI: added “Clear filters” for Recent Targets/export toolbar, reorganized toolbar layout for responsiveness, and wired clear to reset table/export filters — 59/59 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 74 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/events?targetId=` filter support (DB already supports targetId; route should pass through) and regression test
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -269,6 +269,14 @@ function setAutoRefresh(on) {
 }
 $('#autoRefreshBtn')?.addEventListener('click', () => setAutoRefresh(!autoTimer));
 setAutoRefresh(localStorage.getItem('pd-auto-refresh') === '1');
+$('#clearExportFiltersBtn')?.addEventListener('click', () => {
+  if ($('#targetExportCampaign')) $('#targetExportCampaign').value = '';
+  if ($('#targetExportStatus')) $('#targetExportStatus').value = '';
+  if ($('#eventsExportType')) $('#eventsExportType').value = '';
+  const ea = $('#eventsExportLink'); if (ea) ea.href = '/api/events/export.csv';
+  updateTargetsExportLink();
+  loadTargets(true).catch((e) => toast(`Targets filter failed: ${e.message}`, 'error'));
+});
 $('#eventsExportType')?.addEventListener('change', () => {
   const type = String($('#eventsExportType')?.value || '').trim();
   const a = $('#eventsExportLink'); if (a) a.href = '/api/events/export.csv' + (type ? `?type=${encodeURIComponent(type)}` : '');
