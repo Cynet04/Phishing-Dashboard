@@ -336,3 +336,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 22:30Z — Phase 137: README UI behavior docs
 - Documented target detail modal (scope, type/from/to filters, Apply/Clear, pagination/Load more, export/copy CSV/copy events JSON/copy JSON, Show in Recent Events) and Recent Events toolbar copy-link/filters/Details behaviors in README. 80/80 passing. Committed/pushed.
+
+## 2026-11-07 22:45Z — Phase 138: Open target detail in Recent Events
+- Added **Open target detail** action in Recent Events toolbar (shown when target filter set). Opens existing modal campaign-scoped in campaign events scope, global otherwise. UI syntax checked, 80/80 passing. Committed/pushed.
