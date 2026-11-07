@@ -420,6 +420,13 @@ $('#copyTargetDetail')?.addEventListener('click', async () => {
   try { await navigator.clipboard?.writeText(targetDetailJson); toast('Target JSON copied.'); }
   catch { prompt('Copy target JSON:', targetDetailJson); }
 });
+$('#copyTargetExportLink')?.addEventListener('click', async () => {
+  const href = $('#exportTargetEventsLink')?.getAttribute('href') || '';
+  if (!href || href === '#') return toast('No export link available.', 'error');
+  const url = new URL(href, location.href).href;
+  try { await navigator.clipboard?.writeText(url); toast('Export link copied.'); }
+  catch { prompt('Copy export link:', url); }
+});
 async function showTargetEventsInRecent(targetId) {
   if (!targetId) return toast('No target selected.', 'error');
   state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsFrom = ''; state.eventsTo = ''; state.eventsOffset = 0;
