@@ -273,3 +273,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 17:46Z — Phase 116: events export date inputs
 - Added global events export `from`/`to` date inputs in `public/index.html`; wired into `updateEventsExportLink` and clear filters in `public/app.js` (preserves type/target). `node --check`; 73/73 passing. Committed/pushed.
+
+## 2026-11-07 17:46Z — Phase 117: campaign/target events.csv date filters
+- Added `from=`/`to=` (validated/range-checked) to `/api/campaigns/:id/events.csv`, `/api/targets/:id/events.csv`, and `/api/campaigns/:id/targets/:targetId/events.csv` server wiring; README fixed. Regression test added. `node --check`; 74/74 passing. Committed/pushed.
