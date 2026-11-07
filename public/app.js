@@ -192,7 +192,7 @@ async function loadTargets(reset = false) {
       <td>${esc(t.email)}</td>
       <td><span class="pill ${esc(t.status)}">${esc(t.status)}</span></td>
       <td class="muted">${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</td>
-      <td><span class="row">${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : ''}<button class="btn small secondary view-target" data-id="${esc(t.id)}">Details</button></span></td>
+      <td><span class="row" style="flex-wrap:wrap">${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : ''}<button class="btn small secondary view-target" data-id="${esc(t.id)}">Details</button><button class="btn small secondary view-target-events" data-id="${esc(t.id)}">Events</button></span></td>
     </tr>`).join('') : '<tr><td colspan="5" class="muted">No targets match.</td></tr>';
   $('#targetsBody').querySelectorAll('.sim-click').forEach(btn => btn.addEventListener('click', async () => {
     try { await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' }); toast('Click simulated.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
@@ -212,6 +212,10 @@ async function loadTargets(reset = false) {
       body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
     }
     catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
+  }));
+  $('#targetsBody').querySelectorAll('.view-target-events').forEach(btn => btn.addEventListener('click', async () => {
+    try { await showTargetEventsInRecent(btn.dataset.id || ''); }
+    catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
   }));
   const shown = Math.min(state.targetsOffset + targets.length, state.targetsTotal);
   $('#targetsMeta').textContent = state.targetsTotal ? `Showing ${shown} of ${state.targetsTotal}` : '';
@@ -304,16 +308,19 @@ $('#copyTargetDetail')?.addEventListener('click', async () => {
   try { await navigator.clipboard?.writeText(targetDetailJson); toast('Target JSON copied.'); }
   catch { prompt('Copy target JSON:', targetDetailJson); }
 });
+async function showTargetEventsInRecent(targetId) {
+  if (!targetId) return toast('No target selected.', 'error');
+  state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsOffset = 0;
+  if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
+  if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = targetId;
+  await loadEvents(true);
+  document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 $('#showTargetInEvents')?.addEventListener('click', async () => {
   if (!targetDetailId) return toast('No target selected.', 'error');
-  try {
-    state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetDetailId; state.eventsOffset = 0;
-    if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
-    if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = targetDetailId;
-    closeTargetDetail();
-    await loadEvents(true);
-    document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
+  try { closeTargetDetail(); await showTargetEventsInRecent(targetDetailId); }
+  catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
 });
 $('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'targetDetailModal') closeTargetDetail(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTargetDetail(); });

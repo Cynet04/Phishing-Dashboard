@@ -361,7 +361,11 @@
 - [x] Backend/API: `GET /api/targets/recent` and `GET /api/targets/export.csv` now enforce GET-only method handling (405 for unsupported methods) with regression test — 61/61 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 82 — Expansion (active, in progress)
-- [~] Frontend UI: add “View target in events” quick action from Recent Targets rows (opens target context in Recent Events filter) for easier investigation workflow
+## Phase 82 — Expansion (complete)
+- [x] Frontend UI: Recent Targets rows add **Events** quick action that prefills Recent Events `targetId` filter (reusing Phase 80/78 global-scope recovery helper), reloads global events, and scrolls to panel — 61/61 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 83 — Expansion (active, in progress)
+- [~] Frontend UI: add “Return to global events” control/indicator when in campaign-scoped quick view and keep Load More/pagination behavior consistent
 - [ ] Run verification, docs/log updates, commit/push per item
 
