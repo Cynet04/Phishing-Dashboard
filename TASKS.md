@@ -67,9 +67,8 @@
 - [x] Optimize/simplify DB read helpers where safe (reviewed; no behavior-risky refactor required this pass)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 13 — Expansion (complete)
-- [x] Add campaign status summary counts to campaign list API/UI (draft/sent breakdown) with tests — 15/15 passing (`17b4ebf`)
-- [x] Add per-campaign target status filter endpoint/API (`/api/campaigns/:id?status=`) with tests
-- [x] Add UI filter control for campaign detail target status and render status counts
-- [x] Run verification, docs/log updates, commit/push per item
+## Phase 14 — UI/UX Polish (in progress)
+- [x] Add theme toggle (dark/light) with `localStorage` persistence and responsive refinements — 15/15 tests passing
+- [ ] Add non-disruptive loading/error states for dashboard refresh/auth/template actions
+- [ ] Run verification, docs/log updates, commit/push per item
 

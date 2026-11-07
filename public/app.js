@@ -1,5 +1,14 @@
 const $ = (s) => document.querySelector(s);
 const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '' };
+const THEME_KEY = 'pd-theme';
+function applyTheme(theme) {
+  const t = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  localStorage.setItem(THEME_KEY, t);
+  const btn = $('#themeBtn'); if (btn) btn.textContent = t === 'light' ? 'Dark mode' : 'Light mode';
+}
+applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+$('#themeBtn').addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
