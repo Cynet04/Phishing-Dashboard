@@ -36,6 +36,6 @@
 - Added Auto-refresh toggle (30s), persisted in `localStorage` (`pd-auto-refresh`) with interval cleanup; manual Refresh still works.
 - `node --check` (ui); `node --test --test-concurrency=1` — 48/48 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: header **Auto: off/on** + **Refresh**.
 
-## 2026-11-07 11:33Z — Phase 55: login rate-limit coverage
-- Added auth-enabled login rate-limit 429 integration test. `createServer({resetLoginAttempts})` clears in-memory attempt state for isolated tests; rate limit now applies only when `ADMIN_PASSWORD` is enabled.
-- `node --check` (server/tests); `node --test --test-concurrency=1` — 50/50 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:34Z — Phase 56: filtered global targets CSV export
+- `/api/targets/export.csv` accepts optional `campaignId` and `status` filters (backward-compatible). Added regression test; updated README.
+- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 51/51 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

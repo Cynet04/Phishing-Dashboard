@@ -26,7 +26,7 @@ async function req(base, p, opts) {
   const res = await fetch(base + p, { headers: { 'Content-Type': 'application/json' }, ...opts });
   const text = await res.text();
   let data; try { data = JSON.parse(text); } catch { data = text; }
-  return { status: res.status, data, headers: Object.fromEntries(res.headers.entries()) };
+  return { status: res.status, data, raw: text, headers: Object.fromEntries(res.headers.entries()) };
 }
 
 test('health endpoint', async () => {
@@ -659,6 +659,19 @@ test('auth login rate limit returns 429 after repeated failures', async () => {
     await new Promise((r) => srv.close(r));
     if (prev == null) delete process.env.ADMIN_PASSWORD; else process.env.ADMIN_PASSWORD = prev;
   }
+});
+
+test('global targets CSV supports campaignId and status filters', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CsvFilter', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const csv = await req(base, `/api/targets/export.csv?campaignId=${created.data.id}&status=clicked`);
+    assert.equal(csv.status, 200);
+    assert.match(csv.raw, /clicked/);
+    assert.doesNotMatch(csv.raw, /b@example\.com/);
+  });
 });
 
 test('unknown target errors cleanly', async () => {

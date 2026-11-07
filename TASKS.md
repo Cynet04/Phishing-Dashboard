@@ -257,7 +257,11 @@
 - [x] Testing/Security: added auth-enabled login rate-limit 429 integration test with server `resetLoginAttempts` hook; scoped rate limit to auth-enabled mode to avoid side effects — 50/50 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 56 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/targets/export.csv?campaignId=&status=` filter support and tests (backward-compatible)
+## Phase 56 — Expansion (complete)
+- [x] Backend/API: `GET /api/targets/export.csv` now supports `campaignId` and `status` filters (backward-compatible); regression test added — 51/51 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 57 — Expansion (active, in progress)
+- [~] Frontend UI: add global targets CSV export filter controls in dashboard (campaign/status links/form) using new API filters; keep UX simple/safe
 - [ ] Run verification, docs/log updates, commit/push per item
 

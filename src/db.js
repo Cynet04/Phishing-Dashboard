@@ -306,6 +306,7 @@ function exportTargetsCsv(opts = {}) {
   }
   let rows = db.targets.map(t => ({ ...t, campaignName: cmap[t.campaignId] || t.campaignId }));
   if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
+  if (opts.status) rows = rows.filter(r => r.status === String(opts.status).toLowerCase());
   rows.sort((a, b) => String(a.campaignId).localeCompare(String(b.campaignId)) || String(a.id).localeCompare(String(b.id)));
   return targetsToCsv(rows);
 }
