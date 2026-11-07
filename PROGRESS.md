@@ -324,3 +324,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 21:30Z — Phase 133: copy events link in target detail modal
 - Added **Copy events link** in target detail modal (copies resolved JSON events endpoint URL with active type/from/to filters; campaign-scoped/global). UI syntax checked, 80/80 passing. Committed/pushed.
+
+## 2026-11-07 21:45Z — Phase 134: evaluated campaign events targetId ownership behavior
+- Evaluated changing campaign-scoped `events`/`events.csv` to 404 when `targetId` is not in campaign. Current stable empty paginated/envelope behavior is intentional (Phase 95) and covered by regression tests; 404 would break backward compatibility. No API change. Activated Phase 135 (target detail modal events pagination).
