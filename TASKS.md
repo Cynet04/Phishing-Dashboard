@@ -77,8 +77,13 @@
 - [x] Add dashboard action/link for event CSV export
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 16 — Expansion (active)
-- [ ] Add event list API endpoint with pagination/filter (`/api/events?campaignId=&type=&limit=&offset=`) and tests
-- [ ] Add basic events table in dashboard (recent events) with load controls
+## Phase 16 — Expansion (complete)
+- [x] Add event list API endpoint with pagination/filter (`/api/events?campaignId=&type=&limit=&offset=`) and tests — 17/17 passing
+- [x] Add basic events table in dashboard (recent events) with load controls
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 17 — Expansion (active)
+- [ ] Add campaign target CSV upload/import endpoint (append targets with validation/dedup) and tests
+- [ ] Add dashboard UI for importing targets into a campaign
 - [ ] Run verification, docs/log updates, commit/push per item
 

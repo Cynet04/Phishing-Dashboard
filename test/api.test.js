@@ -264,6 +264,19 @@ test('events CSV export returns event rows', async () => {
   });
 });
 
+test('events list endpoint supports filtering and pagination', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Events List', template: 'generic', targets: 'evl@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const r = await req(base, `/api/events?campaignId=${created.data.id}&type=clicked&limit=10`);
+    assert.equal(r.status, 200);
+    assert.equal(r.data.items.length >= 1, true);
+    assert.equal(r.data.items[0].type, 'clicked');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

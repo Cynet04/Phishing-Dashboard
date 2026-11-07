@@ -299,16 +299,29 @@ function eventsToCsv(rows) {
   return lines.join('\n') + '\n';
 }
 
+function listEvents(opts = {}) {
+  const db = load();
+  const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
+  let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
+  if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
+  if (opts.type) rows = rows.filter(r => r.type === String(opts.type).toLowerCase());
+  rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
+  const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
+  const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
+  return { items: rows.slice(offset, offset + limit), total: rows.length, limit, offset };
+}
+
 function exportEventsCsv(opts = {}) {
   const db = load();
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
   let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
   if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
+  if (opts.type) rows = rows.filter(r => r.type === String(opts.type).toLowerCase());
   rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
   return eventsToCsv(rows);
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 

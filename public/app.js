@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '' };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0 };
 const THEME_KEY = 'pd-theme';
 function applyTheme(theme) {
   const t = theme === 'light' ? 'light' : 'dark';
@@ -140,13 +140,27 @@ async function loadTargets(reset = false) {
   $('#loadMoreTargetsBtn').disabled = shown >= state.targetsTotal;
 }
 
+async function loadEvents(reset = false) {
+  if (reset) state.eventsOffset = 0;
+  const page = await api(`/api/events?limit=${state.eventsLimit}&offset=${state.eventsOffset}`);
+  state.eventsTotal = page.total || 0;
+  const events = page.items || [];
+  $('#eventsBody').innerHTML = events.length ? events.map(e => `
+    <tr><td>${esc(e.campaignName)}</td><td>${esc(e.targetId)}</td><td><span class="pill ${esc(e.type)}">${esc(e.type)}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No events yet.</td></tr>';
+  const shown = Math.min(state.eventsOffset + events.length, state.eventsTotal);
+  $('#eventsMeta').textContent = state.eventsTotal ? `Showing ${shown} of ${state.eventsTotal}` : '';
+  $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
+}
+
 async function refresh() {
   const btn = $('#refreshBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...'; }
   try {
-    await Promise.all([loadStats(), loadCampaigns(), loadTargets(true)]);
+    await Promise.all([loadStats(), loadCampaigns(), loadTargets(true), loadEvents(true)]);
   } catch (e) { toast(e.message || 'Refresh failed', 'error'); }
   finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
 }
+
+$('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
 
 $('#loadMoreTargetsBtn').addEventListener('click', async () => {
   state.targetsOffset += state.targetsLimit;
