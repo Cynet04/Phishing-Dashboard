@@ -476,6 +476,14 @@ test('campaign events JSON endpoint returns paginated filtered events', async ()
     assert.ok(Array.isArray(byTarget.data.items));
     assert.ok(byTarget.data.items.length >= 1);
     assert.ok(byTarget.data.items.every((e) => e.targetId === detail.data.targets[0].id));
+    const byTargetAndType = await req(base, `/api/campaigns/${created.data.id}/events?targetId=${detail.data.targets[0].id}&type=clicked&limit=10`);
+    assert.equal(byTargetAndType.status, 200);
+    assert.ok(byTargetAndType.data.items.length >= 1);
+    assert.ok(byTargetAndType.data.items.every((e) => e.targetId === detail.data.targets[0].id && e.type === 'clicked'));
+    const mismatch = await req(base, `/api/campaigns/${created.data.id}/events?targetId=${detail.data.targets[0].id}&type=submitted&limit=10`);
+    assert.equal(mismatch.status, 200);
+    assert.deepEqual(mismatch.data.items, []);
+    assert.equal(mismatch.data.total, 0);
   });
 });
 

@@ -349,7 +349,11 @@
 - [x] Frontend UI: events scope recovery from campaign-scoped quick view — global load/filters/Clear/Load More now reset to global `/api/events` scope; scoped view shows hint and disables mixed pagination — 60/60 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 79 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/campaigns/:id/events` support for `targetId` + `type` together in a stricter regression case and document campaign-scoped event query params in README if missing
+## Phase 79 — Expansion (complete)
+- [x] Tests/API coverage: strengthened `GET /api/campaigns/:id/events` regression to assert `targetId + type` combined filtering and stable empty result for mismatched target/type — 60/60 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 80 — Expansion (active, in progress)
+- [~] Frontend UI: add **Show in Recent Events** action in target detail modal (prefills Recent Events `targetId` filter, clears campaign-scoped quick view, reloads global events)
 - [ ] Run verification, docs/log updates, commit/push per item
 
