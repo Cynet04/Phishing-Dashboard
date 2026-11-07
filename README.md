@@ -40,7 +40,7 @@ ADMIN_PASSWORD=change-me npm start
 Public endpoints remain available for the educational simulation flow: `/api/health`, `/login-simulation*`, `/education`.
 
 ## API
-- `GET /api/health` (includes `uptimeSeconds`, `node`, and safe `dataFile` basename)
+- `GET /api/health` (alias: `/api/healthz`; includes `uptimeSeconds`, `node`, and safe `dataFile` basename)
 - `GET /api/templates`, `POST /api/templates`, `PUT /api/templates/:id`, `DELETE /api/templates/:id`
 - `GET /api/stats?campaignId=&from=YYYY-MM-DD&to=YYYY-MM-DD`
 - `GET /api/campaigns?q=&limit=&offset=` (returns array by default; returns `{items,total,limit,offset}` when `limit`/`offset` provided), `POST /api/campaigns`

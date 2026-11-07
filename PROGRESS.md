@@ -282,3 +282,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 18:15Z — Phase 119: Recent Events date filters
 - Added Recent Events `from`/`to` filters in `public/index.html`; wired through `loadEvents`/`loadCampaignEvents`, state, listeners, clear/return-global/scope resets, and meta in `public/app.js`. View-event handlers preserved; minor mojibake cleanup. `node --check`; 75/75 passing. Committed/pushed.
+
+## 2026-11-07 18:25Z — Phase 120: /api/healthz alias
+- Added `GET /api/healthz` alias (auth-exempt, same payload/headers as `/api/health`) in `src/server.js`. Health test asserts alias. README updated. 75/75 passing. Committed/pushed.

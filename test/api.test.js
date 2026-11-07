@@ -45,6 +45,11 @@ test('health endpoint', async () => {
     const echoed = await req(base, '/api/health', { headers: { 'x-request-id': 'req-test-12345' } });
     assert.equal(String(echoed.headers['x-request-id'] || ''), 'req-test-12345');
 
+    const alias = await req(base, '/api/healthz');
+    assert.equal(alias.status, 200);
+    assert.equal(alias.data.ok, true);
+    assert.match(String(alias.headers['x-request-id'] || ''), /^[A-Za-z0-9._:-]{8,128}$/);
+
     const missing = await req(base, '/api/campaigns/9999');
     assert.equal(missing.status, 404);
     assert.ok(missing.data.error);

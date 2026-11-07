@@ -117,7 +117,7 @@ function authed(req) {
 
 function authRequired(pathname) {
   if (!adminPassword()) return false;
-  if (pathname === '/api/health' || pathname === '/api/auth/login' || pathname === '/api/auth/status') return false;
+  if (pathname === '/api/health' || pathname === '/api/healthz' || pathname === '/api/auth/login' || pathname === '/api/auth/status') return false;
   if (pathname === '/login-simulation' || pathname === '/login-simulation/submit' || pathname === '/education') return false;
   if (pathname.startsWith('/api/')) return true;
   if (pathname === '/' || pathname.endsWith('.html') || pathname.endsWith('.js') || pathname.endsWith('.css')) return true;
@@ -176,7 +176,7 @@ async function handler(req, res) {
       if (pathname.startsWith('/api/')) return send(res, 401, { error: 'unauthorized' });
       res.writeHead(302, { Location: '/login' }); return res.end();
     }
-    if (req.method === 'GET' && pathname === '/api/health') {
+    if (req.method === 'GET' && (pathname === '/api/health' || pathname === '/api/healthz')) {
       const dataFile = typeof db.dbFile === 'function' ? path.basename(db.dbFile()) : undefined;
       return send(res, 200, { ok: true, service: 'phishing-dashboard', time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()), node: process.version, dataFile });
     }
