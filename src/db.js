@@ -132,11 +132,16 @@ function listCampaigns(opts = {}) {
   const q = String(opts.q || '').trim().toLowerCase();
   let campaigns = db.campaigns.slice();
   if (q) campaigns = campaigns.filter(c => String(c.name || '').toLowerCase().includes(q));
-  return campaigns.map(c => {
+  const items = campaigns.map(c => {
     const targets = db.targets.filter(t => t.campaignId === c.id);
     const statusCounts = targets.reduce((acc, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc; }, {});
     return { ...c, targetCount: targets.length, statusCounts };
   });
+  const paginate = opts.limit != null || opts.offset != null || opts.paginate;
+  if (!paginate) return items;
+  const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
+  const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
+  return { items: items.slice(offset, offset + limit), total: items.length, limit, offset };
 }
 
 function getCampaign(id, opts = {}) {

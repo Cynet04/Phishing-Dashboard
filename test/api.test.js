@@ -628,6 +628,20 @@ test('campaign targets endpoint enforces method handling', async () => {
   });
 });
 
+test('campaigns endpoint supports pagination envelope when requested', async () => {
+  await withServer(async (base) => {
+    await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'P1', template: 'generic', targets: 'p1@example.com' }) });
+    await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'P2', template: 'generic', targets: 'p2@example.com' }) });
+    const page = await req(base, '/api/campaigns?limit=1&offset=0');
+    assert.equal(page.status, 200);
+    assert.ok(Array.isArray(page.data.items));
+    assert.equal(page.data.total, 2);
+    assert.equal(page.data.limit, 1);
+    const plain = await req(base, '/api/campaigns');
+    assert.ok(Array.isArray(plain.data));
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

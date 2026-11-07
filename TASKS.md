@@ -245,7 +245,11 @@
 - [x] Frontend UI: added Auto-refresh toggle (30s interval, persisted in `localStorage`, safe interval cleanup; manual Refresh preserved) — 48/48 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 53 — Expansion (active, in progress)
-- [~] Backend/DB validation: add `GET /api/campaigns?limit=&offset=` pagination support with stable envelope/count and tests (backward-compatible shape consideration)
+## Phase 53 — Expansion (complete)
+- [x] Backend/DB: added backward-compatible `GET /api/campaigns?limit=&offset=` pagination envelope (`{items,total,limit,offset}`) while keeping plain-array default; test added — 49/49 passing. Restarted server `bgp_1b5dbc2ac001bDJPDFL4r16xd5`.
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 54 — Expansion (active, in progress)
+- [~] Frontend UI: make campaign list consume pagination metadata safely (keeps current behavior for plain array) and add small “showing” hint; improve responsive controls
 - [ ] Run verification, docs/log updates, commit/push per item
 
