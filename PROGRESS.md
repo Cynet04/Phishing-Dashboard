@@ -330,3 +330,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 22:00Z — Phase 135: target detail modal events pagination
 - Added events pagination in target detail modal (campaign-scoped/global): `limit=20`/`offset`, shown/total meta, **Load more events**; filters reset pagination and copy-JSON includes loaded page state. UI syntax checked, 80/80 passing. Committed/pushed.
+
+## 2026-11-07 22:15Z — Phase 136: Recent Events toolbar copy links
+- Added **Copy CSV link** / **Copy JSON link** in Recent Events toolbar for current scoped/filtered events URLs (campaign-scoped/global). Export link helper now scope-aware and aligned with active filters. UI syntax checked, 80/80 passing. Committed/pushed.
