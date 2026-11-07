@@ -1128,3 +1128,22 @@ test('readyz endpoint reports readiness', async () => {
     assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
   });
 });
+
+
+test('target :id.csv alias exports events and enforces 404/405', async () => {
+  await withServer(async (base) => {
+    const c = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TALIAS', template: 'generic', targets: 'a@example.com' }) });
+    const d = await req(base, `/api/campaigns/${c.data.id}`);
+    const tid = d.data.targets[0].id;
+    await req(base, `/api/campaigns/${c.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${tid}/click`, { method: 'POST', body: '{}' });
+    const ok = await req(base, `/api/targets/${tid}.csv?type=clicked`);
+    assert.equal(ok.status, 200);
+    assert.match(String(ok.headers['content-type']||''), /text\/csv/);
+    assert.match(ok.raw, /clicked/);
+    const nf = await req(base, '/api/targets/nope.csv');
+    assert.equal(nf.status, 404);
+    const m = await req(base, `/api/targets/${tid}.csv`, { method: 'POST', body: '{}' });
+    assert.equal(m.status, 405);
+  });
+});

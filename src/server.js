@@ -232,7 +232,7 @@ async function handler(req, res) {
       if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
       return send(res, 200, db.recentTargets({ limit: searchParams.get('limit'), offset: searchParams.get('offset'), campaignId: searchParams.get('campaignId') || undefined, status: searchParams.get('status') || undefined }));
     }
-    if (/^\/api\/targets\/[^/]+\/events\.csv$/.test(pathname)) {
+    if (/^\/api\/targets\/[^/]+\/(?:events\.)?csv$/.test(pathname)) {
       if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
       const targetId = decodeURIComponent(pathname.split('/')[3] || '');
       db.getTarget(targetId); // 404-safe
@@ -244,7 +244,7 @@ async function handler(req, res) {
       db.getTarget(targetId); // 404-safe
       return send(res, 200, db.listEvents({ targetId, type: searchParams.get('type') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     }
-    if (/^\/api\/targets\/[^/]+$/.test(pathname)) {
+    if (/^\/api\/targets\/[^/]+$/.test(pathname) && !pathname.endsWith('.csv')) {
       if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
       return send(res, 200, db.getTarget(decodeURIComponent(pathname.split('/')[3] || '')));
     }

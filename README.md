@@ -1,4 +1,4 @@
-# Phishing Dashboard (Educational Simulation)
+﻿# Phishing Dashboard (Educational Simulation)
 
 A lightweight phishing-simulation dashboard for security awareness training. It provides campaign management, target tracking, simulated send/click/submit events, and a metrics dashboard.
 
@@ -48,10 +48,11 @@ Public endpoints remain available for the educational simulation flow: `/api/hea
 - `GET /api/campaigns?q=&limit=&offset=` (returns array by default; returns `{items,total,limit,offset}` when `limit`/`offset` provided), `POST /api/campaigns`
 - `GET /api/campaigns/:id?status=sent|opened|clicked|submitted|pending&includeTargets=false`, `GET /api/campaigns/:id/summary`, `GET /api/campaigns/:id/targets?status=&limit=&offset=` (array by default; paginated envelope when `limit`/`offset` provided), `GET /api/campaigns/:id/targets/:targetId` (campaign-scoped target detail; 404 if target not in campaign), `GET /api/campaigns/:id/targets/:targetId/events?type=&limit=&offset=` (ownership-validated, paginated), `GET /api/campaigns/:id/targets/:targetId/events.csv?type=&from=&to=` (ownership-validated, 404/405-safe), `GET /api/campaigns/:id/targets.csv?status=` (alias), `GET /api/campaigns/:id/events?type=&targetId=&limit=&offset=`, `GET /api/campaigns/:id/events.csv?targetId=&type=&from=&to=`, `DELETE /api/campaigns/:id` (demo hygiene), `POST /api/campaigns/:id/targets`, `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`
 - `POST /api/campaigns/:id/send`
-- `GET /api/targets/recent?limit=&offset=&campaignId=&status=`, `GET /api/targets/:id` (includes `campaignName`, `eventCount`, `eventCounts`, `lastEventAt`), `GET /api/targets/:id/events?type=&limit=&offset=`, `GET /api/targets/:id/events.csv?type=&from=&to=&from=&to=` (404/405-safe), `GET /api/targets/export.csv?campaignId=&status=` (alias: `/api/targets.csv`), `POST /api/targets/:id/click`
+- `GET /api/targets/recent?limit=&offset=&campaignId=&status=`, `GET /api/targets/:id` (includes `campaignName`, `eventCount`, `eventCounts`, `lastEventAt`), `GET /api/targets/:id/events?type=&limit=&offset=`, `GET /api/targets/:id/events.csv?type=&from=&to=` (alias: `/api/targets/:id.csv`; 404/405-safe), `GET /api/targets/export.csv?campaignId=&status=` (alias: `/api/targets.csv`), `POST /api/targets/:id/click`
 - `GET /api/events?campaignId=&targetId=&type=&from=&to=&limit=&offset=`, `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`), `DELETE /api/events/:id`, `GET /api/events/export.csv?campaignId=&targetId=&type=&from=&to=` (alias: `/api/events.csv`)
 
 `/api/*` responses use JSON error objects and return `405` for known campaign routes with unsupported methods. The server adds basic security headers and safe static-file resolution.
 
 ## Swapping the database
 `src/db.js` exposes plain functions (`createCampaign`, `listCampaigns`, `recordEvent`, `stats`, etc.). Replace JSON reads/writes with SQLite/Postgres calls while keeping the same function contracts used by `src/server.js`.
+
