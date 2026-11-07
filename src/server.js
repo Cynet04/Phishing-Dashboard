@@ -264,7 +264,7 @@ async function handler(req, res) {
       const campaignId = decodeURIComponent(cte[1]);
       const targetId = decodeURIComponent(cte[2]);
       db.getCampaignTarget(campaignId, targetId); // ownership/404-safe
-      return send(res, 200, db.listEvents({ campaignId, targetId, type: searchParams.get('type') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
+      return send(res, 200, db.listEvents({ campaignId, targetId, type: searchParams.get('type') || undefined, from: searchParams.get('from') || undefined, to: searchParams.get('to') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     }
     const ct = pathname.match(/^\/api\/campaigns\/([^/]+)\/targets\/([^/]+)$/);
     if (ct && ct[2] !== 'export.csv') {
