@@ -360,6 +360,16 @@ test('events list ordering is newest-first', async () => {
   });
 });
 
+test('per-campaign targets CSV export has attachment filename', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CSV Name', template: 'generic', targets: 'csvn@example.com' }) });
+    const r = await req(base, `/api/campaigns/${created.data.id}/export.csv`);
+    assert.equal(r.status, 200);
+    assert.match(String(r.headers['content-disposition'] || ''), new RegExp(`campaign-${created.data.id}-targets\\.csv`));
+    assert.match(String(r.data), /csvn@example.com/);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

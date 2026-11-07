@@ -113,8 +113,13 @@
 - [x] Add root static `/` and `/styles.css` smoke checks (safe static routing/content-type) — 24/24 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 23 — Expansion (active)
-- [ ] Add CSV export for a single campaign’s targets via dashboard campaign detail link (uses existing endpoint)
-- [ ] Add regression test for per-campaign targets CSV response headers/content
+## Phase 23 — Expansion (complete)
+- [x] Add CSV export for a single campaign’s targets via dashboard campaign detail link (existing endpoint)
+- [x] Add regression test for per-campaign targets CSV response headers/content — 25/25 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 24 — Expansion (active)
+- [ ] Add `/api/auth/status` regression coverage for disabled/enabled auth states
+- [ ] Add dashboard handling for 401 API responses (redirect to `/login` when auth enabled)
 - [ ] Run verification, docs/log updates, commit/push per item
 

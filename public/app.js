@@ -106,6 +106,7 @@ async function selectCampaign(id, quiet) {
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
+      <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/export.csv">Export Targets CSV</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/events.csv">Export Events CSV</a>
       <button class="btn small secondary" id="deleteCampaignBtn">Delete Campaign</button>
     </div>

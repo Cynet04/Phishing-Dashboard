@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:00Z — Phase 22: static/events regression coverage
-- Added regression tests for static root/CSS serving and newest-first events ordering.
-- `node --test --test-concurrency=1` — 24/24 passing. Commit/push in progress.
+## 2026-11-07 11:01Z — Phase 23: per-campaign targets CSV UI/test
+- Added campaign detail "Export Targets CSV" link and regression test for per-campaign targets CSV filename/content.
+- `node --check public/app.js`; `node --test --test-concurrency=1` — 25/25 passing. Commit/push in progress.
