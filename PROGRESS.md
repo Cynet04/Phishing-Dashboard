@@ -375,3 +375,9 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 01:45Z — Phase 152: Recent Events campaign pivot for target-filtered global view
 - Added **Show campaign events** action in Recent Events when a target filter has unambiguous resolved campaign context (global view). Pivots to campaign-scoped events while preserving active filters. UI syntax checked, 83/83 passing. Committed/pushed.
+
+## 2026-11-08 01:55Z — Phase 153: README campaign pivot docs
+- Documented Phase 152 Recent Events campaign pivot (**Show campaign events**) in README. 83/83 passing. Committed/pushed.
+
+## 2026-11-08 02:00Z — Phase 154: clarify ownership-only resolved campaign context in Recent Events
+- Clarified global Recent Events scope indicator for unambiguous target-filtered resolved campaign context (“ownership context only”; global pagination/export semantics unchanged). UI syntax checked, 83/83 passing. Committed/pushed.

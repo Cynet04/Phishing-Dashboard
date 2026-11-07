@@ -481,3 +481,133 @@
 - [~] Frontend UI: update Recent Targets global export toolbar link generation to use `/api/targets.csv` alias (backward-compatible)
 - [ ] Run verification, docs/log updates, commit/push per item
 
+
+## Phase 113 — Expansion (complete)
+- [x] Backend/API/security: `X-Request-Id` (preserve valid incoming or generate), added on API/static responses; health test/README updated — 72/72 passing
+
+## Phase 114 — Expansion (complete)
+- [x] Frontend UI: System Status shows Request ID from API responses — 72/72 passing
+
+## Phase 115 — Expansion (complete)
+- [x] Backend/API: global events CSV export supports validated `from`/`to` date filters (400 on invalid/range) — 73/73 passing
+
+## Phase 116 — Expansion (complete)
+- [x] Frontend UI: Recent Events export from/to controls wired to export link/filters — 73/73 passing
+
+## Phase 117 — Expansion (complete)
+- [x] Backend/API: wired `from`/`to` into campaign/target events.csv export handlers; README/test updated — 74/74 passing
+
+## Phase 118 — Expansion (complete)
+- [x] Backend/API: `db.listEvents`/events endpoints support validated `from`/`to` — 75/75 passing
+
+## Phase 119 — Expansion (complete)
+- [x] Frontend UI: Recent Events from/to list filters and export/scope wiring — 75/75 passing
+
+## Phase 120 — Expansion (complete)
+- [x] Backend/API: `/api/healthz` alias (auth-exempt, same payload/headers) — 75/75 passing
+
+## Phase 121 — Expansion (complete)
+- [x] Backend/API: `X-Response-Time-Ms` on API/static responses — 75/75 passing
+
+## Phase 122 — Expansion (complete)
+- [x] Frontend UI: System Status shows Response (ms) — 75/75 passing
+
+## Phase 123 — Expansion (complete)
+- [x] Backend/API: auth-exempt `GET /api/version` (safe metadata) — 76/76 passing
+
+## Phase 124 — Expansion (complete)
+- [x] Frontend UI: System Status shows version — 76/76 passing
+
+## Phase 125 — Expansion (complete)
+- [x] Backend/API: auth-exempt `GET /api/readyz` readiness check — 77/77 passing
+
+## Phase 126 — Expansion (complete)
+- [x] Frontend UI: System Status shows Readiness — 77/77 passing
+
+## Phase 127 — Expansion (complete)
+- [x] Backend/API: added `GET /api/targets/:id.csv` alias for target events export; fixed regex/ID extraction collision — 78/78 passing
+
+## Phase 128 — Expansion (complete)
+- [x] Frontend UI: **Copy CSV link** in target detail modal (resolved campaign-scoped/global URL) — 78/78 passing
+
+## Phase 129 — Expansion (complete)
+- [x] Backend/API: `from`/`to` date-filter parity for `GET /api/targets/:id/events` (validated, 404/405-safe) — 79/79 passing
+
+## Phase 130 — Expansion (complete)
+- [x] Backend/API: `from`/`to` parity for ownership-validated `GET /api/campaigns/:id/targets/:targetId/events` — 80/80 passing
+
+## Phase 131 — Expansion (complete)
+- [x] Frontend UI: from/to date controls in target detail modal (Apply/Clear; export/copy/JSON context synced) — 80/80 passing
+
+## Phase 132 — Expansion (complete)
+- [x] Frontend UI: type filter in target detail modal wired to events JSON/export/copy-link — 80/80 passing
+
+## Phase 133 — Expansion (complete)
+- [x] Frontend UI: **Copy events link** (JSON with active filters) in target detail modal — 80/80 passing
+
+## Phase 134 — Expansion (complete)
+- [x] Evaluated campaign events targetId-not-in-campaign behavior (stable empty shape, Phase 95) — kept backward-compatible; no API change
+
+## Phase 135 — Expansion (complete)
+- [x] Frontend UI: pagination/total + Load more events in target detail modal (limit/offset, active filters) — 80/80 passing
+
+## Phase 136 — Expansion (complete)
+- [x] Frontend UI: **Copy CSV link** / **Copy JSON link** in Recent Events toolbar (scope/filter-aware) — 80/80 passing
+
+## Phase 137 — Expansion (complete)
+- [x] Docs/README: documented target detail modal and Recent Events UI behaviors — 80/80 passing
+
+## Phase 138 — Expansion (complete)
+- [x] Frontend UI: **Open target detail** in Recent Events when target filter set (campaign-scoped in campaign scope) — 80/80 passing
+
+## Phase 139 — Expansion (complete)
+- [x] Backend/API: `GET /api/targets/:id?campaignId=` optional ownership validation (backward-compatible) — 81/81 passing
+
+## Phase 140 — Expansion (complete)
+- [x] Frontend UI: Recent Targets table passes `data-campaign-id` to `openTargetDetail` — 81/81 passing
+
+## Phase 141 — Expansion (complete)
+- [x] Frontend UI: per-row **Target** action in Recent Events (row target/campaign context) — 81/81 passing
+
+## Phase 142 — Expansion (complete)
+- [x] Docs/README: documented Recent Events target actions and ownership-safe target lookup UX — 81/81 passing
+
+## Phase 143 — Expansion (complete)
+- [x] Verified per-row Target uses row campaignId in global scope (safe ownership context); no code change — 81/81 passing
+
+## Phase 144 — Expansion (complete)
+- [x] Docs/test parity: `from`/`to` for `GET /api/campaigns/:id/events` documented; regression test added (stable unknown-campaign shape preserved) — 82/82 passing
+
+## Phase 145 — Expansion (complete)
+- [x] Frontend UI: Recent Events scope hint + campaign-aware copy-link toasts — 82/82 passing
+
+## Phase 146 — Expansion (complete)
+- [x] Frontend UI: campaign-scoped Recent Events pagination UX clarity (Load more global label/title, meta note) — 82/82 passing
+
+## Phase 147 — Expansion (complete)
+- [x] Backend/API: optional `?campaignId=` ownership validation for `GET /api/targets/:id/events` and `/events.csv`/`:id.csv` (backward-compatible) — 83/83 passing
+
+## Phase 148 — Expansion (complete)
+- [x] Frontend UI: target detail modal applies resolved campaignId as ownership context for global-scope events/export/copy-links — 83/83 passing
+
+## Phase 149 — Expansion (complete)
+- [x] Frontend UI: Recent Events resolves unambiguous campaign context for target-filtered views (Open target detail/meta; safe fallback) — 83/83 passing
+
+## Phase 150 — Expansion (complete)
+- [x] Frontend UI: scope indicator shows global + resolved campaign context for unambiguous target-filtered views (global semantics preserved) — 83/83 passing
+
+## Phase 151 — Expansion (complete)
+- [x] Docs/README: documented Recent Events resolved campaign context/ownership hints — 83/83 passing
+
+## Phase 152 — Expansion (complete)
+- [x] Frontend UI: **Show campaign events** pivot in target-filtered global Recent Events (unambiguous resolved campaign; preserves filters) — 83/83 passing
+
+## Phase 153 — Expansion (complete)
+- [x] Docs/README: documented Recent Events campaign pivot — 83/83 passing
+
+## Phase 154 — Expansion (complete)
+- [x] Frontend UI: clarified global Recent Events scope indicator for resolved campaign as ownership context only — 83/83 passing
+
+## Phase 155 — Expansion (active, in progress)
+- [~] Backend/API: low-risk parity/safety improvement — add optional `?campaignId=` ownership validation to `POST /api/targets/:id/click` (404-safe, backward-compatible) with README/test
+- [ ] Run verification, docs/log updates, commit/push per item
