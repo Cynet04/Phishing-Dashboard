@@ -250,6 +250,20 @@ test('campaign list includes status counts and detail supports status filter', a
   });
 });
 
+test('events CSV export returns event rows', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Events CSV', template: 'generic', targets: 'ev@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const r = await req(base, '/api/events/export.csv');
+    assert.equal(r.status, 200);
+    assert.match(String(r.data), /campaignId,campaignName,eventId,targetId,type,at,meta/);
+    assert.match(String(r.data), /clicked/);
+    assert.match(String(r.headers['content-type'] || ''), /text\/csv/);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

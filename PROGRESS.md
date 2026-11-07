@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:50Z — Phase 14 complete + Phase 15 start
-- Added refresh loading/error UX (disabled button state and toast on failure). Theme toggle already shipped.
-- `node --check public/app.js`; `node --test --test-concurrency=1` — 15/15 passing. Starting Phase 15: event CSV export.
+## 2026-11-07 10:52Z — Phase 15: event CSV export
+- Added `GET /api/events/export.csv` and `GET /api/campaigns/:id/events.csv` (CSV with escaped meta JSON). Dashboard adds "Export Events CSV" action.
+- Added regression test; `node --test --test-concurrency=1` — 16/16 passing. Commit/push in progress.

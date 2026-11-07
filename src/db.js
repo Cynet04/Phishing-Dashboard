@@ -292,7 +292,23 @@ function resetForTests(file) {
   save(emptyDb());
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
+function eventsToCsv(rows) {
+  const header = ['campaignId', 'campaignName', 'eventId', 'targetId', 'type', 'at', 'meta'];
+  const lines = [header.join(',')];
+  for (const r of rows) lines.push(header.map(k => csvEscape(k === 'meta' ? JSON.stringify(r[k] ?? null) : r[k])).join(','));
+  return lines.join('\n') + '\n';
+}
+
+function exportEventsCsv(opts = {}) {
+  const db = load();
+  const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
+  let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
+  if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
+  rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
+  return eventsToCsv(rows);
+}
+
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 

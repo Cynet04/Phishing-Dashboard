@@ -72,8 +72,13 @@
 - [x] Add non-disruptive loading/error states for dashboard refresh actions (button state + toast on failure)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 15 — Expansion (active)
-- [ ] Add CSV export for events (`/api/events/export.csv`, optional campaign filter) with tests
-- [ ] Add dashboard action/link for event CSV export
+## Phase 15 — Expansion (complete)
+- [x] Add CSV export for events (`/api/events/export.csv`, optional campaign filter and per-campaign route) with tests — 16/16 passing
+- [x] Add dashboard action/link for event CSV export
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 16 — Expansion (active)
+- [ ] Add event list API endpoint with pagination/filter (`/api/events?campaignId=&type=&limit=&offset=`) and tests
+- [ ] Add basic events table in dashboard (recent events) with load controls
 - [ ] Run verification, docs/log updates, commit/push per item
 
