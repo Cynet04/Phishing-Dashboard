@@ -291,3 +291,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 18:45Z — Phase 122: System Status response time
 - System Status now shows last `X-Response-Time-Ms` captured by `api()` (`#sysResponseMs`) with existing request ID/data file/status behavior preserved. `node --check`; 75/75 passing. Committed/pushed.
+
+## 2026-11-07 18:55Z — Phase 123: /api/version endpoint
+- Added auth-exempt `GET /api/version` (safe service/version/node/time) in `src/server.js` with `package.json` metadata. README updated. Regression test added. 76/76 passing. Committed/pushed.

@@ -1101,3 +1101,17 @@ test('events list endpoint supports from/to date filters and validation', async 
     assert.equal(bad.status, 400);
   });
 });
+
+
+test('version endpoint returns safe metadata', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/version');
+    assert.equal(r.status, 200);
+    assert.equal(r.data.ok, true);
+    assert.equal(r.data.service, 'phishing-dashboard');
+    assert.match(String(r.data.version || ''), /^\d+\.\d+\.\d+/);
+    assert.match(String(r.data.node || ''), /^v\d+/);
+    assert.match(String(r.headers['x-request-id'] || ''), /^[A-Za-z0-9._:-]{8,128}$/);
+    assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
+  });
+});

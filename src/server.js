@@ -5,6 +5,7 @@ const { URL } = require('url');
 const crypto = require('crypto');
 const db = require('./db');
 const { allTemplates } = require('./templates');
+const pkg = require('../package.json');
 
 const PUBLIC = path.join(__dirname, '..', 'public');
 const PORT = Number(process.env.PORT || 3000);
@@ -120,7 +121,7 @@ function authed(req) {
 
 function authRequired(pathname) {
   if (!adminPassword()) return false;
-  if (pathname === '/api/health' || pathname === '/api/healthz' || pathname === '/api/auth/login' || pathname === '/api/auth/status') return false;
+  if (pathname === '/api/health' || pathname === '/api/healthz' || pathname === '/api/version' || pathname === '/api/auth/login' || pathname === '/api/auth/status') return false;
   if (pathname === '/login-simulation' || pathname === '/login-simulation/submit' || pathname === '/education') return false;
   if (pathname.startsWith('/api/')) return true;
   if (pathname === '/' || pathname.endsWith('.html') || pathname.endsWith('.js') || pathname.endsWith('.css')) return true;
@@ -183,6 +184,9 @@ async function handler(req, res) {
     if (req.method === 'GET' && (pathname === '/api/health' || pathname === '/api/healthz')) {
       const dataFile = typeof db.dbFile === 'function' ? path.basename(db.dbFile()) : undefined;
       return send(res, 200, { ok: true, service: 'phishing-dashboard', time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()), node: process.version, dataFile });
+    }
+    if (req.method === 'GET' && pathname === '/api/version') {
+      return send(res, 200, { ok: true, service: String(pkg.name || 'phishing-dashboard'), version: String(pkg.version || '0.0.0'), node: process.version, time: new Date().toISOString() });
     }
     if (req.method === 'GET' && pathname === '/api/templates') return send(res, 200, allTemplates(db));
     if (req.method === 'POST' && pathname === '/api/templates') return send(res, 201, db.saveCustomTemplate(await readJson(req)));
