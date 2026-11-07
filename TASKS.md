@@ -153,8 +153,13 @@
 - [x] Confirmed clamping behavior in DB layer (no unsafe behavior observed)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 31 — Expansion (active)
-- [ ] Add `POST /api/campaigns` validation for missing/invalid JSON body shape and test
-- [ ] Add dashboard-safe handling for template save when body/subject missing (already API-validated; improve UX message) with no test regression
+## Phase 31 — Expansion (complete)
+- [x] Add `POST /api/campaigns` validation for invalid JSON body shape (non-object/array) and regression test — 34/34 passing
+- [x] Improve template save UX validation/toasts (client-side required fields) with no API regression
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 32 — Expansion (active)
+- [ ] Add `GET /api/campaigns/:id/events` JSON endpoint (pagination/filter) and tests
+- [ ] Add dashboard event view scoped to selected campaign (optional filter state) where safe
 - [ ] Run verification, docs/log updates, commit/push per item
 

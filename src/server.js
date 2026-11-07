@@ -167,7 +167,11 @@ async function handler(req, res) {
       return send(res, 405, { error: 'method not allowed' });
     }
     if (req.method === 'GET' && pathname === '/api/campaigns') return send(res, 200, db.listCampaigns());
-    if (req.method === 'POST' && pathname === '/api/campaigns') return send(res, 201, db.createCampaign(await readJson(req)));
+    if (req.method === 'POST' && pathname === '/api/campaigns') {
+      const body = await readBody(req).catch((e) => { throw e; });
+      if (!body || typeof body !== 'object' || Array.isArray(body)) throw Object.assign(new Error('invalid campaign payload'), { status: 400 });
+      return send(res, 201, db.createCampaign(body));
+    }
     if (req.method === 'GET' && pathname === '/api/targets/export.csv') {
       return send(res, 200, db.exportTargetsCsv({}), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="targets.csv"' });
     }

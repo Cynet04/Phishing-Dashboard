@@ -32,6 +32,7 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:08Z — Phase 30: pagination clamp regression
-- Added regression test confirming negative/zero pagination query params are safely clamped for recent targets and events endpoints.
-- `node --test --test-concurrency=1` — 33/33 passing. Commit/push in progress.
+## 2026-11-07 11:09Z — Phase 31: campaign payload validation + template UX
+- Server rejects non-object/array JSON bodies for campaign create (400). Added regression test.
+- Dashboard template form now validates required fields client-side and shows success/error toasts.
+- `node --check` (server/ui/tests); `node --test --test-concurrency=1` — 34/34 passing. Commit/push in progress.

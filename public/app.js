@@ -199,15 +199,17 @@ $('#campaignForm').addEventListener('submit', async (e) => {
 $('#templateForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const fd = Object.fromEntries(new FormData(e.target));
+  const name = String(fd.name || '').trim(); const subject = String(fd.subject || '').trim(); const body = String(fd.body || '').trim();
+  if (!name || !subject || !body) { $('#templateMsg').textContent = 'Template name, subject, and body are required.'; toast('Template fields required', 'error'); return; }
   const id = String(fd.id || '').trim();
   const path = id ? `/api/templates/${encodeURIComponent(id)}` : '/api/templates';
   const method = id ? 'PUT' : 'POST';
   try {
-    await api(path, { method, body: JSON.stringify({ name: fd.name, subject: fd.subject, body: fd.body }) });
-    $('#templateMsg').textContent = id ? 'Template updated.' : 'Template created.';
+    await api(path, { method, body: JSON.stringify({ name, subject, body }) });
+    $('#templateMsg').textContent = id ? 'Template updated.' : 'Template created.'; toast(id ? 'Template updated.' : 'Template created.');
     e.target.reset();
     await loadTemplates();
-  } catch (err) { $('#templateMsg').textContent = `Error: ${err.message}`; }
+  } catch (err) { $('#templateMsg').textContent = `Error: ${err.message}`; toast(err.message, 'error'); }
 });
 $('#templateResetBtn').addEventListener('click', () => { $('#templateForm').reset(); $('#templateMsg').textContent = ''; renderTemplatePreview(); });
 $('#templateDeleteBtn').addEventListener('click', async () => {

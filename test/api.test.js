@@ -449,6 +449,13 @@ test('pagination query params are clamped and validated safely', async () => {
   });
 });
 
+test('campaign create rejects non-object JSON payload', async () => {
+  await withServer(async (base) => {
+    const res = await fetch(`${base}/api/campaigns`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '[]' });
+    assert.equal(res.status, 400);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
