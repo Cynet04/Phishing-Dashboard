@@ -374,7 +374,7 @@ async function openTargetDetail(targetId, campaignId = '') {
   targetDetailJson = '';
   targetDetailId = String(targetId || '').trim();
   if (!targetDetailId) return toast('No target selected.', 'error');
-  const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = `/api/events/export.csv?targetId=${encodeURIComponent(targetDetailId)}`;
+  const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = `/api/targets/${encodeURIComponent(targetDetailId)}/events.csv`;
   modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
   $('#closeTargetDetail')?.focus?.();
   try {

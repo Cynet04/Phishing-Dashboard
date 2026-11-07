@@ -445,7 +445,11 @@
 - [x] Backend/API: added `GET /api/targets/:id/events.csv?type=` (404/405-safe, target-scoped CSV with attachment filename) reusing `db.exportEventsCsv`; README updated, regression test added — 69/69 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 104 — Expansion (active, in progress)
-- [~] Frontend UI: wire target detail modal's Export Events CSV link to the new `GET /api/targets/:id/events.csv` (preserve current `type`/scope context where safe; keep campaign/global behavior clear)
+## Phase 104 — Expansion (complete)
+- [x] Frontend UI: target detail modal **Export Events CSV** now uses `GET /api/targets/:id/events.csv` (target-scoped endpoint); scope/other actions preserved — 69/69 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 105 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/campaigns/:id/targets/:targetId/events.csv` (ownership-validated, type filter, 404/405-safe) with regression test and README/docs update
 - [ ] Run verification, docs/log updates, commit/push per item
 
