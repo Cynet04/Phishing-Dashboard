@@ -351,3 +351,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 23:45Z — Phase 144: campaign events JSON from/to docs/test parity
 - Documented `from=&to=` for `GET /api/campaigns/:id/events` and added regression coverage (validated dates, empty range, invalid date, stable unknown-campaign shape). API behavior already supported. 82/82 passing. Committed/pushed.
+
+## 2026-11-08 00:00Z — Phase 145: Recent Events scope/copy-link clarity
+- Added scope hint in Recent Events and campaign-aware copy-link toasts (CSV/JSON) while preserving scope/filter-aware link behavior. UI syntax checked, 82/82 passing. Committed/pushed.
