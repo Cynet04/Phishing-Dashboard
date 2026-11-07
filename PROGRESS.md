@@ -59,3 +59,7 @@
 ## 2026-11-07 11:43Z — Phase 65: JSON no-store cache hardening
 - Server `send()` now sets `Cache-Control: no-store` for object/JSON responses (API data and JSON errors) while preserving existing security headers. Health test asserts header.
 - `node --check` (server/tests); `node --test --test-concurrency=1` — 55/55 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 11:44Z — Phase 66: target detail modal UX/accessibility
+- Target detail modal now supports **Copy JSON** (clipboard with prompt fallback), stores fetched target+events JSON, closes on Escape/click-outside, and focuses the close control.
+- `node --check` (ui/app.js); `node --test --test-concurrency=1` — 55/55 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets ? **Details** ? **Copy JSON** / press **Esc**.
