@@ -143,3 +143,9 @@ ode --test --test-concurrency=1 â€” 60/60 passing. Committed/pushed. Dashboard: 
 - 
 ode --check (ui); 
 ode --test --test-concurrency=1 — 61/61 passing. Committed/pushed. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign **View Campaign Events** ? **Global list**.
+
+## 2026-11-07 14:16Z — Phase 84: global events CSV alias
+- Added GET /api/events.csv alias to global events CSV export (same filters as /api/events/export.csv, GET-only 405). README updated; regression test added.
+- 
+ode --check (server/tests); 
+ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (3c60432). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
