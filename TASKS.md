@@ -217,7 +217,11 @@
 - [x] Frontend UI: added “System Status” dashboard card (API/auth/campaign/event counts) with lightweight fetches and responsive grid styling — 45/45 API tests still passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 46 — Expansion (active, in progress)
-- [~] Backend validation: reject invalid `POST /api/events` target/campaign mismatch and unknown event type with clear 400/404 tests; keep simulation flows working
+## Phase 46 — Expansion (complete)
+- [x] Backend validation/testing: added `POST /api/events` validation coverage (invalid type 400, unknown target 404, valid event records with correct campaignId) — 46/46 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 47 — Expansion (active, in progress)
+- [~] Frontend UI/UX: add campaign detail “copy landing link” helper and improve action button layout/responsive polish (safe DOM escaping)
 - [ ] Run verification, docs/log updates, commit/push per item
 

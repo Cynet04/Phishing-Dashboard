@@ -584,6 +584,21 @@ test('auth login method and body safety', async () => {
   });
 });
 
+test('POST /api/events validates type and target', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EventVal', template: 'generic', targets: 'ev@example.com' }) });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const targetId = detail.data.targets[0].id;
+    const badType = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId, type: 'bogus' }) });
+    assert.equal(badType.status, 400);
+    const noTarget = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: 'nope', type: 'clicked' }) });
+    assert.equal(noTarget.status, 404);
+    const ok = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId, type: 'opened' }) });
+    assert.equal(ok.status, 201);
+    assert.equal((ok.data.event || ok.data).campaignId, created.data.id);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
