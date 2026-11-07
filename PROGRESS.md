@@ -339,3 +339,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 22:45Z — Phase 138: Open target detail in Recent Events
 - Added **Open target detail** action in Recent Events toolbar (shown when target filter set). Opens existing modal campaign-scoped in campaign events scope, global otherwise. UI syntax checked, 80/80 passing. Committed/pushed.
+
+## 2026-11-07 23:00Z — Phase 139: optional campaignId ownership validation for GET /api/targets/:id
+- Added optional `?campaignId=` to `GET /api/targets/:id` (ownership-validated via campaign-scoped lookup, 404-safe) with backward-compatible default. README/test updated. 81/81 passing. Committed/pushed.
