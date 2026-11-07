@@ -77,9 +77,13 @@
     <section class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <h2 style="margin:0">Recent Targets</h2>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select id="targetExportCampaign" aria-label="Export targets campaign filter"><option value="">All campaigns</option></select>
+          <select id="targetExportStatus" aria-label="Export targets status filter">
+            <option value="">All statuses</option><option value="pending">pending</option><option value="sent">sent</option><option value="opened">opened</option><option value="clicked">clicked</option><option value="submitted">submitted</option>
+          </select>
+          <a id="targetsExportLink" class="btn small secondary" href="/api/targets/export.csv">Export Targets CSV</a>
           <button id="loadMoreTargetsBtn" class="btn small secondary">Load more</button>
-          <a class="btn small secondary" href="/api/targets/export.csv">Export Targets CSV</a>
           <a class="btn small secondary" href="/api/events/export.csv">Export Events CSV</a>
         </div>
       </div>

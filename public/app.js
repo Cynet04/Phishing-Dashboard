@@ -84,10 +84,30 @@ function renderChart(timeline) {
     </div>`).join('');
 }
 
+function updateTargetsExportLink() {
+  const cid = String($('#targetExportCampaign')?.value || '').trim();
+  const status = String($('#targetExportStatus')?.value || '').trim();
+  const p = new URLSearchParams();
+  if (cid) p.set('campaignId', cid);
+  if (status) p.set('status', status);
+  const href = '/api/targets/export.csv' + (p.toString() ? `?${p}` : '');
+  const a = $('#targetsExportLink'); if (a) a.href = href;
+}
+$('#targetExportCampaign')?.addEventListener('change', updateTargetsExportLink);
+$('#targetExportStatus')?.addEventListener('change', updateTargetsExportLink);
+
 async function loadCampaigns() {
   const q = String($('#campaignSearch')?.value || '').trim();
   const path = '/api/campaigns' + (q ? `?q=${encodeURIComponent(q)}` : '');
-  campaigns = await api(path);
+  const data = await api(path);
+  campaigns = Array.isArray(data) ? data : (data.items || []);
+  const sel = $('#targetExportCampaign');
+  if (sel) {
+    const keep = sel.value;
+    sel.innerHTML = '<option value="">All campaigns</option>' + campaigns.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+    if (keep && campaigns.some(c => String(c.id) === keep)) sel.value = keep;
+    updateTargetsExportLink();
+  }
   $('#campaigns').innerHTML = campaigns.length ? campaigns.map(c => `
     <button class="item" data-id="${c.id}">
       <strong>${esc(c.name)}</strong><span class="muted">${c.targetCount} targets · ${c.createdAt.slice(0,10)}</span>

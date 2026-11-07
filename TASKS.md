@@ -261,7 +261,11 @@
 - [x] Backend/API: `GET /api/targets/export.csv` now supports `campaignId` and `status` filters (backward-compatible); regression test added — 51/51 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 57 — Expansion (active, in progress)
-- [~] Frontend UI: add global targets CSV export filter controls in dashboard (campaign/status links/form) using new API filters; keep UX simple/safe
+## Phase 57 — Expansion (complete)
+- [x] Frontend UI: added global targets CSV export filters (campaign/status) with live export-link updates and campaign option population — 51/51 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 58 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/events/export.csv?type=` filter support and regression test (backward-compatible)
 - [ ] Run verification, docs/log updates, commit/push per item
 

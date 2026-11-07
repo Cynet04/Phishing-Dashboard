@@ -36,6 +36,6 @@
 - Added Auto-refresh toggle (30s), persisted in `localStorage` (`pd-auto-refresh`) with interval cleanup; manual Refresh still works.
 - `node --check` (ui); `node --test --test-concurrency=1` — 48/48 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: header **Auto: off/on** + **Refresh**.
 
-## 2026-11-07 11:34Z — Phase 56: filtered global targets CSV export
-- `/api/targets/export.csv` accepts optional `campaignId` and `status` filters (backward-compatible). Added regression test; updated README.
-- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 51/51 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:35Z — Phase 57: filtered targets export UI
+- Dashboard Recent Targets now includes campaign/status filters that update the global `GET /api/targets/export.csv?...` link; campaign options populate from loaded campaigns.
+- `node --check` (ui/app.js); `node --test --test-concurrency=1` — 51/51 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets → choose campaign/status → **Export Targets CSV**.
