@@ -297,7 +297,11 @@
 - [x] Backend security hardening: JSON/object responses now include `Cache-Control: no-store` (covers `/api/*` JSON and JSON error bodies); health endpoint test asserts header — 55/55 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 66 — Expansion (active, in progress)
-- [~] Frontend UI: add “Copy JSON” / download helper in target detail modal and improve modal accessibility (Escape closes, focus-safe button)
+## Phase 66 — Expansion (complete)
+- [x] Frontend UI: target detail modal adds “Copy JSON” (clipboard/prompt fallback), stores target+events payload, Escape/click-outside close, and focus handling — 55/55 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 67 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/events/export.csv` support for `targetId` filter and test (backward-compatible); update README
 - [ ] Run verification, docs/log updates, commit/push per item
 

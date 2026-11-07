@@ -188,9 +188,12 @@ async function loadTargets(reset = false) {
   }));
   $('#targetsBody').querySelectorAll('.view-target').forEach(btn => btn.addEventListener('click', async () => {
     const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
+    targetDetailJson = '';
     modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
+    $('#closeTargetDetail')?.focus?.();
     try {
       const [t, ev] = await Promise.all([api(`/api/targets/${btn.dataset.id}`), api(`/api/targets/${btn.dataset.id}/events?limit=20`)]);
+      targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
       const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
       body.className = '';
       body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
@@ -239,8 +242,16 @@ async function refresh() {
   finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
 }
 
-$('#closeTargetDetail')?.addEventListener('click', () => $('#targetDetailModal')?.classList.add('hidden'));
-$('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'targetDetailModal') e.currentTarget.classList.add('hidden'); });
+let targetDetailJson = '';
+function closeTargetDetail() { $('#targetDetailModal')?.classList.add('hidden'); targetDetailJson = ''; }
+$('#closeTargetDetail')?.addEventListener('click', closeTargetDetail);
+$('#copyTargetDetail')?.addEventListener('click', async () => {
+  if (!targetDetailJson) return toast('No target details to copy.', 'error');
+  try { await navigator.clipboard?.writeText(targetDetailJson); toast('Target JSON copied.'); }
+  catch { prompt('Copy target JSON:', targetDetailJson); }
+});
+$('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'targetDetailModal') closeTargetDetail(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTargetDetail(); });
 let autoTimer = null;
 function setAutoRefresh(on) {
   if (autoTimer) clearInterval(autoTimer);
