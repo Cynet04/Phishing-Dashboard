@@ -62,3 +62,30 @@ test('campaign flow records send/click/submit stats', async () => {
     assert.equal(stats.data.totals.submitted, 1);
   });
 });
+
+test('campaign validation and opened event flow', async () => {
+  await withServer(async (base) => {
+    const bad = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Bad', template: 'generic', targets: 'not-an-email' }) });
+    assert.equal(bad.status, 400);
+
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Opened Flow', template: 'generic', targets: 'user@example.com, USER@example.com' }) });
+    assert.equal(created.status, 201);
+    assert.equal(created.data.targetCount, 1);
+
+    const sent = await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    assert.equal(sent.data.sent, 1);
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const targetId = detail.data.targets[0].id;
+    const opened = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId, type: 'opened' }) });
+    assert.equal(opened.status, 201);
+    const after = await req(base, `/api/campaigns/${created.data.id}`);
+    assert.equal(after.data.targets[0].status, 'opened');
+  });
+});
+
+test('unknown target errors cleanly', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
+    assert.equal(r.status, 404);
+  });
+});

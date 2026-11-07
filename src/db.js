@@ -44,6 +44,13 @@ function nextId(db, key) {
 
 function now() { return new Date().toISOString(); }
 
+function normalizeEmail(raw) {
+  const email = String(raw || '').trim().toLowerCase();
+  if (!email) return null;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return null;
+  return email;
+}
+
 function createCampaign(input) {
   const name = String(input.name || '').trim();
   if (!name) throw Object.assign(new Error('name required'), { status: 400 });
@@ -52,11 +59,14 @@ function createCampaign(input) {
   const db = load();
   const campaign = { id: nextId(db, 'campaign'), name, template, status: 'draft', createdAt: now() };
   db.campaigns.unshift(campaign);
+  const seen = new Set();
   for (const raw of emails) {
-    const email = String(raw || '').trim().toLowerCase();
-    if (!email) continue;
+    const email = normalizeEmail(raw);
+    if (!email || seen.has(email)) continue;
+    seen.add(email);
     db.targets.push({ id: nextId(db, 'target'), campaignId: campaign.id, email, status: 'pending', createdAt: now(), updatedAt: now() });
   }
+  if (!seen.size) throw Object.assign(new Error('at least one valid target email required'), { status: 400 });
   save(db);
   return { ...campaign, targetCount: db.targets.filter(t => t.campaignId === campaign.id).length };
 }

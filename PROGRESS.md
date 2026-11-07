@@ -22,4 +22,9 @@
   - `node --test --test-concurrency=1 test/api.test.js` — 2/2 passing.
   - End-to-end sanity check against running server: `/api/health` OK; created campaign (2 targets); send simulation OK; stats reported sent=2.
 - Git: local commits confirmed synced with `origin/main` (`Everything up-to-date`).
-- Status: all requested phases complete and verified. Continuing autonomous loop with hardening/polish tasks as needed.
+## 2026-11-07 09:22Z — Hardening pass
+- Fixed UI encoding/mojibake artifacts in `public/app.js`.
+- Hardened campaign creation in `src/db.js`: validates email format, deduplicates targets, rejects empty/invalid target sets with 400.
+- Expanded `test/api.test.js` to 4 cases (health, send/click/submit, validation+opened flow, unknown target error).
+- `node --test --test-concurrency=1 test/api.test.js` — 4/4 passing.
+- Next: commit/push hardening changes and continue monitoring for defects.
