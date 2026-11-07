@@ -425,7 +425,15 @@
 - [x] Frontend UI: campaign-scoped target detail modal now uses `GET /api/campaigns/:id/targets/:targetId/events?limit=20` in campaign context (global fallback preserved); export/actions behavior intact
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 99 — Expansion (active, in progress)
-- [~] Backend/API: make `GET /api/campaigns/:id/events.csv` return 404 JSON for unknown campaign (consistent with other campaign-scoped exports/list 404-safe checks where appropriate) and add regression test/README note if behavior changes
+## Phase 99 — Expansion (complete)
+- [x] Backend/API: `GET /api/campaigns/:id/events.csv` unknown-campaign 404 behavior already enforced by `db.exportEventsCsv` and covered by existing regression test (`campaign CSV exports return 404 for unknown campaign`) — 67/67 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 100 — Expansion (complete)
+- [x] Frontend UI: visible Recent Events scope indicator (`global` vs `campaign-scoped` + campaign ID) in `index.html`/`app.js`, synced with campaign/global scope recovery and actions; filters/export behavior preserved — 67/67 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 101 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/events/:id` read endpoint (404/405-safe, returns event with `campaignName`) with regression test and README/docs update
 - [ ] Run verification, docs/log updates, commit/push per item
 

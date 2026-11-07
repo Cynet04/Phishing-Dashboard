@@ -215,3 +215,7 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 ## 2026-11-07 16:12Z — Phase 98: campaign-scoped target detail events
 - Campaign-scoped target detail modal in `public/app.js` now loads events from `GET /api/campaigns/:id/targets/:targetId/events?limit=20` when opened in campaign context; global detail keeps `/api/targets/:id/events` fallback. Scope indicator/export/actions preserved.
 - `node --check public/app.js`; `node --test --test-concurrency=1` — 67/67 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 16:15Z — Phase 100: Recent Events scope indicator
+- Added visible Recent Events scope indicator (`#eventsScopeIndicator`) showing `global` or `campaign-scoped (campaign <id>)`; synced in `loadEvents`/`loadCampaignEvents` while preserving filters/export/actions and global recovery.
+- `node --check public/app.js`; `node --test --test-concurrency=1` — 67/67 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

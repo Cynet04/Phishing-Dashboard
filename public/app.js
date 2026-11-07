@@ -285,6 +285,7 @@ async function loadCampaignEvents(campaignId) {
   }));
   const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped campaign view';
+  const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = `Scope: campaign-scoped (campaign ${state.eventsCampaignId || campaignId})`;
   $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination
   $('#returnGlobalEventsBtn')?.classList.remove('hidden');
   updateEventsExportLink();
@@ -315,6 +316,7 @@ async function loadEvents(reset = false) {
   const shown = state.eventsOffset + events.length;
   const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
+  const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = 'Scope: global';
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
   $('#returnGlobalEventsBtn')?.classList.add('hidden');
   updateEventsExportLink();
