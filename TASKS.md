@@ -620,6 +620,10 @@
 - [x] Backend/API/docs/test: optional `campaignId` ownership validation for `POST /api/events` body (backward-compatible; leverages `db.recordEvent` validation) — README/test updated — 85/85 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 158 — Expansion (active, in progress)
-- [~] Frontend UI: in target detail modal (global-scope open), pass resolved `campaignId` to showTargetEventsInRecent path or ensure Recent Events filter/open flows carry ownership context safely when pivoting (evaluate minimal safe improvement)
+## Phase 158 — Expansion (complete)
+- [x] Frontend UI: `showTargetEventsInRecent` accepts optional resolved `campaignId` (global scope preserved) and target detail modal **Show in Recent Events** passes resolved/explicit campaign context — 85/85 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 159 — Expansion (active, in progress)
+- [~] Backend/API: add optional `?campaignId=` ownership validation to `GET /api/events/:id` (404-safe, backward-compatible) with README/test
 - [ ] Run verification, docs/log updates, commit/push per item
