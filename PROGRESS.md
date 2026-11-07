@@ -318,3 +318,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 21:00Z — Phase 131: target detail modal from/to filters
 - Added From/To date controls + Apply/Clear in target detail modal (campaign-scoped/global). Refreshes scoped target events JSON, updates export URL/copy-link, and includes filter context in copied JSON. UI/server syntax checked, 80/80 passing. Committed/pushed.
+
+## 2026-11-07 21:15Z — Phase 132: target detail modal type filter
+- Added type filter in target detail modal (campaign-scoped/global); wired to target events JSON/export/copy-link and filter context display/copy-JSON. UI syntax checked, 80/80 passing. Committed/pushed.
