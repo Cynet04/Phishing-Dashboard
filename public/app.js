@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '', eventsTargetId: '', eventsScope: 'global', eventsCampaignId: '' };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '', eventsTargetId: '', eventsFrom: '', eventsTo: '', eventsScope: 'global', eventsCampaignId: '' };
 const THEME_KEY = 'pd-theme';
 function applyTheme(theme) {
   const t = theme === 'light' ? 'light' : 'dark';
@@ -203,8 +203,9 @@ async function selectCampaign(id, quiet) {
     try {
       if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
       if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = '';
-      state.eventsType = '';
-      state.eventsTargetId = '';
+      if ($('#eventsFromFilter')) $('#eventsFromFilter').value = '';
+      if ($('#eventsToFilter')) $('#eventsToFilter').value = '';
+      state.eventsType = ''; state.eventsTargetId = ''; state.eventsFrom = ''; state.eventsTo = '';
       await loadCampaignEvents(id);
       document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
@@ -272,22 +273,29 @@ async function loadCampaignEvents(campaignId) {
   state.eventsOffset = 0;
   const type = String($('#eventsTypeFilter')?.value || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || '').trim();
-  state.eventsType = type;
-  state.eventsTargetId = targetId;
+  const from = String($('#eventsFromFilter')?.value || '').trim();
+  const to = String($('#eventsToFilter')?.value || '').trim();
+  state.eventsType = type; state.eventsTargetId = targetId; state.eventsFrom = from; state.eventsTo = to;
   const params = new URLSearchParams({ limit: String(state.eventsLimit), offset: '0' });
   if (type) params.set('type', type);
   if (targetId) params.set('targetId', targetId);
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
   const page = await api(`/api/campaigns/${encodeURIComponent(campaignId)}/events?${params.toString()}`);
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
   $('#eventsBody').innerHTML = events.length ? events.map(e => `
     <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary view-event" data-id="${esc(e.id || '')}">Details</button> <button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
+  $('#eventsBody').querySelectorAll('.view-event').forEach(btn => btn.addEventListener('click', async () => {
+    if (!btn.dataset.id) return;
+    try { await openEventDetail(btn.dataset.id); } catch (e) { toast(e.message, 'error'); }
+  }));
   $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
     if (!btn.dataset.id || !confirm('Delete this event?')) return;
     try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadCampaignEvents(state.eventsCampaignId || campaignId); await loadSystemStatus(); }
     catch (e) { toast(e.message, 'error'); }
   }));
-  const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
+  const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped campaign view';
   const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = `Scope: campaign-scoped (campaign ${state.eventsCampaignId || campaignId})`;
   $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination
@@ -301,11 +309,14 @@ async function loadEvents(reset = false) {
   if (reset) state.eventsOffset = 0;
   const type = String($('#eventsTypeFilter')?.value || state.eventsType || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
-  state.eventsType = type;
-  state.eventsTargetId = targetId;
+  const from = String($('#eventsFromFilter')?.value || state.eventsFrom || '').trim();
+  const to = String($('#eventsToFilter')?.value || state.eventsTo || '').trim();
+  state.eventsType = type; state.eventsTargetId = targetId; state.eventsFrom = from; state.eventsTo = to;
   const params = new URLSearchParams({ limit: String(state.eventsLimit), offset: String(state.eventsOffset) });
   if (type) params.set('type', type);
   if (targetId) params.set('targetId', targetId);
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
   const q = `/api/events?${params.toString()}`;
   const page = await api(q);
   state.eventsTotal = page.total || 0;
@@ -405,9 +416,11 @@ $('#copyTargetDetail')?.addEventListener('click', async () => {
 });
 async function showTargetEventsInRecent(targetId) {
   if (!targetId) return toast('No target selected.', 'error');
-  state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsOffset = 0;
+  state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsFrom = ''; state.eventsTo = ''; state.eventsOffset = 0;
   if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
   if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = targetId;
+  if ($('#eventsFromFilter')) $('#eventsFromFilter').value = '';
+  if ($('#eventsToFilter')) $('#eventsToFilter').value = '';
   await loadEvents(true);
   document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
@@ -457,16 +470,23 @@ $('#eventsExportFrom')?.addEventListener('change', updateEventsExportLink);
 $('#eventsExportTo')?.addEventListener('change', updateEventsExportLink);
 $('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#eventsTargetFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
+$('#eventsFromFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
+$('#eventsToFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#clearEventsFilterBtn')?.addEventListener('click', () => {
   if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
   if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = '';
+  if ($('#eventsFromFilter')) $('#eventsFromFilter').value = '';
+  if ($('#eventsToFilter')) $('#eventsToFilter').value = '';
+  state.eventsFrom = ''; state.eventsTo = '';
   loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error'));
 });
 $('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
 $('#returnGlobalEventsBtn')?.addEventListener('click', () => {
   if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
   if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = '';
-  state.eventsType = ''; state.eventsTargetId = '';
+  if ($('#eventsFromFilter')) $('#eventsFromFilter').value = '';
+  if ($('#eventsToFilter')) $('#eventsToFilter').value = '';
+  state.eventsType = ''; state.eventsTargetId = ''; state.eventsFrom = ''; state.eventsTo = '';
   loadEvents(true).catch((e) => toast(`Events load failed: ${e.message}`, 'error'));
 });
 
