@@ -362,7 +362,7 @@ async function loadEvents(reset = false) {
   const shown = state.eventsOffset + events.length;
   const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : '', (targetId && state.eventsResolvedCampaignId) ? `campaign=${state.eventsResolvedCampaignId}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
-  const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = 'Scope: global';
+  const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = (targetId && state.eventsResolvedCampaignId) ? `Scope: global (resolved campaign ${state.eventsResolvedCampaignId})` : 'Scope: global';
   const loadMore = $('#loadMoreEventsBtn'); if (loadMore) { loadMore.disabled = shown >= state.eventsTotal; loadMore.textContent = 'Load more'; loadMore.title = ''; }
   $('#returnGlobalEventsBtn')?.classList.add('hidden');
   updateEventsExportLink();
