@@ -83,3 +83,7 @@
 ## 2026-11-07 11:48Z — Phase 70: Recent Events delete UI
 - Recent Events table now includes per-row **Delete** (confirm) calling `DELETE /api/events/:id`, then reloads events and system status with toast/error handling.
 - `node --check` (ui); `node --test --test-concurrency=1` — 57/57 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Events** ? **Delete** on a row.
+
+## 2026-11-07 11:49Z — Phase 71: campaign events.csv filter passthrough
+- `GET /api/campaigns/:id/events.csv` now forwards `type` and `targetId` filters to event export (backward-compatible). Added regression test.
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 58/58 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
