@@ -41,6 +41,7 @@ Public endpoints remain available for the educational simulation flow: `/api/hea
 
 ## API
 - `GET /api/health` (alias: `/api/healthz`; includes `uptimeSeconds`, `node`, and safe `dataFile` basename)
+- `GET /api/readyz` (auth-exempt readiness check; verifies data store can be loaded)
 - `GET /api/version` (safe service/version/node/time, no secrets)
 - `GET /api/templates`, `POST /api/templates`, `PUT /api/templates/:id`, `DELETE /api/templates/:id`
 - `GET /api/stats?campaignId=&from=YYYY-MM-DD&to=YYYY-MM-DD`

@@ -121,7 +121,7 @@ function authed(req) {
 
 function authRequired(pathname) {
   if (!adminPassword()) return false;
-  if (pathname === '/api/health' || pathname === '/api/healthz' || pathname === '/api/version' || pathname === '/api/auth/login' || pathname === '/api/auth/status') return false;
+  if (pathname === '/api/health' || pathname === '/api/healthz' || pathname === '/api/readyz' || pathname === '/api/version' || pathname === '/api/auth/login' || pathname === '/api/auth/status') return false;
   if (pathname === '/login-simulation' || pathname === '/login-simulation/submit' || pathname === '/education') return false;
   if (pathname.startsWith('/api/')) return true;
   if (pathname === '/' || pathname.endsWith('.html') || pathname.endsWith('.js') || pathname.endsWith('.css')) return true;
@@ -180,6 +180,11 @@ async function handler(req, res) {
     if (authRequired(pathname) && !authed(req)) {
       if (pathname.startsWith('/api/')) return send(res, 401, { error: 'unauthorized' });
       res.writeHead(302, { Location: '/login' }); return res.end();
+    }
+    if (req.method === 'GET' && pathname === '/api/readyz') {
+      db.ensure();
+      db.load();
+      return send(res, 200, { ok: true, ready: true, service: 'phishing-dashboard', time: new Date().toISOString() });
     }
     if (req.method === 'GET' && (pathname === '/api/health' || pathname === '/api/healthz')) {
       const dataFile = typeof db.dbFile === 'function' ? path.basename(db.dbFile()) : undefined;

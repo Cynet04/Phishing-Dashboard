@@ -1115,3 +1115,16 @@ test('version endpoint returns safe metadata', async () => {
     assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
   });
 });
+
+
+test('readyz endpoint reports readiness', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/readyz');
+    assert.equal(r.status, 200);
+    assert.equal(r.data.ok, true);
+    assert.equal(r.data.ready, true);
+    assert.equal(r.data.service, 'phishing-dashboard');
+    assert.match(String(r.headers['x-request-id'] || ''), /^[A-Za-z0-9._:-]{8,128}$/);
+    assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
+  });
+});
