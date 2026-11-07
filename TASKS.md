@@ -409,7 +409,11 @@
 - [x] Frontend UI: target detail modal shows campaign scope indicator (`campaign-scoped` with campaign ID, or `global`) when opened from campaign context/global table; export/events actions remain correct. Cleaned up duplicate modal helper and mojibake artifacts from partial reset. — 65/65 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 95 — Expansion (active, in progress)
-- [~] Backend/API: add pagination/filter-safe consistency check for campaign-scoped event queries when `targetId` is not in campaign (return empty/stable 404-safe behavior as appropriate) with regression test and docs
+## Phase 95 — Expansion (complete)
+- [x] Backend/API: `db.listEvents` now returns stable empty paginated shape when `campaignId + targetId` are provided but target does not belong to campaign (and preserves unknown-campaign stable shape). Regression test added — 66/66 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 96 — Expansion (active, in progress)
+- [~] Frontend UI: add global API loading indicator (request counter + visible spinner/status) for dashboard fetches; keep existing refresh/loading behavior intact
 - [ ] Run verification, docs/log updates, commit/push per item
 
