@@ -76,7 +76,7 @@ async function loadCampaigns() {
   $('#campaigns').innerHTML = campaigns.length ? campaigns.map(c => `
     <div class="item" data-id="${esc(c.id)}">
       <strong>${esc(c.name)}</strong> <span class="pill ${esc(c.status)}">${esc(c.status)}</span>
-      <div class="muted">Template: ${esc(c.template)} · Targets: ${c.targetCount || 0}</div>
+      <div class="muted">Template: ${esc(c.template)} · Targets: ${c.targetCount || 0} · Statuses: ${esc(Object.entries(c.statusCounts||{}).map(([k,v])=>`${k}:${v}`).join(', ') || '—')}</div>
     </div>`).join('') : '<div class="muted">No campaigns yet.</div>';
   $('#campaigns').querySelectorAll('.item').forEach(el => el.addEventListener('click', () => selectCampaign(el.dataset.id)));
   if (state.selected) await selectCampaign(state.selected, true);

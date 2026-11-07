@@ -233,6 +233,23 @@ test('invalid json body returns 400', async () => {
   });
 });
 
+test('campaign list includes status counts and detail supports status filter', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Status', template: 'generic', targets: 's1@example.com,s2@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const list = await req(base, '/api/campaigns');
+    const item = list.data.find(c => c.id === created.data.id);
+    assert.ok(item.statusCounts);
+    assert.equal(item.targetCount, 2);
+    const filtered = await req(base, `/api/campaigns/${created.data.id}?status=clicked`);
+    assert.equal(filtered.status, 200);
+    assert.equal(filtered.data.targets.length, 1);
+    assert.equal(filtered.data.targets[0].status, 'clicked');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

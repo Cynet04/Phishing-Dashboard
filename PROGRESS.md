@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:46Z — Phase 12: request body hardening
-- Hardened request parsing to return clear 413/400 errors for oversized/invalid JSON bodies; added invalid JSON regression test.
-- Reviewed DB read helpers; no safe high-value refactor identified beyond current behavior. `node --test --test-concurrency=1` — 14/14 passing. Commit/push in progress.
+## 2026-11-07 10:47Z — Phase 13: campaign status summary/filter
+- Added `statusCounts` to campaign list responses and campaign detail target filtering (`/api/campaigns/:id?status=`). Dashboard campaign list now displays per-status counts.
+- Added regression test; `node --test --test-concurrency=1` — 15/15 passing. Commit/push in progress.

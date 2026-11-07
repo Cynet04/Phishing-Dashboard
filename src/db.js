@@ -127,16 +127,24 @@ function createCampaign(input = {}) {
 
 function listCampaigns() {
   const db = load();
-  return db.campaigns.map(c => ({ ...c, targetCount: db.targets.filter(t => t.campaignId === c.id).length }));
+  return db.campaigns.map(c => {
+    const targets = db.targets.filter(t => t.campaignId === c.id);
+    const statusCounts = targets.reduce((acc, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc; }, {});
+    return { ...c, targetCount: targets.length, statusCounts };
+  });
 }
 
-function getCampaign(id) {
+function getCampaign(id, opts = {}) {
   const db = load();
   const campaign = db.campaigns.find(c => c.id === String(id));
   if (!campaign) throw Object.assign(new Error('campaign not found'), { status: 404 });
+  const status = opts.status ? String(opts.status).trim().toLowerCase() : '';
+  let targets = db.targets.filter(t => t.campaignId === campaign.id);
+  if (status) targets = targets.filter(t => t.status === status);
   return {
     ...campaign,
-    targets: db.targets.filter(t => t.campaignId === campaign.id),
+    statusFilter: status || null,
+    targets,
     events: db.events.filter(e => e.campaignId === campaign.id).slice(0, 200),
   };
 }

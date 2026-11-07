@@ -67,8 +67,9 @@
 - [x] Optimize/simplify DB read helpers where safe (reviewed; no behavior-risky refactor required this pass)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 13 — Expansion (active)
-- [ ] Add campaign status summary counts to campaign list API/UI (draft/sent breakdown) with tests
-- [ ] Add per-campaign target status filter endpoint/UI (`/api/campaigns/:id?status=`) with tests
+## Phase 13 — Expansion (in progress)
+- [x] Add campaign status summary counts to campaign list API/UI (draft/sent breakdown) with tests — 15/15 passing
+- [x] Add per-campaign target status filter endpoint/API (`/api/campaigns/:id?status=`) with tests
+- [ ] Add UI filter control for campaign detail target status and render status counts
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -44,7 +44,7 @@ Public endpoints remain available for the educational simulation flow: `/api/hea
 - `GET /api/templates`, `POST /api/templates`, `PUT /api/templates/:id`, `DELETE /api/templates/:id`
 - `GET /api/stats?from=YYYY-MM-DD&to=YYYY-MM-DD`
 - `GET /api/campaigns`, `POST /api/campaigns`
-- `GET /api/campaigns/:id`, `DELETE /api/campaigns/:id` (demo hygiene), `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`
+- `GET /api/campaigns/:id?status=sent|opened|clicked|submitted|pending`, `DELETE /api/campaigns/:id` (demo hygiene), `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`
 - `POST /api/campaigns/:id/send`
 - `GET /api/targets/recent?limit=&offset=`, `GET /api/targets/export.csv`, `POST /api/targets/:id/click`
 - `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`)
