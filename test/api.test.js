@@ -961,3 +961,24 @@ test('event detail endpoint returns event and enforces 404/405', async () => {
     assert.equal(nf.status, 404);
   });
 });
+
+
+test('target events.csv exports target-scoped rows and enforces 404/405', async () => {
+  await withServer(async (base) => {
+    const c = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TECSV', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${c.data.id}/send`, { method: 'POST', body: '{}' });
+    const d = await req(base, `/api/campaigns/${c.data.id}`);
+    const t1 = d.data.targets[0].id; const t2 = d.data.targets[1].id;
+    await req(base, `/api/targets/${t1}/click`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${t2}/submit`, { method: 'POST', body: '{}' });
+    const csv = await req(base, `/api/targets/${t1}/events.csv?type=clicked`);
+    assert.equal(csv.status, 200);
+    assert.match(String(csv.headers['content-type']||''), /text\/csv/);
+    assert.match(csv.raw, /clicked/);
+    assert.doesNotMatch(csv.raw, /submitted/);
+    const nf = await req(base, '/api/targets/nope/events.csv');
+    assert.equal(nf.status, 404);
+    const m = await req(base, `/api/targets/${t1}/events.csv`, { method: 'POST', body: '{}' });
+    assert.equal(m.status, 405);
+  });
+});

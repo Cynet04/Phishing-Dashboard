@@ -441,7 +441,11 @@
 - [x] Frontend UI: Recent Events rows now include **Details** (read-only modal via `GET /api/events/:id`, copy JSON, close/Escape/click-outside) alongside Delete; works in global and campaign-scoped views — 68/68 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 103 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/events/:id` alias-safe handling? No — add `GET /api/targets/:id/export.csv` (single-target events CSV, optional `type=`) with 404/405-safe behavior, regression test, README/docs update
+## Phase 103 — Expansion (complete)
+- [x] Backend/API: added `GET /api/targets/:id/events.csv?type=` (404/405-safe, target-scoped CSV with attachment filename) reusing `db.exportEventsCsv`; README updated, regression test added — 69/69 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 104 — Expansion (active, in progress)
+- [~] Frontend UI: wire target detail modal's Export Events CSV link to the new `GET /api/targets/:id/events.csv` (preserve current `type`/scope context where safe; keep campaign/global behavior clear)
 - [ ] Run verification, docs/log updates, commit/push per item
 
