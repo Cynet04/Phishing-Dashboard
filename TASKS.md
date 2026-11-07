@@ -405,7 +405,11 @@
 - [x] Frontend UI: refactored target detail modal to top-level `openTargetDetail(targetId, campaignId?)`; campaign detail picker adds **Target Details** using campaign-scoped endpoint `/api/campaigns/:id/targets/:targetId`; Recent Targets **Details** still uses global target detail. Fixed loadTargets structure after partial edit. — 65/65 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 94 — Expansion (active, in progress)
-- [~] Frontend UI: show campaign scope indicator in target detail modal when opened from campaign context and ensure export/events actions remain correct
+## Phase 94 — Expansion (complete)
+- [x] Frontend UI: target detail modal shows campaign scope indicator (`campaign-scoped` with campaign ID, or `global`) when opened from campaign context/global table; export/events actions remain correct. Cleaned up duplicate modal helper and mojibake artifacts from partial reset. — 65/65 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 95 — Expansion (active, in progress)
+- [~] Backend/API: add pagination/filter-safe consistency check for campaign-scoped event queries when `targetId` is not in campaign (return empty/stable 404-safe behavior as appropriate) with regression test and docs
 - [ ] Run verification, docs/log updates, commit/push per item
 

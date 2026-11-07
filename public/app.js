@@ -228,27 +228,6 @@ async function loadTargets(reset = false) {
   $('#targetsBody').querySelectorAll('.sim-click').forEach(btn => btn.addEventListener('click', async () => {
     try { await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' }); toast('Click simulated.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   }));
-async function openTargetDetail(targetId, campaignId = '') {
-  const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
-  targetDetailJson = '';
-  targetDetailId = String(targetId || '').trim();
-  if (!targetDetailId) return toast('No target selected.', 'error');
-  const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = `/api/events/export.csv?targetId=${encodeURIComponent(targetDetailId)}`;
-  modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
-  $('#closeTargetDetail')?.focus?.();
-  try {
-    const detailPath = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}` : `/api/targets/${encodeURIComponent(targetDetailId)}`;
-    const [t, ev] = await Promise.all([api(detailPath), api(`/api/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`)]);
-    targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
-    const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
-    const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
-    const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
-    body.className = '';
-    body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
-  }
-  catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
-}
-
   $('#targetsBody').querySelectorAll('.view-target').forEach(btn => btn.addEventListener('click', async () => {
     try { await openTargetDetail(btn.dataset.id || ''); }
     catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); }
@@ -361,8 +340,9 @@ async function openTargetDetail(targetId, campaignId = '') {
     const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
     const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
     const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
+    const scope = campaignId ? `<span class="pill sent">campaign-scoped</span> <span class="muted">Campaign ${esc(campaignId)}</span>` : `<span class="pill pending">global</span>`;
     body.className = '';
-    body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+    body.innerHTML = `<div class="muted" style="margin-bottom:8px">Scope: ${scope}</div><div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
   catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
 }
