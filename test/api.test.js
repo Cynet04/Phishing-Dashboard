@@ -845,6 +845,17 @@ test('global events CSV alias /api/events.csv supports filters', async () => {
   });
 });
 
+test('global events export routes enforce GET method', async () => {
+  await withServer(async (base) => {
+    for (const path of ['/api/events/export.csv', '/api/events.csv']) {
+      for (const method of ['POST', 'DELETE']) {
+        const res = await fetch(`${base}${path}`, { method, headers: { 'Content-Type': 'application/json' }, body: method === 'POST' ? '{}' : undefined });
+        assert.equal(res.status, 405, `expected 405 for ${method} ${path}`);
+      }
+    }
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

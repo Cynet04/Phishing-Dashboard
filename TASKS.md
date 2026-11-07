@@ -381,7 +381,11 @@
 - [x] Frontend UI: target detail modal now surfaces enriched metadata (`eventCount`, `eventCounts`, `lastEventAt`) alongside existing target fields and actions — 62/62 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 88 — Expansion (active, in progress)
-- [~] Backend/API: add method consistency (405) for global events CSV routes (`/api/events/export.csv`, `/api/events.csv`) for unsupported methods in a shared handler path (covered by alias test; ensure consistent behavior/docs) and tighten route guard if needed
+## Phase 88 — Expansion (complete)
+- [x] Tests/API coverage: global events CSV export routes (`/api/events/export.csv`, `/api/events.csv`) now have explicit GET-method enforcement regression coverage (405 for POST/DELETE; existing shared handler already correct) — 63/63 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 89 — Expansion (active, in progress)
+- [~] Frontend UI: add “Load events for target” shortcut from campaign detail target rows/list context (if present) or improve campaign detail target interaction consistency with Recent Events filters
 - [ ] Run verification, docs/log updates, commit/push per item
 

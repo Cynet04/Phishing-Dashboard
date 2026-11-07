@@ -163,3 +163,9 @@ ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (7bbfe81). Das
 ## 2026-11-07 14:19Z — Phase 87: target detail modal metadata
 - Target detail modal now displays enriched target metadata: `eventCount`, `eventCounts` summary, and `lastEventAt` (alongside existing fields/actions).
 - `node --check` (ui); `node --test --test-concurrency=1` — 62/62 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: open target **Details** ? metadata row.
+
+## 2026-11-07 14:20Z — Phase 88: global events export route method coverage
+- Added explicit regression coverage for GET-only enforcement (405 on POST/DELETE) on /api/events/export.csv and /api/events.csv (shared handler behavior already correct).
+- 
+ode --check (tests); 
+ode --test --test-concurrency=1 — 63/63 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
