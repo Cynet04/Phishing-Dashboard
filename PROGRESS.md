@@ -36,6 +36,6 @@
 - Added Auto-refresh toggle (30s), persisted in `localStorage` (`pd-auto-refresh`) with interval cleanup; manual Refresh still works.
 - `node --check` (ui); `node --test --test-concurrency=1` — 48/48 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: header **Auto: off/on** + **Refresh**.
 
-## 2026-11-07 11:31Z — Phase 53: campaign list pagination (backward-compatible)
-- `GET /api/campaigns` now supports `limit/offset`; returns envelope only when pagination requested, preserving plain-array default for existing UI/tests. Added regression test.
-- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 49/49 passing. Restarted local server `bgp_1b5dbc2ac001bDJPDFL4r16xd5` (`http://localhost:3000`). Commit/push in progress.
+## 2026-11-07 11:32Z — Phase 54: campaign list forward compatibility
+- Dashboard `loadCampaigns()` now accepts both plain-array and paginated-envelope responses from `/api/campaigns` (safe for future UI pagination).
+- `node --check` (ui); `node --test --test-concurrency=1` — 49/49 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

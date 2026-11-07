@@ -249,7 +249,11 @@
 - [x] Backend/DB: added backward-compatible `GET /api/campaigns?limit=&offset=` pagination envelope (`{items,total,limit,offset}`) while keeping plain-array default; test added — 49/49 passing. Restarted server `bgp_1b5dbc2ac001bDJPDFL4r16xd5`.
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 54 — Expansion (active, in progress)
-- [~] Frontend UI: make campaign list consume pagination metadata safely (keeps current behavior for plain array) and add small “showing” hint; improve responsive controls
+## Phase 54 — Expansion (complete)
+- [x] Frontend UI: made campaign list loader accept array or paginated envelope (forward-compatible with `GET /api/campaigns?limit/offset`) and kept safe empty states — 49/49 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 55 — Expansion (active, in progress)
+- [~] Testing: add auth-enabled integration test coverage for login rate-limit 429 behavior (isolated server state) and ensure existing auth tests remain stable
 - [ ] Run verification, docs/log updates, commit/push per item
 
