@@ -32,9 +32,9 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:18Z — Final verification & polish
-- Added security/robustness: baseline security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`), safer static path resolution, consistent JSON 404 for `/api/*`.
-- Added open-rate analytics: `opened`/`openRate` totals and opened events in timeline; dashboard now shows Open Rate metric and open/click/submit chart bars.
-- Updated tests to 5 cases covering health headers/404, full flow metrics, validation+opened flow, landing-page open tracking, and unknown target errors. `node --test --test-concurrency=1` — 5/5 passing.
-- Final E2E smoke: running server returned security header, recorded opened event from `/login-simulation`, and `/api/stats` reported `openRate:100`.
-- README updated for current features/API/Windows test note. All phase/hardening/verification tasks complete and pushed.
+## 2026-11-07 10:29Z — Phase 7 continuous hardening loop
+- Resumed after user confirmed environment fixed and requested non-stop completion loop.
+- Baseline: tests 5/5 pass; `node --check` clean; git `main...origin/main` clean except ignored runtime data.
+- Implemented: `DELETE /api/campaigns/:id` (DB cascade of targets/events + UI delete action), campaign route `405` handling, robust landing-page submit body parsing (`application/x-www-form-urlencoded`/JSON-safe).
+- Tests expanded to 7 cases (added form-submit regression and delete/405 coverage). `node --test --test-concurrency=1` — 7/7 passing.
+- Next: commit/push Phase 7 batch and continue safe improvements.

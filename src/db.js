@@ -182,12 +182,27 @@ function recentTargets(limit = 50) {
     .map(t => ({ ...t, campaignName: cmap[t.campaignId] || t.campaignId }));
 }
 
+function deleteCampaign(id) {
+  const db = load();
+  const campaignId = String(id);
+  const idx = db.campaigns.findIndex(c => c.id === campaignId);
+  if (idx === -1) throw Object.assign(new Error('campaign not found'), { status: 404 });
+  const removedTargets = db.targets.filter(t => t.campaignId === campaignId).length;
+  const removedEvents = db.events.filter(e => e.campaignId === campaignId).length;
+  db.campaigns.splice(idx, 1);
+  db.targets = db.targets.filter(t => t.campaignId !== campaignId);
+  db.events = db.events.filter(e => e.campaignId !== campaignId);
+  save(db);
+  return { ok: true, campaignId, removedTargets, removedEvents };
+}
+
 function resetForTests(file) {
   if (file) process.env.PHISH_DASH_DB = file;
   ensure();
   save(emptyDb());
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, sendSimulation, recordEvent, stats, recentTargets, resetForTests, dbFile };
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
+
 

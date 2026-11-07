@@ -32,6 +32,23 @@ function readJson(req) {
   });
 }
 
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let raw = '';
+    req.on('data', c => { raw += c; if (raw.length > 1e6) req.destroy(); });
+    req.on('end', () => {
+      const type = String(req.headers['content-type'] || '').toLowerCase();
+      try {
+        if (!raw) return resolve({});
+        if (type.includes('application/json')) return resolve(JSON.parse(raw));
+        if (type.includes('application/x-www-form-urlencoded')) return resolve(Object.fromEntries(new URLSearchParams(raw)));
+        try { return resolve(JSON.parse(raw)); } catch { return resolve(Object.fromEntries(new URLSearchParams(raw))); }
+      } catch (e) { reject(Object.assign(new Error('invalid body'), { status: 400 })); }
+    });
+    req.on('error', reject);
+  });
+}
+
 function serveStatic(req, res, pathname) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return false;
   const rel = pathname === '/' ? '/index.html' : pathname;
@@ -71,12 +88,14 @@ async function handler(req, res) {
     if (req.method === 'GET' && pathname === '/api/templates') return send(res, 200, templates);
     if (req.method === 'GET' && pathname === '/api/campaigns') return send(res, 200, db.listCampaigns());
     if (req.method === 'POST' && pathname === '/api/campaigns') return send(res, 201, db.createCampaign(await readJson(req)));
-    if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets(Number(searchParams.get('limit')||50)));
+    if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets(Number(searchParams.get('limit') || 50)));
     if (req.method === 'GET' && pathname === '/api/stats') return send(res, 200, db.stats());
     const m = pathname.match(/^\/api\/campaigns\/([^/]+)(?:\/(send|stats))?$/);
     if (m && req.method === 'GET' && !m[2]) return send(res, 200, db.getCampaign(m[1]));
+    if (m && req.method === 'DELETE' && !m[2]) return send(res, 200, db.deleteCampaign(m[1]));
     if (m && req.method === 'POST' && m[2] === 'send') return send(res, 200, db.sendSimulation(m[1]));
     if (m && req.method === 'GET' && m[2] === 'stats') return send(res, 200, db.stats(m[1]));
+    if (m) return send(res, 405, { error: 'method not allowed' });
     if (req.method === 'POST' && pathname === '/api/events') return send(res, 201, db.recordEvent(await readJson(req)));
     if (req.method === 'POST' && /^\/api\/targets\/[^/]+\/click$/.test(pathname)) {
       const targetId = pathname.split('/')[3];
@@ -89,9 +108,7 @@ async function handler(req, res) {
       return send(res, 200, loginSimulationPage(targetId), { 'Content-Type': 'text/html; charset=utf-8' });
     }
     if (req.method === 'POST' && pathname === '/login-simulation/submit') {
-      const body = await readJson(req).catch(async () => {
-        let raw=''; for await (const c of req) raw += c; return Object.fromEntries(new URLSearchParams(raw));
-      });
+      const body = await readBody(req).catch(() => ({}));
       if (body.targetId) try { db.recordEvent({ targetId: body.targetId, type: 'submitted', meta: { simulated: true } }); } catch {}
       res.writeHead(302, { Location: `/education?target=${encodeURIComponent(body.targetId||'')}` }); return res.end();
     }

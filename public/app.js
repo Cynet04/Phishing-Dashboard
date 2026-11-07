@@ -61,10 +61,18 @@ async function selectCampaign(id, quiet) {
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
+      <button class="btn small secondary" id="deleteCampaignBtn">Delete Campaign</button>
     </div>
     <div class="muted">Tip: send simulation, open the mock landing page (records Opened), then simulate click or submit the form (records Submitted).</div>`;
   $('#sendSimBtn')?.addEventListener('click', async () => {
     await api(`/api/campaigns/${id}/send`, { method: 'POST', body: '{}' });
+    await refresh();
+  });
+  $('#deleteCampaignBtn')?.addEventListener('click', async () => {
+    if (!confirm(`Delete campaign "${c.name}" and all related targets/events?`)) return;
+    await api(`/api/campaigns/${id}`, { method: 'DELETE' });
+    state.selected = null;
+    $('#detail').innerHTML = '<div class="muted">Select a campaign.</div>';
     await refresh();
   });
 }

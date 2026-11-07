@@ -108,6 +108,41 @@ test('landing simulation GET records opened event', async () => {
   });
 });
 
+test('landing simulation form submit records submitted event', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Submit Test', template: 'generic', targets: 'submit@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const targetId = detail.data.targets[0].id;
+    await req(base, `/login-simulation?target=${targetId}`);
+    const submit = await fetch(`${base}/login-simulation/submit`, {
+      method: 'POST',
+      redirect: 'manual',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `targetId=${encodeURIComponent(targetId)}&email=test%40example.com&password=ignored`,
+    });
+    assert.equal(submit.status, 302);
+    const after = await req(base, `/api/campaigns/${created.data.id}`);
+    assert.equal(after.data.targets[0].status, 'submitted');
+    const stats = await req(base, `/api/campaigns/${created.data.id}/stats`);
+    assert.equal(stats.data.totals.submitted, 1);
+  });
+});
+
+test('delete campaign removes related records and method errors are clear', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Delete Test', template: 'generic', targets: 'delete@example.com' }) });
+    const id = created.data.id;
+    const method = await req(base, `/api/campaigns/${id}`, { method: 'PUT', body: '{}' });
+    assert.equal(method.status, 405);
+    const del = await req(base, `/api/campaigns/${id}`, { method: 'DELETE' });
+    assert.equal(del.status, 200);
+    assert.equal(del.data.ok, true);
+    const missing = await req(base, `/api/campaigns/${id}`);
+    assert.equal(missing.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

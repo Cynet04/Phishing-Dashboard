@@ -33,12 +33,12 @@ node --test --test-concurrency=1
 - `GET /api/templates`
 - `GET /api/stats`
 - `GET /api/campaigns`, `POST /api/campaigns`
-- `GET /api/campaigns/:id`, `GET /api/campaigns/:id/stats`
+- `GET /api/campaigns/:id`, `DELETE /api/campaigns/:id` (demo hygiene), `GET /api/campaigns/:id/stats`
 - `POST /api/campaigns/:id/send`
 - `GET /api/targets/recent`, `POST /api/targets/:id/click`
 - `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`)
 
-`/api/*` responses use JSON error objects; the server adds basic security headers and safe static-file resolution.
+`/api/*` responses use JSON error objects and return `405` for known campaign routes with unsupported methods. The server adds basic security headers and safe static-file resolution.
 
 ## Swapping the database
 `src/db.js` exposes plain functions (`createCampaign`, `listCampaigns`, `recordEvent`, `stats`, etc.). Replace JSON reads/writes with SQLite/Postgres calls while keeping the same function contracts used by `src/server.js`.
