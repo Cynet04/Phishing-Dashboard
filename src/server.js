@@ -13,7 +13,14 @@ function adminPassword() { return process.env.ADMIN_PASSWORD || ''; }
 
 const MIME = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.json':'application/json; charset=utf-8', '.svg':'image/svg+xml' };
 
-function send(res, status, body, headers = {}) {
+function requestId(req) {
+  const raw = String(req?.headers?.['x-request-id'] || '').trim();
+  if (/^[A-Za-z0-9._:-]{8,128}$/.test(raw)) return raw;
+  return (typeof crypto.randomUUID === 'function') ? crypto.randomUUID() : crypto.randomBytes(12).toString('hex');
+}
+
+function send(res, status, body, headers = {}, req) {
+  const r = req || res.req;
   const isObj = body !== null && typeof body === 'object' && !Buffer.isBuffer(body);
   const data = isObj ? JSON.stringify(body) : body;
   res.writeHead(status, {
@@ -21,6 +28,7 @@ function send(res, status, body, headers = {}) {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'no-referrer',
+    'X-Request-Id': headers['X-Request-Id'] || requestId(r),
     ...(isObj ? { 'Cache-Control': 'no-store' } : {}),
     ...headers,
   });
@@ -60,7 +68,7 @@ function serveStatic(req, res, pathname) {
   if (!resolved.startsWith(path.resolve(PUBLIC))) return send(res, 403, { error: 'forbidden' });
   if (!fs.existsSync(resolved) || fs.statSync(resolved).isDirectory()) return false;
   const ext = path.extname(resolved).toLowerCase();
-  res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff' });
+  res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff', 'X-Request-Id': requestId(req) });
   if (req.method === 'HEAD') return res.end(), true;
   fs.createReadStream(resolved).pipe(res);
   return true;
@@ -142,6 +150,7 @@ function loginSimulationPage(targetId) {
 
 async function handler(req, res) {
   try {
+    res.req = req;
     db.ensure();
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const { pathname, searchParams } = url;
@@ -202,7 +211,7 @@ async function handler(req, res) {
       if (!body || typeof body !== 'object' || Array.isArray(body)) throw Object.assign(new Error('invalid campaign payload'), { status: 400 });
       return send(res, 201, db.createCampaign(body));
     }
-    if (pathname === '/api/targets/export.csv') {
+    if (pathname === '/api/targets/export.csv' || pathname === '/api/targets.csv') {
       if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
       return send(res, 200, db.exportTargetsCsv({ campaignId: searchParams.get('campaignId') || undefined, status: searchParams.get('status') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="targets.csv"' });
     }

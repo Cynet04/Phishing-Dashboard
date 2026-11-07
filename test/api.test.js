@@ -40,6 +40,10 @@ test('health endpoint', async () => {
     assert.match(String(r.data.dataFile || ''), /\.json$/);
     assert.match(JSON.stringify(r.headers), /x-content-type-options/i);
     assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
+    assert.match(String(r.headers['x-request-id'] || ''), /^[A-Za-z0-9._:-]{8,128}$/);
+
+    const echoed = await req(base, '/api/health', { headers: { 'x-request-id': 'req-test-12345' } });
+    assert.equal(String(echoed.headers['x-request-id'] || ''), 'req-test-12345');
 
     const missing = await req(base, '/api/campaigns/9999');
     assert.equal(missing.status, 404);
@@ -1018,6 +1022,20 @@ test('campaign targets.csv alias supports filters and 404/405', async () => {
     const nf = await req(base, '/api/campaigns/nope/targets.csv');
     assert.equal(nf.status, 404);
     const m = await req(base, `/api/campaigns/${c.data.id}/targets.csv`, { method: 'POST', body: '{}' });
+    assert.equal(m.status, 405);
+  });
+});
+
+
+test('global targets.csv alias supports filters and 405', async () => {
+  await withServer(async (base) => {
+    const c = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'GTCSV', template: 'generic', targets: 'a@example.com' }) });
+    await req(base, `/api/campaigns/${c.data.id}/send`, { method: 'POST', body: '{}' });
+    const ok = await req(base, `/api/targets.csv?campaignId=${c.data.id}&status=sent`);
+    assert.equal(ok.status, 200);
+    assert.match(String(ok.headers['content-type']||''), /text\/csv/);
+    assert.match(ok.raw, /a@example\.com/);
+    const m = await req(base, '/api/targets.csv', { method: 'POST', body: '{}' });
     assert.equal(m.status, 405);
   });
 });
