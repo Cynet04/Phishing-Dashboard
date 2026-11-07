@@ -321,7 +321,11 @@
 - [x] Backend/API: `GET /api/campaigns/:id/events.csv` now passes through `type` and `targetId` filters (backward-compatible) with regression test — 58/58 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 72 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/targets/:id` method validation (405 for unsupported methods) and test for route consistency
+## Phase 72 — Expansion (complete)
+- [x] Backend/API: `GET /api/targets/:id` and `GET /api/targets/:id/events` now enforce GET-only method handling (405 for unsupported methods) with regression test — 59/59 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 73 — Expansion (active, in progress)
+- [~] Frontend UI: add “Clear filters” action for Recent Targets/events export controls and improve responsive layout for export/filter toolbar
 - [ ] Run verification, docs/log updates, commit/push per item
 

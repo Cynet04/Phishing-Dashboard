@@ -778,6 +778,18 @@ test('campaign events.csv supports type and targetId filters', async () => {
   });
 });
 
+test('target detail and target events routes enforce GET method', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TM', template: 'generic', targets: 'tm@example.com' }) });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const tid = detail.data.targets[0].id;
+    const m1 = await req(base, `/api/targets/${tid}`, { method: 'DELETE' });
+    assert.equal(m1.status, 405);
+    const m2 = await req(base, `/api/targets/${tid}/events`, { method: 'POST', body: '{}' });
+    assert.equal(m2.status, 405);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
