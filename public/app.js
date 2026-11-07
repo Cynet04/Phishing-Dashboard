@@ -10,15 +10,35 @@ function applyTheme(theme) {
 applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
 $('#themeBtn').addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 
-async function api(path, opts = {}) {
-  const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
-  if (res.status === 401 && !path.startsWith('/api/auth/')) {
-    location.href = '/login';
-    throw new Error('Authentication required');
+let apiPending = 0;
+function renderApiStatus() {
+  const el = $('#apiStatus');
+  if (!el) return;
+  if (apiPending > 0) {
+    el.classList.remove('hidden');
+    el.textContent = apiPending === 1 ? 'Loading…' : `Loading… (${apiPending})`;
+  } else {
+    el.classList.add('hidden');
+    el.textContent = 'Loading…';
   }
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-  return data;
+}
+function beginApi() { apiPending += 1; renderApiStatus(); }
+function endApi() { apiPending = Math.max(0, apiPending - 1); renderApiStatus(); }
+
+async function api(path, opts = {}) {
+  beginApi();
+  try {
+    const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+    if (res.status === 401 && !path.startsWith('/api/auth/')) {
+      location.href = '/login';
+      throw new Error('Authentication required');
+    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    return data;
+  } finally {
+    endApi();
+  }
 }
 
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }

@@ -199,3 +199,7 @@ ode --test --test-concurrency=1 — 65/65 passing. Committed/pushed (6e2fb8). Das
 - 
 ode --check (ui); 
 ode --test --test-concurrency=1 — 65/65 passing. Committed/pushed ( 151777). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign picker **Target Details** vs Recent Targets **Details**.
+
+## 2026-11-07 15:45Z â€” Phase 95: campaign events target-not-in-campaign consistency
+- `db.listEvents` now returns a stable empty paginated shape for `campaignId + targetId` queries when the target does not belong to the campaign (prevents cross-campaign leakage/confusion; unknown-campaign stable shape preserved). Added regression test.
+- `node --check` (db/tests); `node --test --test-concurrency=1` â€” 66/66 passing. Committed/pushed (`3dc39f3`, docs `dc4f8b9`). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

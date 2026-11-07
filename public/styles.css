@@ -35,6 +35,9 @@ input,select,textarea{width:100%;margin-top:6px;margin-bottom:12px;background:#0
 .toasts{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:50}
 .toast{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);min-width:220px}
 .toast.error{border-color:#6b2330;color:#fecaca}
+.api-status{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel2)}
+.api-status::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid #35508f;border-top-color:var(--accent);animation:pdspin .8s linear infinite}
+@keyframes pdspin{to{transform:rotate(360deg)}}
 .status-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .status-value{font-size:1.05rem;font-weight:700;margin-top:4px}
 .modal.hidden{display:none}
