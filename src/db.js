@@ -193,14 +193,16 @@ function exportTargetsCsv(opts = {}) {
   return targetsToCsv(rows);
 }
 
-function recentTargets(limit = 50) {
+function recentTargets(opts = {}) {
+  const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
+  const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
   const db = load();
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
-  return db.targets
+  const all = db.targets
     .slice()
     .sort((a, b) => String(b.updatedAt || b.createdAt).localeCompare(String(a.updatedAt || a.createdAt)))
-    .slice(0, limit)
     .map(t => ({ ...t, campaignName: cmap[t.campaignId] || t.campaignId }));
+  return { items: all.slice(offset, offset + limit), total: all.length, limit, offset };
 }
 
 function deleteCampaign(id) {

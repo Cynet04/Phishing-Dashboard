@@ -35,7 +35,7 @@ node --test --test-concurrency=1
 - `GET /api/campaigns`, `POST /api/campaigns`
 - `GET /api/campaigns/:id`, `DELETE /api/campaigns/:id` (demo hygiene), `GET /api/campaigns/:id/stats`, `GET /api/campaigns/:id/export.csv`
 - `POST /api/campaigns/:id/send`
-- `GET /api/targets/recent`, `GET /api/targets/export.csv`, `POST /api/targets/:id/click`
+- `GET /api/targets/recent?limit=&offset=`, `GET /api/targets/export.csv`, `POST /api/targets/:id/click`
 - `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`)
 
 `/api/*` responses use JSON error objects and return `405` for known campaign routes with unsupported methods. The server adds basic security headers and safe static-file resolution.

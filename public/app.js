@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0 };
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
@@ -77,8 +77,11 @@ async function selectCampaign(id, quiet) {
   });
 }
 
-async function loadTargets() {
-  const targets = await api('/api/targets/recent?limit=50');
+async function loadTargets(reset = false) {
+  if (reset) { state.targetsOffset = 0; }
+  const page = await api(`/api/targets/recent?limit=${state.targetsLimit}&offset=${state.targetsOffset}`);
+  state.targetsTotal = page.total || 0;
+  const targets = page.items || [];
   $('#targetsBody').innerHTML = targets.length ? targets.map(t => `
     <tr>
       <td>${esc(t.campaignName)}</td>
@@ -91,11 +94,19 @@ async function loadTargets() {
     await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' });
     await refresh();
   }));
+  const shown = Math.min(state.targetsOffset + targets.length, state.targetsTotal);
+  $('#targetsMeta').textContent = state.targetsTotal ? `Showing ${shown} of ${state.targetsTotal}` : '';
+  $('#loadMoreTargetsBtn').disabled = shown >= state.targetsTotal;
 }
 
 async function refresh() {
-  await Promise.all([loadStats(), loadCampaigns(), loadTargets()]);
+  await Promise.all([loadStats(), loadCampaigns(), loadTargets(true)]);
 }
+
+$('#loadMoreTargetsBtn').addEventListener('click', async () => {
+  state.targetsOffset += state.targetsLimit;
+  await loadTargets(false);
+});
 
 $('#campaignForm').addEventListener('submit', async (e) => {
   e.preventDefault();

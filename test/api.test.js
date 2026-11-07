@@ -154,6 +154,17 @@ test('csv export returns campaign targets', async () => {
   });
 });
 
+test('recent targets endpoint supports pagination envelope', async () => {
+  await withServer(async (base) => {
+    await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Page', template: 'generic', targets: 'p1@example.com,p2@example.com,p3@example.com' }) });
+    const page = await req(base, '/api/targets/recent?limit=2&offset=0');
+    assert.equal(page.status, 200);
+    assert.equal(page.data.total, 3);
+    assert.equal(page.data.items.length, 2);
+    assert.equal(page.data.limit, 2);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

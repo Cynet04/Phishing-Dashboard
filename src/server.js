@@ -91,7 +91,7 @@ async function handler(req, res) {
     if (req.method === 'GET' && pathname === '/api/targets/export.csv') {
       return send(res, 200, db.exportTargetsCsv({}), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="targets.csv"' });
     }
-    if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets(Number(searchParams.get('limit') || 50)));
+    if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets({ limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     if (req.method === 'GET' && pathname === '/api/stats') return send(res, 200, db.stats());
     const m = pathname.match(/^\/api\/campaigns\/([^/]+)(?:\/(send|stats|export\.csv))?$/);
     if (m && req.method === 'GET' && !m[2]) return send(res, 200, db.getCampaign(m[1]));

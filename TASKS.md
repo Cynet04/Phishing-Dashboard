@@ -40,7 +40,7 @@
 
 ## Phase 8 — Advanced Analytics (expansion, active)
 - [x] Add CSV export for campaign/global targets (API + dashboard action) with tests — 8/8 passing
-- [ ] Add recent targets pagination (`limit`/`offset`) and UI "Load more" with tests
+- [x] Add recent targets pagination (`limit`/`offset`) and UI "Load more" with tests — 9/9 passing
 - [ ] Add campaign stats timeline filtering by date range (API) with tests
 - [ ] Run verification, docs/log updates, commit/push per item
 

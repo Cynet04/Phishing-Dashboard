@@ -60,7 +60,10 @@
     <section class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <h2 style="margin:0">Recent Targets</h2>
-        <a class="btn small secondary" href="/api/targets/export.csv">Export CSV</a>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="loadMoreTargetsBtn" class="btn small secondary">Load more</button>
+          <a class="btn small secondary" href="/api/targets/export.csv">Export CSV</a>
+        </div>
       </div>
       <div class="table-wrap" style="margin-top:12px">
         <table>
@@ -68,6 +71,7 @@
           <tbody id="targetsBody"></tbody>
         </table>
       </div>
+      <div id="targetsMeta" class="muted" style="margin-top:8px"></div>
     </section>
   </main>
   <script src="/app.js"></script>
