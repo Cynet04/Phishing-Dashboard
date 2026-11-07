@@ -47,7 +47,7 @@ Public endpoints remain available for the educational simulation flow: `/api/hea
 - `GET /api/campaigns/:id?status=sent|opened|clicked|submitted|pending&includeTargets=false`, `GET /api/campaigns/:id/summary`, `GET /api/campaigns/:id/targets?status=`, `GET /api/campaigns/:id/targets/export.csv?status=`, `GET /api/campaigns/:id/events?type=&targetId=&limit=&offset=`, `GET /api/campaigns/:id/events.csv?targetId=&type=`, `DELETE /api/campaigns/:id` (demo hygiene), `POST /api/campaigns/:id/targets`, `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`
 - `POST /api/campaigns/:id/send`
 - `GET /api/targets/recent?limit=&offset=&campaignId=&status=`, `GET /api/targets/:id`, `GET /api/targets/:id/events?type=&limit=&offset=`, `GET /api/targets/export.csv?campaignId=&status=`, `POST /api/targets/:id/click`
-- `GET /api/events?campaignId=&targetId=&type=&limit=&offset=`, `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`), `DELETE /api/events/:id`, `GET /api/events/export.csv?campaignId=&targetId=&type=`
+- `GET /api/events?campaignId=&targetId=&type=&limit=&offset=`, `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`), `DELETE /api/events/:id`, `GET /api/events/export.csv?campaignId=&targetId=&type=` (alias: `/api/events.csv`)
 
 `/api/*` responses use JSON error objects and return `405` for known campaign routes with unsupported methods. The server adds basic security headers and safe static-file resolution.
 

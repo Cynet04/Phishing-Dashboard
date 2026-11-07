@@ -369,7 +369,11 @@
 - [x] Frontend UI: added **Global list** control/indicator for campaign-scoped Recent Events quick view; hides when global, restores global `/api/events` pagination/filter state cleanly — 61/61 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 84 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/events.csv?targetId=` alias or align docs/UI to existing `/api/events/export.csv` (improve consistency, avoid 404 confusion) with regression test and README update
+## Phase 84 — Expansion (complete)
+- [x] Backend/API + docs: added global events CSV alias `GET /api/events.csv?campaignId=&targetId=&type=` (405 for non-GET), README updated; regression test added — 62/62 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 85 — Expansion (active, in progress)
+- [~] Frontend UI: update global events export link in toolbar to reflect current target/type filter context (and keep alias compatibility) for easier filtered exports
 - [ ] Run verification, docs/log updates, commit/push per item
 

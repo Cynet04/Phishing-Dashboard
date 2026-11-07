@@ -177,7 +177,8 @@ async function handler(req, res) {
       if (req.method === 'DELETE') return send(res, 200, db.deleteCustomTemplate(id));
       return send(res, 405, { error: 'method not allowed' });
     }
-    if (req.method === 'GET' && pathname === '/api/events/export.csv') {
+    if (pathname === '/api/events/export.csv' || pathname === '/api/events.csv') {
+      if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
       return send(res, 200, db.exportEventsCsv({ campaignId: searchParams.get('campaignId') || undefined, targetId: searchParams.get('targetId') || undefined, type: searchParams.get('type') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="events.csv"' });
     }
     if (pathname === '/api/events') {

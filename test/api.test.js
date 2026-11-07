@@ -826,6 +826,22 @@ test('targets recent and export routes enforce GET method', async () => {
   });
 });
 
+test('global events CSV alias /api/events.csv supports filters', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EventsCsvAlias', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const csv = await req(base, `/api/events.csv?targetId=${detail.data.targets[0].id}&type=clicked`);
+    assert.equal(csv.status, 200);
+    assert.match(csv.raw, /campaignId,campaignName,eventId,targetId,type,at,meta/);
+    assert.match(csv.raw, new RegExp(`,${detail.data.targets[0].id},`));
+    assert.match(csv.raw, /,clicked,/);
+    const bad = await fetch(`${base}/api/events.csv?targetId=${detail.data.targets[0].id}`, { method: 'POST' });
+    assert.equal(bad.status, 405);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
