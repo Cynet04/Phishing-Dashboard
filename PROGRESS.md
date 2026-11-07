@@ -175,3 +175,9 @@ ode --test --test-concurrency=1 � 63/63 passing. Commit/push in progress. Dashbo
 - 
 ode --check (db/server/tests); 
 ode --test --test-concurrency=1 � 64/64 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 14:22Z — Phase 91: campaign detail target picker -> Recent Events
+- Campaign detail now includes a target picker (from current filtered campaign targets) and **Show Target Events** action that routes the selected target into global Recent Events 	argetId filter via showTargetEventsInRecent recovery flow.
+- 
+ode --check (ui); 
+ode --test --test-concurrency=1 — 64/64 passing. Committed/pushed (10beea1). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: select campaign → pick target → **Show Target Events**.
