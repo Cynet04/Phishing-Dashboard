@@ -161,7 +161,7 @@ async function selectCampaign(id, quiet) {
       <button class="btn small secondary" id="copyLandingBtn" ${c.targets[0]?.id ? '' : 'disabled'}>Copy Landing Link</button>
       <button class="btn small secondary" id="viewCampaignEventsBtn" type="button">View Campaign Events</button>
       <button class="btn small secondary" id="viewCampaignTargetsBtn" type="button">Show Targets in Table</button>
-      <a class="btn small secondary" id="campaignFilteredTargetsExport" href="/api/campaigns/${encodeURIComponent(id)}/targets/export.csv${state.campaignStatus ? `?status=${encodeURIComponent(state.campaignStatus)}` : ''}">Export Filtered Targets</a>
+      <a class="btn small secondary" id="campaignFilteredTargetsExport" href="/api/campaigns/${encodeURIComponent(id)}/targets.csv${state.campaignStatus ? `?status=${encodeURIComponent(state.campaignStatus)}` : ''}">Export Filtered Targets</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/export.csv">Export All Targets</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/events.csv">Export Events CSV</a>
       <button class="btn small secondary" id="deleteCampaignBtn">Delete Campaign</button>

@@ -469,7 +469,11 @@
 - [x] Backend/API: added `GET /api/campaigns/:id/targets.csv?status=` alias (same behavior/filters/404/405 as `targets/export.csv`) with regression test and README update — 71/71 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 110 — Expansion (active, in progress)
-- [~] Frontend UI: add campaign detail **Export Targets (alias)**/replace copy to use `targets.csv` alias (keep backward-compatible awareness in docs) — small UX/API alignment change
+## Phase 110 — Expansion (complete)
+- [x] Frontend UI: campaign detail filtered targets export link now uses `GET /api/campaigns/:id/targets.csv` alias (backward-compatible endpoints retained) — 71/71 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 111 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/targets.csv` alias for global targets export (same filters/404-safe/405 behavior) with regression test and README/docs update
 - [ ] Run verification, docs/log updates, commit/push per item
 
