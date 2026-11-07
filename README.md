@@ -48,7 +48,7 @@ Public endpoints remain available for the educational simulation flow: `/api/hea
 - `POST /api/campaigns/:id/send`
 - `GET /api/targets/recent?limit=&offset=&campaignId=&status=`, `GET /api/targets/:id`, `GET /api/targets/:id/events?type=&limit=&offset=`, `GET /api/targets/export.csv?campaignId=&status=`, `POST /api/targets/:id/click`, `GET /api/targets/export.csv`, `POST /api/targets/:id/click`
 - `GET /api/events?campaignId=&type=&limit=&offset=`, `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`)
-- `GET /api/events/export.csv?campaignId=&targetId=&type=`, `GET /api/campaigns/:id/events.csv`
+- `GET /api/events?campaignId=&type=&limit=&offset=`, `POST /api/events`, `DELETE /api/events/:id`, `GET /api/events/export.csv?campaignId=&targetId=&type=`
 
 `/api/*` responses use JSON error objects and return `405` for known campaign routes with unsupported methods. The server adds basic security headers and safe static-file resolution.
 

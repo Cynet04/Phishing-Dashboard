@@ -384,7 +384,17 @@ function exportEventsCsv(opts = {}) {
   return eventsToCsv(rows);
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, getTarget, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
+function deleteEvent(id) {
+  const db = load();
+  const eventId = String(id);
+  const idx = db.events.findIndex(e => e.id === eventId);
+  if (idx === -1) throw Object.assign(new Error('event not found'), { status: 404 });
+  const removed = db.events.splice(idx, 1)[0];
+  save(db);
+  return { ok: true, id: removed.id, campaignId: removed.campaignId, targetId: removed.targetId };
+}
+
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, getTarget, sendSimulation, recordEvent, deleteEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 

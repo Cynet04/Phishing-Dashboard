@@ -309,7 +309,11 @@
 - [x] Frontend UI: target detail modal adds **Export Events CSV** action linked to `/api/events/export.csv?targetId=` for the selected target — 56/56 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 69 — Expansion (active, in progress)
-- [~] Backend/API: add `DELETE /api/events/:id` for demo hygiene (404-safe) and test; keep API method consistency
+## Phase 69 — Expansion (complete)
+- [x] Backend/API: `DELETE /api/events/:id` for demo hygiene (404-safe, 405 for unsupported methods) and regression test — 57/57 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 70 — Expansion (active, in progress)
+- [~] Frontend UI: add delete action for individual events in Recent Events table (with confirmation, refresh, safe error handling)
 - [ ] Run verification, docs/log updates, commit/push per item
 

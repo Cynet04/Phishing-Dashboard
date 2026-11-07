@@ -744,6 +744,25 @@ test('global events CSV supports targetId filter', async () => {
   });
 });
 
+test('DELETE /api/events/:id removes event and enforces 404/405', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'DelEvent', template: 'generic', targets: 'de@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const list = await req(base, `/api/events?campaignId=${created.data.id}&type=clicked`);
+    assert.ok(list.data.items.length >= 1);
+    const eventId = list.data.items[0].id;
+    const m = await fetch(`${base}/api/events/${eventId}`, { method: 'PUT' });
+    assert.equal(m.status, 405);
+    const del = await req(base, `/api/events/${eventId}`, { method: 'DELETE' });
+    assert.equal(del.status, 200);
+    assert.equal(del.data.ok, true);
+    const missing = await req(base, `/api/events/${eventId}`, { method: 'DELETE' });
+    assert.equal(missing.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

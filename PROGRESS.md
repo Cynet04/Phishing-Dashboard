@@ -70,4 +70,12 @@
 
 ## 2026-11-07 11:46Z — Phase 68: target detail export-events action
 - Target detail modal includes **Export Events CSV** for the selected target (`/api/events/export.csv?targetId=`), alongside Copy JSON and accessibility behavior.
+- `node --check` (ui/app.js); `node --test --test-concurrency=1` — 56/56 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets ? **Details** ? **Export Events CSV**.
+
+## 2026-11-07 11:47Z — Phase 69: delete event API
+- Added `DELETE /api/events/:id` (404-safe, 405 for unsupported methods) and DB `deleteEvent()`. README updated; regression test added.
+- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 57/57 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 11:46Z — Phase 68: target detail export-events action
+- Target detail modal includes **Export Events CSV** for the selected target (`/api/events/export.csv?targetId=`), alongside Copy JSON and accessibility behavior.
 - `node --check` (ui/app.js); `node --test --test-concurrency=1` — 56/56 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets ? **Details** ? **Export Events CSV**.

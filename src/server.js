@@ -185,6 +185,12 @@ async function handler(req, res) {
       if (req.method === 'POST') return send(res, 201, db.recordEvent(await readJson(req)));
       return send(res, 405, { error: 'method not allowed' });
     }
+    if (pathname.startsWith('/api/events/') && !pathname.endsWith('/export.csv')) {
+      const id = decodeURIComponent(pathname.split('/')[3] || '');
+      if (!id) return send(res, 404, { error: 'not found' });
+      if (req.method === 'DELETE') return send(res, 200, db.deleteEvent(id));
+      return send(res, 405, { error: 'method not allowed' });
+    }
     if (req.method === 'GET' && pathname === '/api/campaigns') return send(res, 200, db.listCampaigns({ q: searchParams.get('q') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     if (req.method === 'POST' && pathname === '/api/campaigns') {
       const body = await readBody(req).catch((e) => { throw e; });
