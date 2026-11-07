@@ -1004,3 +1004,20 @@ test('campaign-scoped target events.csv validates ownership and 404/405', async 
     assert.equal(m.status, 405);
   });
 });
+
+
+test('campaign targets.csv alias supports filters and 404/405', async () => {
+  await withServer(async (base) => {
+    const c = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CTCSV', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${c.data.id}/send`, { method: 'POST', body: '{}' });
+    const ok = await req(base, `/api/campaigns/${c.data.id}/targets.csv`);
+    assert.equal(ok.status, 200);
+    assert.match(String(ok.headers['content-type']||''), /text\/csv/);
+    assert.match(String(ok.headers['content-disposition']||''), /campaign-.*targets\.csv/);
+    assert.match(ok.raw, /a@example\.com/);
+    const nf = await req(base, '/api/campaigns/nope/targets.csv');
+    assert.equal(nf.status, 404);
+    const m = await req(base, `/api/campaigns/${c.data.id}/targets.csv`, { method: 'POST', body: '{}' });
+    assert.equal(m.status, 405);
+  });
+});

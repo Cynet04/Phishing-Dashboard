@@ -465,7 +465,11 @@
 - [x] Frontend UI: System Status card shows `dataFile` from `/api/health` (read-only) while preserving existing fields/refresh behavior — 70/70 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 109 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/campaigns/:id/targets.csv` alias for campaign targets export (same filters/404/405-safe behavior as existing route) with regression test and README/docs update
+## Phase 109 — Expansion (complete)
+- [x] Backend/API: added `GET /api/campaigns/:id/targets.csv?status=` alias (same behavior/filters/404/405 as `targets/export.csv`) with regression test and README update — 71/71 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 110 — Expansion (active, in progress)
+- [~] Frontend UI: add campaign detail **Export Targets (alias)**/replace copy to use `targets.csv` alias (keep backward-compatible awareness in docs) — small UX/API alignment change
 - [ ] Run verification, docs/log updates, commit/push per item
 
