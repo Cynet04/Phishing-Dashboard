@@ -207,10 +207,14 @@ function addTargets(campaignId, rawInput) {
 
 function getTarget(id) {
   const db = load();
-  const target = db.targets.find(t => t.id === String(id));
+  const targetId = String(id);
+  const target = db.targets.find(t => t.id === targetId);
   if (!target) throw Object.assign(new Error('target not found'), { status: 404 });
   const campaign = db.campaigns.find(c => c.id === target.campaignId);
-  return { ...target, campaignName: campaign ? campaign.name : target.campaignId };
+  const events = db.events.filter(e => e.targetId === targetId);
+  const eventCounts = events.reduce((acc, e) => { const k = String(e.type || 'unknown'); acc[k] = (acc[k] || 0) + 1; return acc; }, {});
+  const lastEventAt = events.reduce((m, e) => (String(e.at || '') > m ? String(e.at) : m), '');
+  return { ...target, campaignName: campaign ? campaign.name : target.campaignId, eventCount: events.length, eventCounts, lastEventAt: lastEventAt || null };
 }
 
 function recordEvent(input = {}) {

@@ -577,6 +577,9 @@ test('target detail endpoint returns target with campaign name and 404 for unkno
     assert.equal(r.status, 200);
     assert.equal(r.data.email, 'td@example.com');
     assert.equal(r.data.campaignName, 'Target Detail');
+    assert.equal(typeof r.data.eventCount, 'number');
+    assert.ok(r.data.eventCounts && typeof r.data.eventCounts === 'object');
+    assert.ok('lastEventAt' in r.data);
     const bad = await req(base, '/api/targets/nope');
     assert.equal(bad.status, 404);
   });

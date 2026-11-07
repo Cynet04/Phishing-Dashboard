@@ -377,7 +377,11 @@
 - [x] Frontend UI: global events export link now syncs with current `targetId`/toolbar `type` filter context (`updateEventsExportLink`, applied on global/scoped loads and toolbar changes; keeps `/api/events/export.csv` compatibility) — 62/62 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 86 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/targets/:id/summary` or enrich target detail payload with compact event counts/status metadata (backward-compatible) plus regression test and README update
+## Phase 86 — Expansion (complete)
+- [x] Backend/API: enriched `GET /api/targets/:id` payload with backward-compatible `eventCount`, `eventCounts`, and `lastEventAt` (DB `getTarget`); README/test updated — 62/62 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 87 — Expansion (active, in progress)
+- [~] Frontend UI: surface enriched target detail metadata (event counts/last event) in target detail modal and keep modal actions consistent
 - [ ] Run verification, docs/log updates, commit/push per item
 
