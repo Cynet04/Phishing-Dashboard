@@ -472,6 +472,13 @@ $('#copyTargetExportLink')?.addEventListener('click', async () => {
   try { await navigator.clipboard?.writeText(url); toast('Export link copied.'); }
   catch { prompt('Copy export link:', url); }
 });
+$('#copyTargetEventsLink')?.addEventListener('click', async () => {
+  const path = targetDetailEventsPath();
+  if (!path) return toast('No events link available.', 'error');
+  const url = new URL(path, location.href).href;
+  try { await navigator.clipboard?.writeText(url); toast('Events link copied.'); }
+  catch { prompt('Copy events link:', url); }
+});
 $('#applyTargetDetailDates')?.addEventListener('click', async () => { targetDetailType = String($('#targetDetailType')?.value || '').trim(); targetDetailFrom = String($('#targetDetailFrom')?.value || '').trim(); targetDetailTo = String($('#targetDetailTo')?.value || '').trim(); syncTargetDetailExportLink(); try { await refreshTargetDetailEvents(); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); } });
 $('#clearTargetDetailDates')?.addEventListener('click', async () => { targetDetailType = ''; targetDetailFrom = ''; targetDetailTo = ''; ['#targetDetailFrom','#targetDetailTo','#targetDetailType'].forEach(id => { const el = $(id); if (el) el.value = ''; }); syncTargetDetailExportLink(); try { await refreshTargetDetailEvents(); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); } });
 async function showTargetEventsInRecent(targetId) {
