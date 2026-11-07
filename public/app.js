@@ -269,15 +269,20 @@ async function loadTargets(reset = false) {
   $('#loadMoreTargetsBtn').disabled = shown >= state.targetsTotal;
 }
 
-async function loadCampaignEvents(campaignId) {
-  if (!campaignId) return loadEvents(true);
+function updateEventsTargetDetailButton() {
+  const btn = $('#openEventsTargetDetailBtn'); if (!btn) return;
+  const tid = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
+  btn.classList.toggle('hidden', !tid);
+  btn.disabled = !tid;
+}
+async function loadCampaignEvents(campaignId, reset = false) {
   state.eventsScope = 'campaign';
-  state.eventsCampaignId = String(campaignId);
-  state.eventsOffset = 0;
-  const type = String($('#eventsTypeFilter')?.value || '').trim();
-  const targetId = String($('#eventsTargetFilter')?.value || '').trim();
-  const from = String($('#eventsFromFilter')?.value || '').trim();
-  const to = String($('#eventsToFilter')?.value || '').trim();
+  state.eventsCampaignId = campaignId;
+  if (reset) state.eventsOffset = 0;
+  const type = String($('#eventsTypeFilter')?.value || state.eventsType || '').trim();
+  const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
+  const from = String($('#eventsFromFilter')?.value || state.eventsFrom || '').trim();
+  const to = String($('#eventsToFilter')?.value || state.eventsTo || '').trim();
   state.eventsType = type; state.eventsTargetId = targetId; state.eventsFrom = from; state.eventsTo = to;
   const params = new URLSearchParams({ limit: String(state.eventsLimit), offset: '0' });
   if (type) params.set('type', type);
@@ -304,6 +309,7 @@ async function loadCampaignEvents(campaignId) {
   $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination
   $('#returnGlobalEventsBtn')?.classList.remove('hidden');
   updateEventsExportLink();
+  updateEventsTargetDetailButton();
 }
 
 async function loadEvents(reset = false) {
@@ -326,19 +332,31 @@ async function loadEvents(reset = false) {
   const events = page.items || [];
   $('#eventsBody').innerHTML = events.length ? events.map(e => `
     <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary view-event" data-id="${esc(e.id || '')}">Details</button> <button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events.</td></tr>';
+  $('#eventsBody').querySelectorAll('.view-event').forEach(btn => btn.addEventListener('click', async () => {
+    if (!btn.dataset.id) return;
+    try { await openEventDetail(btn.dataset.id); } catch (e) { toast(e.message, 'error'); }
+  }));
   $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
     if (!btn.dataset.id || !confirm('Delete this event?')) return;
     try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadEvents(true); await loadSystemStatus(); }
     catch (e) { toast(e.message, 'error'); }
   }));
   const shown = state.eventsOffset + events.length;
-  const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
+  const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
   const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = 'Scope: global';
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
   $('#returnGlobalEventsBtn')?.classList.add('hidden');
   updateEventsExportLink();
+  updateEventsTargetDetailButton();
 }
+
+$('#openEventsTargetDetailBtn')?.addEventListener('click', async () => {
+  const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
+  if (!targetId) return toast('No target selected.', 'error');
+  const campaignId = state.eventsScope === 'campaign' ? String(state.eventsCampaignId || '').trim() : '';
+  try { await openTargetDetail(targetId, campaignId); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); }
+});
 
 async function loadSystemStatus() {
   try {
