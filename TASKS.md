@@ -373,7 +373,11 @@
 - [x] Backend/API + docs: added global events CSV alias `GET /api/events.csv?campaignId=&targetId=&type=` (405 for non-GET), README updated; regression test added — 62/62 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 85 — Expansion (active, in progress)
-- [~] Frontend UI: update global events export link in toolbar to reflect current target/type filter context (and keep alias compatibility) for easier filtered exports
+## Phase 85 — Expansion (complete)
+- [x] Frontend UI: global events export link now syncs with current `targetId`/toolbar `type` filter context (`updateEventsExportLink`, applied on global/scoped loads and toolbar changes; keeps `/api/events/export.csv` compatibility) — 62/62 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 86 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/targets/:id/summary` or enrich target detail payload with compact event counts/status metadata (backward-compatible) plus regression test and README update
 - [ ] Run verification, docs/log updates, commit/push per item
 

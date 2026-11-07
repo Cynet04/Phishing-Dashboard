@@ -248,6 +248,7 @@ async function loadCampaignEvents(campaignId) {
   $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped campaign view';
   $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination
   $('#returnGlobalEventsBtn')?.classList.remove('hidden');
+  updateEventsExportLink();
 }
 
 async function loadEvents(reset = false) {
@@ -277,6 +278,7 @@ async function loadEvents(reset = false) {
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
   $('#returnGlobalEventsBtn')?.classList.add('hidden');
+  updateEventsExportLink();
 }
 
 async function loadSystemStatus() {
@@ -339,14 +341,21 @@ $('#clearExportFiltersBtn')?.addEventListener('click', () => {
   if ($('#targetExportCampaign')) $('#targetExportCampaign').value = '';
   if ($('#targetExportStatus')) $('#targetExportStatus').value = '';
   if ($('#eventsExportType')) $('#eventsExportType').value = '';
-  const ea = $('#eventsExportLink'); if (ea) ea.href = '/api/events/export.csv';
+  updateEventsExportLink();
   updateTargetsExportLink();
   loadTargets(true).catch((e) => toast(`Targets filter failed: ${e.message}`, 'error'));
 });
-$('#eventsExportType')?.addEventListener('change', () => {
+function updateEventsExportLink() {
   const type = String($('#eventsExportType')?.value || '').trim();
-  const a = $('#eventsExportLink'); if (a) a.href = '/api/events/export.csv' + (type ? `?type=${encodeURIComponent(type)}` : '');
-});
+  const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
+  const a = $('#eventsExportLink');
+  if (!a) return;
+  const p = new URLSearchParams();
+  if (type) p.set('type', type);
+  if (targetId) p.set('targetId', targetId);
+  a.href = '/api/events/export.csv' + (p.toString() ? `?${p}` : '');
+}
+$('#eventsExportType')?.addEventListener('change', updateEventsExportLink);
 $('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#eventsTargetFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#clearEventsFilterBtn')?.addEventListener('click', () => {
