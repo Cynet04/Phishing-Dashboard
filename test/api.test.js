@@ -332,6 +332,34 @@ test('API method and not-found behavior is consistent', async () => {
   });
 });
 
+test('static root and css assets are served', async () => {
+  await withServer(async (base) => {
+    const head = await fetch(`${base}/`);
+    assert.equal(head.status, 200);
+    assert.match(head.headers.get('content-type') || '', /text\/html/);
+    const css = await fetch(`${base}/styles.css`);
+    assert.equal(css.status, 200);
+    assert.match(css.headers.get('content-type') || '', /text\/css/);
+  });
+});
+
+test('events list ordering is newest-first', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Order', template: 'generic', targets: 'o@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const targetId = detail.data.targets[0].id;
+    await req(base, `/api/targets/${targetId}/click`, { method: 'POST', body: '{}' });
+    await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId, type: 'submitted' }) });
+    const list = await req(base, `/api/events?campaignId=${created.data.id}&limit=10`);
+    assert.equal(list.status, 200);
+    assert.ok(list.data.items.length >= 2);
+    const times = list.data.items.map(e => e.at);
+    const sorted = [...times].sort().reverse();
+    assert.deepEqual(times, sorted);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

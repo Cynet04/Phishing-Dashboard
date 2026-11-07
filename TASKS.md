@@ -103,8 +103,18 @@
 - [x] Add per-campaign `events.csv` link in campaign detail UI (selected campaign)
 - [x] Run verification, docs/log updates, commit/push per item — 22/22 passing
 
-## Phase 21 — Expansion (in progress)
+## Phase 21 — Expansion (complete)
 - [x] Add dashboard display of campaign detail summary counts (`targetCount`/`eventCount`) for clarity — 22/22 passing
 - [x] Keep API/export regression coverage stable (per-campaign events CSV assertions present)
+- [x] Run verification, docs/log updates, commit/push per item (`de64106`)
+
+## Phase 22 — Expansion (complete)
+- [x] Add `/api/events` ordering (newest-first) regression assertions
+- [x] Add root static `/` and `/styles.css` smoke checks (safe static routing/content-type) — 24/24 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 23 — Expansion (active)
+- [ ] Add CSV export for a single campaign’s targets via dashboard campaign detail link (uses existing endpoint)
+- [ ] Add regression test for per-campaign targets CSV response headers/content
 - [ ] Run verification, docs/log updates, commit/push per item
 
