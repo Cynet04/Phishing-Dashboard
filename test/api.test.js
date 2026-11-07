@@ -321,6 +321,17 @@ test('campaign detail includes summary counts', async () => {
   });
 });
 
+test('API method and not-found behavior is consistent', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Method', template: 'generic', targets: 'm@example.com' }) });
+    const method = await req(base, `/api/campaigns/${created.data.id}/stats`, { method: 'POST', body: '{}' });
+    assert.equal(method.status, 405);
+    const missing = await req(base, '/api/nope');
+    assert.equal(missing.status, 404);
+    assert.ok(missing.data && missing.data.error);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

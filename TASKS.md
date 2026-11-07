@@ -93,8 +93,18 @@
 - [x] Verify API/UI behavior coverage remains green (simulate submit/click flows already covered by tests)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 19 — Expansion (active)
-- [x] Add campaign detail API to include `statusCounts`, `targetCount`, and `eventCount` summary (backward-compatible)
-- [x] Add tests for campaign detail summary fields — 21/21 passing
+## Phase 19 — Expansion (complete)
+- [x] Add campaign detail API to include `statusCounts`, `targetCount`, and `eventCount` summary (backward-compatible) — 21/21 passing (`b1336d3`)
+- [x] Add tests for campaign detail summary fields
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 20 — Expansion (complete)
+- [x] Add `/api` method/not-found consistency regression tests (405/404 JSON behavior)
+- [x] Add per-campaign `events.csv` link in campaign detail UI (selected campaign)
+- [x] Run verification, docs/log updates, commit/push per item — 22/22 passing
+
+## Phase 21 — Expansion (active)
+- [ ] Add dashboard display of campaign detail summary counts (`targetCount`/`eventCount`) for clarity
+- [ ] Add regression test asserting events export content-type/filename for per-campaign route (already partly covered) and keep coverage stable
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -100,12 +100,13 @@ async function selectCampaign(id, quiet) {
   const statuses = ['','pending','sent','opened','clicked','submitted'];
   $('#detail').innerHTML = `
     <div><strong>${esc(c.name)}</strong> <span class="pill ${esc(c.status)}">${esc(c.status)}</span></div>
-    <div class="muted" style="margin:8px 0">Targets (filtered): ${c.targets.length} · Sent: ${stats.totals.emailsSent} · Opened: ${stats.totals.opened} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
+    <div class="muted" style="margin:8px 0">Targets (filtered): ${c.targets.length} · All targets: ${c.targetCount ?? c.targets.length} · Events: ${c.eventCount ?? 0} · Sent: ${stats.totals.emailsSent} · Opened: ${stats.totals.opened} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
     <div class="muted" style="margin:0 0 8px">Rates — Open: ${stats.totals.openRate}% · Click: ${stats.totals.clickRate}% · Submit: ${stats.totals.submitRate}%</div>
     <label class="muted">Filter targets by status <select id="campaignStatusFilter">${statuses.map(s => `<option value="${s}" ${s===state.campaignStatus?'selected':''}>${s || 'all'}</option>`).join('')}</select></label>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
+      <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/events.csv">Export Events CSV</a>
       <button class="btn small secondary" id="deleteCampaignBtn">Delete Campaign</button>
     </div>
     <label class="muted">Import additional targets <textarea id="importTargetsText" rows="2" placeholder="new1@example.com,new2@example.com"></textarea></label>
