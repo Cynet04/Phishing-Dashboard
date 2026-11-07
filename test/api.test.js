@@ -1210,3 +1210,24 @@ test('GET /api/targets/:id supports optional campaignId ownership validation', a
     assert.equal(legacy.status, 200); assert.equal(legacy.data.id, t1);
   });
 });
+
+
+test('campaign events JSON endpoint supports from/to date filters and validation', async () => {
+  await withServer(async (base) => {
+    const c = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CEDATE', template: 'generic', targets: 'cedate@example.com' }) });
+    const d = await req(base, `/api/campaigns/${c.data.id}`);
+    const tid = d.data.targets[0].id;
+    await req(base, `/api/campaigns/${c.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${tid}/click`, { method: 'POST', body: '{}' });
+    const today = new Date().toISOString().slice(0,10);
+    const ok = await req(base, `/api/campaigns/${c.data.id}/events?from=${today}&to=${today}`);
+    assert.equal(ok.status, 200); assert.ok(ok.data.total >= 1);
+    assert.equal(ok.data.items[0].campaignId, c.data.id);
+    const empty = await req(base, `/api/campaigns/${c.data.id}/events?from=2000-01-01&to=2000-01-02`);
+    assert.equal(empty.status, 200); assert.equal(empty.data.total, 0);
+    const bad = await req(base, `/api/campaigns/${c.data.id}/events?from=bad-date`);
+    assert.equal(bad.status, 400);
+    const missing = await req(base, '/api/campaigns/nope/events?from=2000-01-01');
+    assert.equal(missing.status, 200); assert.equal(missing.data.total, 0); // preserves stable 404-safe unknown campaign events shape
+  });
+});
