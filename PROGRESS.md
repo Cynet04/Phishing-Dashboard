@@ -306,3 +306,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 19:35Z — Phase 127: /api/targets/:id.csv alias
 - Added `GET /api/targets/:id.csv` alias for target-scoped events export (same filters/404/405-safe behavior as `events.csv`). Fixed initial route collision/ID extraction (`/api/targets/:id` swallowing `.csv`; extracted target ID from `:id.csv`). README updated. Regression test added. 78/78 passing. Committed/pushed.
+
+## 2026-11-07 19:45Z — Phase 128: Copy CSV link in target detail modal
+- Added **Copy CSV link** button in target detail modal; copies resolved export URL (campaign-scoped/global) with clipboard/prompt fallback. UI/app.js syntax checked, 78/78 passing. Committed/pushed.
