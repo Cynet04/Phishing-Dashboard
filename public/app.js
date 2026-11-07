@@ -162,7 +162,7 @@ async function loadEvents(reset = false) {
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
   $('#eventsBody').innerHTML = events.length ? events.map(e => `
-    <tr><td>${esc(e.campaignName)}</td><td>${esc(e.targetId)}</td><td><span class="pill ${esc(e.type)}">${esc(e.type)}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No events yet.</td></tr>';
+    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No events yet.</td></tr>';
   const shown = Math.min(state.eventsOffset + events.length, state.eventsTotal);
   $('#eventsMeta').textContent = state.eventsTotal ? `Showing ${shown} of ${state.eventsTotal}` : '';
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;

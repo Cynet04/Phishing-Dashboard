@@ -32,6 +32,7 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:03Z — Phase 25: campaign 404 payload regression
-- Added regression test for unknown campaign detail returning JSON 404 with `campaign not found`.
-- `node --test --test-concurrency=1` — 27/27 passing. Commit/push in progress.
+## 2026-11-07 11:04Z — Phase 26: events empty-shape regression + UI defense
+- Added regression test for `/api/events` unknown campaign filter returning stable empty paginated shape.
+- Dashboard recent events rendering now uses defensive fallbacks for missing fields.
+- `node --check public/app.js`; `node --test --test-concurrency=1` — 28/28 passing. Commit/push in progress.

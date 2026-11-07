@@ -128,8 +128,13 @@
 - [x] Reset/clear campaign status filter UX hint preserved (detail UI already supports filter control)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 26 — Expansion (active)
-- [ ] Add `events` list API test for `type` filter combined with unknown campaignId (empty result, stable shape)
-- [ ] Add dashboard display of recent events `campaignId` fallback handling (defensive rendering)
+## Phase 26 — Expansion (complete)
+- [x] Add `events` list API test for unknown campaign/type filter (empty result, stable shape) — 28/28 passing
+- [x] Add dashboard defensive rendering for missing recent event fields
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 27 — Expansion (active)
+- [ ] Add `GET /api/campaigns/:id/export.csv` 404 handling for unknown campaign (explicit) and test
+- [ ] Add `GET /api/campaigns/:id/events.csv` 404 handling for unknown campaign (optional explicit behavior) and test
 - [ ] Run verification, docs/log updates, commit/push per item
 
