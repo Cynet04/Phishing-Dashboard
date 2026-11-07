@@ -449,7 +449,11 @@
 - [x] Frontend UI: target detail modal **Export Events CSV** now uses `GET /api/targets/:id/events.csv` (target-scoped endpoint); scope/other actions preserved — 69/69 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 105 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/campaigns/:id/targets/:targetId/events.csv` (ownership-validated, type filter, 404/405-safe) with regression test and README/docs update
+## Phase 105 — Expansion (complete)
+- [x] Backend/API: added `GET /api/campaigns/:id/targets/:targetId/events.csv?type=` (ownership-validated, 404/405-safe, attachment filename) with regression test and README update — 70/70 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 106 — Expansion (active, in progress)
+- [~] Frontend UI: when target detail modal is opened in campaign scope, use campaign-scoped export link `GET /api/campaigns/:id/targets/:targetId/events.csv` (global fallback preserved)
 - [ ] Run verification, docs/log updates, commit/push per item
 

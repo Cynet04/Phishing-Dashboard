@@ -982,3 +982,24 @@ test('target events.csv exports target-scoped rows and enforces 404/405', async 
     assert.equal(m.status, 405);
   });
 });
+
+
+test('campaign-scoped target events.csv validates ownership and 404/405', async () => {
+  await withServer(async (base) => {
+    const c1 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CSECSV1', template: 'generic', targets: 'a@example.com' }) });
+    const c2 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CSECSV2', template: 'generic', targets: 'b@example.com' }) });
+    const d1 = await req(base, `/api/campaigns/${c1.data.id}`);
+    const d2 = await req(base, `/api/campaigns/${c2.data.id}`);
+    const t1 = d1.data.targets[0].id; const t2 = d2.data.targets[0].id;
+    await req(base, `/api/campaigns/${c1.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${t1}/click`, { method: 'POST', body: '{}' });
+    const ok = await req(base, `/api/campaigns/${c1.data.id}/targets/${t1}/events.csv?type=clicked`);
+    assert.equal(ok.status, 200);
+    assert.match(String(ok.headers['content-type']||''), /text\/csv/);
+    assert.match(ok.raw, /clicked/);
+    const wrong = await req(base, `/api/campaigns/${c1.data.id}/targets/${t2}/events.csv`);
+    assert.equal(wrong.status, 404);
+    const m = await req(base, `/api/campaigns/${c1.data.id}/targets/${t1}/events.csv`, { method: 'POST', body: '{}' });
+    assert.equal(m.status, 405);
+  });
+});
