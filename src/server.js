@@ -223,7 +223,7 @@ async function handler(req, res) {
     if (m && req.method === 'POST' && m[2] === 'send') return send(res, 200, db.sendSimulation(m[1]));
     if (m && req.method === 'GET' && m[2] === 'summary') return send(res, 200, db.getCampaign(m[1], { status: searchParams.get('status'), includeTargets: 'false' }));
     if (m && req.method === 'POST' && m[2] === 'targets') return send(res, 201, db.addTargets(m[1], (await readBody(req)).targets));
-    if (m && req.method === 'GET' && m[2] === 'targets') return send(res, 200, (db.getCampaign(m[1], { status: searchParams.get('status') }).targets));
+    if (m && req.method === 'GET' && m[2] === 'targets') return send(res, 200, db.listCampaignTargets(m[1], { status: searchParams.get('status'), limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     if (m && req.method === 'GET' && m[2] === 'targets/export.csv') return send(res, 200, db.exportTargetsCsv({ campaignId: m[1], status: searchParams.get('status') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-targets.csv"` });
     if (m && m[2] === 'targets') return send(res, 405, { error: 'method not allowed' });
     if (m && req.method === 'GET' && m[2] === 'events') return send(res, 200, db.listEvents({ campaignId: m[1], targetId: searchParams.get('targetId') || undefined, type: searchParams.get('type') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));

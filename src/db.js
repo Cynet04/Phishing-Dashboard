@@ -398,7 +398,26 @@ function deleteEvent(id) {
   return { ok: true, id: removed.id, campaignId: removed.campaignId, targetId: removed.targetId };
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, getTarget, sendSimulation, recordEvent, deleteEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
+function listCampaignTargets(campaignId, opts = {}) {
+  const db = load();
+  const id = String(campaignId);
+  if (!db.campaigns.some(c => c.id === id)) throw Object.assign(new Error('campaign not found'), { status: 404 });
+  const status = opts.status ? String(opts.status).trim().toLowerCase() : '';
+  const allowed = new Set(['pending', 'sent', 'opened', 'clicked', 'submitted']);
+  if (status && !allowed.has(status)) throw Object.assign(new Error('invalid status filter'), { status: 400 });
+  let rows = db.targets.filter(t => t.campaignId === id);
+  if (status) rows = rows.filter(t => t.status === status);
+  rows.sort((a, b) => String(b.updatedAt || b.createdAt || '').localeCompare(String(a.updatedAt || a.createdAt || '')) || String(b.id).localeCompare(String(a.id)));
+  const limitRaw = opts.limit == null ? null : Number(opts.limit);
+  const offsetRaw = opts.offset == null ? null : Number(opts.offset);
+  if (limitRaw != null && (!Number.isFinite(limitRaw) || limitRaw <= 0) || offsetRaw != null && (!Number.isFinite(offsetRaw) || offsetRaw < 0)) throw Object.assign(new Error('invalid pagination'), { status: 400 });
+  const limit = Math.max(1, Math.min(200, limitRaw || 50));
+  const offset = Math.max(0, offsetRaw || 0);
+  const items = rows.slice(offset, offset + limit);
+  if (limitRaw != null || offsetRaw != null) return { items, total: rows.length, limit, offset };
+  return items;
+}
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, getTarget, listCampaignTargets, sendSimulation, recordEvent, deleteEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 

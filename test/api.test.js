@@ -845,6 +845,24 @@ test('global events CSV alias /api/events.csv supports filters', async () => {
   });
 });
 
+test('campaign targets endpoint supports pagination envelope when requested', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CTPage', template: 'generic', targets: 'p1@example.com\np2@example.com\np3@example.com' }) });
+    const plain = await req(base, `/api/campaigns/${created.data.id}/targets?status=pending`);
+    assert.equal(plain.status, 200);
+    assert.ok(Array.isArray(plain.data));
+    assert.equal(plain.data.length, 3);
+    const page = await req(base, `/api/campaigns/${created.data.id}/targets?status=pending&limit=2&offset=1`);
+    assert.equal(page.status, 200);
+    assert.equal(page.data.total, 3);
+    assert.equal(page.data.limit, 2);
+    assert.equal(page.data.offset, 1);
+    assert.equal(page.data.items.length, 2);
+    const bad = await req(base, `/api/campaigns/nope/targets?limit=1`);
+    assert.equal(bad.status, 404);
+  });
+});
+
 test('global events export routes enforce GET method', async () => {
   await withServer(async (base) => {
     for (const path of ['/api/events/export.csv', '/api/events.csv']) {

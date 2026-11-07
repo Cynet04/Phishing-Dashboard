@@ -385,7 +385,15 @@
 - [x] Tests/API coverage: global events CSV export routes (`/api/events/export.csv`, `/api/events.csv`) now have explicit GET-method enforcement regression coverage (405 for POST/DELETE; existing shared handler already correct) — 63/63 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 89 — Expansion (active, in progress)
-- [~] Frontend UI: add “Load events for target” shortcut from campaign detail target rows/list context (if present) or improve campaign detail target interaction consistency with Recent Events filters
+## Phase 89 — Expansion (complete)
+- [x] Frontend UI: campaign detail adds **Show Targets in Table** action that scopes Recent Targets toolbar/table to the selected campaign (and current campaign status filter), reloads targets, scrolls to panel — 63/63 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 90 — Expansion (complete)
+- [x] Backend/API: `GET /api/campaigns/:id/targets` supports `limit`/`offset` (paginated envelope when requested; backward-compatible array default), `status` validation, and 404-safe campaign lookup via `db.listCampaignTargets`; README/test updated — 64/64 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 91 — Expansion (active, in progress)
+- [~] Frontend UI: add “Show target events” context in campaign detail by selecting first matching target (or add small target picker) and wiring to global Recent Events target filter/recovery flow
 - [ ] Run verification, docs/log updates, commit/push per item
 
