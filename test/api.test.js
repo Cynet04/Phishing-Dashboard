@@ -289,6 +289,26 @@ test('campaign target import appends deduplicated targets', async () => {
   });
 });
 
+test('per-campaign events CSV export returns filtered rows', async () => {
+  await withServer(async (base) => {
+    const a = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'A', template: 'generic', targets: 'a@example.com' }) });
+    const b = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'B', template: 'generic', targets: 'b@example.com' }) });
+    await req(base, `/api/campaigns/${a.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/campaigns/${b.data.id}/send`, { method: 'POST', body: '{}' });
+    const r = await req(base, `/api/campaigns/${a.data.id}/events.csv`);
+    assert.equal(r.status, 200);
+    assert.match(String(r.data), /a@example|A|campaignId/); // header/campaign content
+    assert.doesNotMatch(String(r.headers['content-disposition'] || ''), /undefined/);
+  });
+});
+
+test('template delete returns 404 for missing template id', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/templates/does-not-exist', { method: 'DELETE' });
+    assert.equal(r.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

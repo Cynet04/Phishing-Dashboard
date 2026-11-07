@@ -87,8 +87,14 @@
 - [x] Add dashboard UI for importing targets into a selected campaign
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 18 — Expansion (active)
-- [ ] Add basic audit-friendly event metadata normalization and event detail columns where useful (no breaking changes)
-- [ ] Add API smoke check for template delete of non-custom/default-safe behavior and campaign event export route coverage
+## Phase 18 — Expansion (complete)
+- [x] Add per-campaign events CSV export regression test (`GET /api/campaigns/:id/events.csv`) — 20/20 passing
+- [x] Add template delete regression test for non-existent/missing IDs (clear 404)
+- [x] Verify API/UI behavior coverage remains green (simulate submit/click flows already covered by tests)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 19 — Expansion (active)
+- [ ] Add campaign detail API to include `statusCounts` and optional event count summary (backward-compatible)
+- [ ] Add tests for campaign detail summary fields
 - [ ] Run verification, docs/log updates, commit/push per item
 

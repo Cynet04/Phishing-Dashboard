@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:55Z — Phase 17 complete (target import UI)
-- Added dashboard UI to import additional validated/deduplicated targets into the selected campaign.
-- `node --check public/app.js`; `node --test --test-concurrency=1` — 18/18 passing. Commit/push in progress.
+## 2026-11-07 10:56Z — Phase 18: regression coverage
+- Added regression tests for per-campaign events CSV export and missing template delete (404). Full suite green.
+- `node --test --test-concurrency=1` — 20/20 passing. Commit/push in progress.
