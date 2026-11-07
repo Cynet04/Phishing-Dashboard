@@ -15,4 +15,5 @@
   - **Tests** (`test/api.test.js`): API smoke tests for health, campaign create/list, send, stats/events flow.
   - **Docs** (`README.md`, `.gitignore`).
 - Verification: blocked in current environment; documented exact commands for Node host.
-- Proceeding with Conventional Commits and push.
+- Local commit created: `d8e0f3a feat(scaffold): initialize zero-dependency phishing dashboard project`.
+- Push blocked: GitHub remote rejected authentication in this environment. User/CI must push from an authenticated context.

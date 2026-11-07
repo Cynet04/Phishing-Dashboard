@@ -31,7 +31,9 @@
 - [x] API smoke tests (`test/api.test.js`, Node test runner)
 - [x] `README.md` with setup/run/swap notes
 - [ ] Run tests/build in environment (BLOCKED: Node.js/npm not installed; Python unusable)
-- [x] Commit with Conventional Commits and push to origin/main
+- [x] Commit with Conventional Commits locally
+- [ ] Push to origin/main (BLOCKED: remote authentication failed in this environment)
 
 ## Notes / Blockers
 - 2026-11-07: No Node.js/npm runtime and no usable Python in this execution environment (`npm` not found; `python` is a Windows Store alias). Implemented a complete, dependency-free Node 18+ app so it runs immediately where Node is available. Runtime verification must be performed on a Node-capable machine: `npm test && npm start`.
+- 2026-11-07: `git push -u origin main` failed with `Authentication failed for 'https://github.com/Cynet04/Phishing-Dashboard/'` (password auth not supported; no valid credentials available in environment). Local commit exists: `d8e0f3a feat(scaffold): initialize zero-dependency phishing dashboard project`. Push from an authenticated machine/session.
