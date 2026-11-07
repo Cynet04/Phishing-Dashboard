@@ -149,3 +149,9 @@ ode --test --test-concurrency=1 — 61/61 passing. Committed/pushed. Dashboard: ht
 - 
 ode --check (server/tests); 
 ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (3c60432). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 14:17Z — Phase 85: global events export link sync
+- Global events export link now syncs with current 	argetId filter (Recent Events) and toolbar export type selection (/api/events/export.csv?...), updating on global/scoped loads and toolbar changes.
+- 
+ode --check (ui); 
+ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (7bbfe81). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: set events target/type filters ? **Export Events CSV** href reflects filters.
