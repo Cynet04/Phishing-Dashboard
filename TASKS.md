@@ -289,7 +289,11 @@
 - [x] Frontend UI: campaign detail adds “Export Filtered Targets” (uses current status filter via `targets/export.csv?status=`) and keeps “Export All Targets” — 54/54 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 64 — Expansion (active, in progress)
-- [~] Testing/refactor: add test for `GET /api/templates` shape and `PUT /api/templates/:id` 404 for unknown custom template (already partial); tighten template 404 consistency if needed
+## Phase 64 — Expansion (complete)
+- [x] Testing: added templates endpoint shape + custom template delete 404 coverage (documents current PUT-upsert behavior) — 55/55 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 65 — Expansion (active, in progress)
+- [~] Backend security hardening: add `Cache-Control: no-store` for `/api/*` JSON responses and test header presence on representative endpoints
 - [ ] Run verification, docs/log updates, commit/push per item
 

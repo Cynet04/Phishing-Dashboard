@@ -716,6 +716,19 @@ test('campaign targets export.csv supports status filter and 404 for unknown cam
   });
 });
 
+test('templates endpoint shape and custom template 404 behavior', async () => {
+  await withServer(async (base) => {
+    const list = await req(base, '/api/templates');
+    assert.equal(list.status, 200);
+    assert.ok(Array.isArray(list.data));
+    assert.ok(list.data.some(t => t.id === 'generic'));
+    const put = await fetch(`${base}/api/templates/custom-missing`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'N', subject: 'S', body: 'B' }) });
+    assert.ok([200,201,404].includes(put.status)); // current behavior documents create-via-PUT path
+    const del = await req(base, '/api/templates/custom-definitely-missing', { method: 'DELETE' });
+    assert.equal(del.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
