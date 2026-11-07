@@ -201,7 +201,11 @@
 - [x] Backend/API: added `GET /api/targets/:id` detail endpoint (includes campaign name, 404-safe) and regression test — 43/43 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 42 — Expansion (active, in progress)
-- [~] Frontend UI/UX: show clickable target detail in recent targets table (modal/inline) using target detail endpoint; keep rendering escaped
+## Phase 42 — Expansion (complete)
+- [x] Frontend UI/UX: added target detail modal in recent targets table using `GET /api/targets/:id` (escaped-safe JSON view, close/click-outside) — 43/43 API tests still passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 43 — Expansion (active, in progress)
+- [~] Refactor/backend: add `GET /api/campaigns/:id/summary` alias to `includeTargets=false` for clarity and tests; keep compatibility
 - [ ] Run verification, docs/log updates, commit/push per item
 

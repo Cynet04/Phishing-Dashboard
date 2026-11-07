@@ -147,10 +147,16 @@ async function loadTargets(reset = false) {
       <td>${esc(t.email)}</td>
       <td><span class="pill ${esc(t.status)}">${esc(t.status)}</span></td>
       <td class="muted">${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</td>
-      <td>${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : '<span class="muted">—</span>'}</td>
+      <td><span class="row">${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : ''}<button class="btn small secondary view-target" data-id="${esc(t.id)}">Details</button></span></td>
     </tr>`).join('') : '<tr><td colspan="5" class="muted">No targets yet.</td></tr>';
   $('#targetsBody').querySelectorAll('.sim-click').forEach(btn => btn.addEventListener('click', async () => {
     try { await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' }); toast('Click simulated.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
+  }));
+  $('#targetsBody').querySelectorAll('.view-target').forEach(btn => btn.addEventListener('click', async () => {
+    const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
+    modal.classList.remove('hidden'); body.textContent = 'Loading…';
+    try { const t = await api(`/api/targets/${btn.dataset.id}`); body.textContent = JSON.stringify(t, null, 2); body.classList.remove('muted'); }
+    catch (e) { body.textContent = `Error: ${e.message}`; toast(e.message, 'error'); }
   }));
   const shown = Math.min(state.targetsOffset + targets.length, state.targetsTotal);
   $('#targetsMeta').textContent = state.targetsTotal ? `Showing ${shown} of ${state.targetsTotal}` : '';
@@ -180,6 +186,8 @@ async function refresh() {
   finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
 }
 
+$('#closeTargetDetail')?.addEventListener('click', () => $('#targetDetailModal')?.classList.add('hidden'));
+$('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'targetDetailModal') e.currentTarget.classList.add('hidden'); });
 $('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
 

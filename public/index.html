@@ -102,6 +102,12 @@
       <div id="eventsMeta" class="muted" style="margin-top:8px"></div>
     </section>
   </main>
+  <div id="targetDetailModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="targetDetailTitle">
+    <div class="modal-card">
+      <div class="row" style="justify-content:space-between"><h3 id="targetDetailTitle" style="margin:0">Target detail</h3><button id="closeTargetDetail" class="btn small secondary">Close</button></div>
+      <pre id="targetDetailBody" class="detail-pre muted">Loading…</pre>
+    </div>
+  </div>
   <div id="toasts" class="toasts" aria-live="polite"></div>
   <script src="/app.js"></script>
 </body>

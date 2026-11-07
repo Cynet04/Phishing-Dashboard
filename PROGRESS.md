@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:19Z — Phase 41: target detail API
-- Added `GET /api/targets/:id` (returns target + `campaignName`, 404-safe) and regression test.
-- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 43/43 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:20Z — Phase 42: target detail UI
+- Dashboard Recent Targets now has a “Details” action opening a modal that fetches `/api/targets/:id` and renders escaped JSON; modal supports close button/click-outside.
+- `node --check` (ui/server); `node --test --test-concurrency=1` — 43/43 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
