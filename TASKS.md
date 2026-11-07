@@ -197,7 +197,11 @@
 - [x] Testing/DB: added coverage for unknown event `type` filter stable empty shape and delete-campaign cascade safety (scoped events JSON returns empty stable shape; scoped CSV export 404 when campaign removed) — 42/42 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 41 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/targets/:id` detail endpoint (safe 404) and tests for inspection/debugging
+## Phase 41 — Expansion (complete)
+- [x] Backend/API: added `GET /api/targets/:id` detail endpoint (includes campaign name, 404-safe) and regression test — 43/43 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 42 — Expansion (active, in progress)
+- [~] Frontend UI/UX: show clickable target detail in recent targets table (modal/inline) using target detail endpoint; keep rendering escaped
 - [ ] Run verification, docs/log updates, commit/push per item
 

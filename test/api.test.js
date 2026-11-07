@@ -550,6 +550,20 @@ test('delete campaign cascades events so scoped exports/lists stay clean', async
   });
 });
 
+test('target detail endpoint returns target with campaign name and 404 for unknown', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Target Detail', template: 'generic', targets: 'td@example.com' }) });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const targetId = detail.data.targets[0].id;
+    const r = await req(base, `/api/targets/${targetId}`);
+    assert.equal(r.status, 200);
+    assert.equal(r.data.email, 'td@example.com');
+    assert.equal(r.data.campaignName, 'Target Detail');
+    const bad = await req(base, '/api/targets/nope');
+    assert.equal(bad.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

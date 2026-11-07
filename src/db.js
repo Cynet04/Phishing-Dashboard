@@ -200,6 +200,14 @@ function addTargets(campaignId, rawInput) {
   return { campaignId: campaign.id, added, total: db.targets.filter(t => t.campaignId === campaign.id).length };
 }
 
+function getTarget(id) {
+  const db = load();
+  const target = db.targets.find(t => t.id === String(id));
+  if (!target) throw Object.assign(new Error('target not found'), { status: 404 });
+  const campaign = db.campaigns.find(c => c.id === target.campaignId);
+  return { ...target, campaignName: campaign ? campaign.name : target.campaignId };
+}
+
 function recordEvent(input = {}) {
   const type = String(input.type || '').trim().toLowerCase();
   const allowed = new Set(['opened', 'clicked', 'submitted']);
@@ -362,7 +370,7 @@ function exportEventsCsv(opts = {}) {
   return eventsToCsv(rows);
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, getTarget, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 

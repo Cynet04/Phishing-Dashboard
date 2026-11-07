@@ -192,6 +192,7 @@ async function handler(req, res) {
       return send(res, 200, db.exportTargetsCsv({}), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="targets.csv"' });
     }
     if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets({ limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
+    if (req.method === 'GET' && /^\/api\/targets\/[^/]+$/.test(pathname)) return send(res, 200, db.getTarget(decodeURIComponent(pathname.split('/')[3] || '')));
     if (req.method === 'GET' && pathname === '/api/stats') return send(res, 200, db.stats(searchParams.get('campaignId') || null, { from: searchParams.get('from'), to: searchParams.get('to') }));
     const m = pathname.match(/^\/api\/campaigns\/([^/]+)(?:\/(send|stats|export\.csv|events\.csv|events|targets))?$/);
     if (m && req.method === 'GET' && !m[2]) return send(res, 200, db.getCampaign(m[1], { status: searchParams.get('status'), includeTargets: searchParams.get('includeTargets') }));
