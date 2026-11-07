@@ -421,7 +421,11 @@
 - [x] Backend/API: added `GET /api/campaigns/:id/targets/:targetId/events` (ownership-validated via `getCampaignTarget`, pagination/type filter, GET-only 405) with regression test and README update — 67/67 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 98 — Expansion (active, in progress)
-- [~] Frontend UI: make campaign-scoped target detail modal use `GET /api/campaigns/:id/targets/:targetId/events` when opened in campaign context (keep global fallback), preserving export/actions behavior
+## Phase 98 — Expansion (complete)
+- [x] Frontend UI: campaign-scoped target detail modal now uses `GET /api/campaigns/:id/targets/:targetId/events?limit=20` in campaign context (global fallback preserved); export/actions behavior intact
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 99 — Expansion (active, in progress)
+- [~] Backend/API: make `GET /api/campaigns/:id/events.csv` return 404 JSON for unknown campaign (consistent with other campaign-scoped exports/list 404-safe checks where appropriate) and add regression test/README note if behavior changes
 - [ ] Run verification, docs/log updates, commit/push per item
 

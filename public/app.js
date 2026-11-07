@@ -355,7 +355,8 @@ async function openTargetDetail(targetId, campaignId = '') {
   $('#closeTargetDetail')?.focus?.();
   try {
     const detailPath = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}` : `/api/targets/${encodeURIComponent(targetDetailId)}`;
-    const [t, ev] = await Promise.all([api(detailPath), api(`/api/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`)]);
+    const eventsPath = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}/events?limit=20` : `/api/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`;
+    const [t, ev] = await Promise.all([api(detailPath), api(eventsPath)]);
     targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
     const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
     const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
