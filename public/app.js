@@ -9,6 +9,13 @@ async function api(path, opts = {}) {
 }
 
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function toast(msg, type = 'ok') {
+  const el = document.createElement('div');
+  el.className = `toast ${type === 'error' ? 'error' : ''}`;
+  el.textContent = String(msg || '');
+  $('#toasts').appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
 
 async function loadTemplates() {
   const templates = await api('/api/templates');
@@ -90,15 +97,11 @@ async function selectCampaign(id, quiet) {
     </div>
     <div class="muted">Tip: send simulation, open the mock landing page (records Opened), then simulate click or submit the form (records Submitted).</div>`;
   $('#sendSimBtn')?.addEventListener('click', async () => {
-    await api(`/api/campaigns/${id}/send`, { method: 'POST', body: '{}' });
-    await refresh();
+    try { await api(`/api/campaigns/${id}/send`, { method: 'POST', body: '{}' }); toast('Simulation sent.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   });
   $('#deleteCampaignBtn')?.addEventListener('click', async () => {
     if (!confirm(`Delete campaign "${c.name}" and all related targets/events?`)) return;
-    await api(`/api/campaigns/${id}`, { method: 'DELETE' });
-    state.selected = null;
-    $('#detail').innerHTML = '<div class="muted">Select a campaign.</div>';
-    await refresh();
+    try { await api(`/api/campaigns/${id}`, { method: 'DELETE' }); state.selected = null; $('#detail').innerHTML = '<div class="muted">Select a campaign.</div>'; toast('Campaign deleted.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   });
 }
 
@@ -116,8 +119,7 @@ async function loadTargets(reset = false) {
       <td>${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : '<span class="muted">—</span>'}</td>
     </tr>`).join('') : '<tr><td colspan="5" class="muted">No targets yet.</td></tr>';
   $('#targetsBody').querySelectorAll('.sim-click').forEach(btn => btn.addEventListener('click', async () => {
-    await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' });
-    await refresh();
+    try { await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' }); toast('Click simulated.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   }));
   const shown = Math.min(state.targetsOffset + targets.length, state.targetsTotal);
   $('#targetsMeta').textContent = state.targetsTotal ? `Showing ${shown} of ${state.targetsTotal}` : '';
@@ -139,11 +141,11 @@ $('#campaignForm').addEventListener('submit', async (e) => {
   $('#formMsg').textContent = 'Creating...';
   try {
     const campaign = await api('/api/campaigns', { method: 'POST', body: JSON.stringify(Object.fromEntries(fd)) });
-    $('#formMsg').textContent = `Created campaign #${campaign.id}.`;
+    $('#formMsg').textContent = `Created campaign #${campaign.id}.`; toast('Campaign created.');
     e.target.reset();
     await refresh();
     await selectCampaign(campaign.id);
-  } catch (err) { $('#formMsg').textContent = `Error: ${err.message}`; }
+  } catch (err) { $('#formMsg').textContent = `Error: ${err.message}`; toast(err.message, 'error'); }
 });
 
 $('#templateForm').addEventListener('submit', async (e) => {

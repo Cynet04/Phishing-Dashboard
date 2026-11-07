@@ -25,4 +25,7 @@ input,select,textarea{width:100%;margin-top:6px;margin-bottom:12px;background:#0
 .bar.click{background:var(--accent)}
 .bar.sub{background:var(--bad);opacity:.85}
 .bar-label{font-size:.72rem;color:var(--muted);margin-top:6px;word-break:break-all}
+.toasts{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:50}
+.toast{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);min-width:220px}
+.toast.error{border-color:#6b2330;color:#fecaca}
 @media (max-width:900px){.metrics,.two{grid-template-columns:1fr}}

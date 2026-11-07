@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:44Z — Phase 11: validation hardening
-- Added stricter validation: campaign/template length limits, max 500 targets, email length check, and stats `from`/`to` format/range validation (400 on invalid input).
-- Added regression test for limits/date filters; `node --test --test-concurrency=1` — 13/13 passing. Commit/push in progress.
+## 2026-11-07 10:45Z — Phase 11: toast UX + completion
+- Added non-blocking toast notifications for campaign create/delete, send simulation, and click simulation actions.
+- Phase 11 validation hardening and UX complete. `node --test --test-concurrency=1` — 13/13 passing. Commit/push in progress.
