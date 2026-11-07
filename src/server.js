@@ -74,7 +74,11 @@ async function handler(req, res) {
       const targetId = pathname.split('/')[3];
       return send(res, 201, db.recordEvent({ targetId, type: 'clicked', meta: { source: 'dashboard-simulate' } }));
     }
-    if (req.method === 'GET' && pathname === '/login-simulation') return send(res, 200, loginSimulationPage(searchParams.get('target')), { 'Content-Type': 'text/html; charset=utf-8' });
+    if (req.method === 'GET' && pathname === '/login-simulation') {
+      const targetId = searchParams.get('target');
+      if (targetId) try { db.recordEvent({ targetId, type: 'opened', meta: { source: 'login-simulation' } }); } catch {}
+      return send(res, 200, loginSimulationPage(targetId), { 'Content-Type': 'text/html; charset=utf-8' });
+    }
     if (req.method === 'POST' && pathname === '/login-simulation/submit') {
       const body = await readJson(req).catch(async () => {
         let raw=''; for await (const c of req) raw += c; return Object.fromEntries(new URLSearchParams(raw));

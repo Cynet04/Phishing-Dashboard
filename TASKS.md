@@ -43,5 +43,8 @@
 - [x] Validate and deduplicate campaign target emails; reject empty/invalid submissions
 - [x] Expand API smoke tests (validation, opened flow, unknown target handling)
 - [x] Re-run tests and push hardening commit
+- [x] Exclude runtime `data/` directory from git
+- [x] Record `opened` event when mock landing page is loaded; add regression test
+- [x] Verify all smoke tests pass (5/5) and push
 - [ ] Add additional polish only if defects are found during loop
 

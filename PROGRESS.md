@@ -27,4 +27,9 @@
 - Hardened campaign creation in `src/db.js`: validates email format, deduplicates targets, rejects empty/invalid target sets with 400.
 - Expanded `test/api.test.js` to 4 cases (health, send/click/submit, validation+opened flow, unknown target error).
 - `node --test --test-concurrency=1 test/api.test.js` — 4/4 passing.
-- Next: commit/push hardening changes and continue monitoring for defects.
+## 2026-11-07 09:24Z — Opened-event tracking fix
+- Fixed lifecycle gap: `GET /login-simulation?target=...` now records an `opened` event (best-effort, non-blocking for page render) so target status/analytics reflect link opens.
+- Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
+- `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
+- `node --check` passed for modified server/test files.
+- Next: commit/push fix and continue monitoring for defects.

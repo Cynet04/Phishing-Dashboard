@@ -83,6 +83,20 @@ test('campaign validation and opened event flow', async () => {
   });
 });
 
+test('landing simulation GET records opened event', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Open Test', template: 'generic', targets: 'open@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const targetId = detail.data.targets[0].id;
+    const page = await req(base, `/login-simulation?target=${targetId}`);
+    assert.equal(page.status, 200);
+    assert.match(String(page.data), /Sign in/);
+    const after = await req(base, `/api/campaigns/${created.data.id}`);
+    assert.equal(after.data.targets[0].status, 'opened');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
