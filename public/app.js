@@ -216,7 +216,12 @@ async function loadEvents(reset = false) {
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
   $('#eventsBody').innerHTML = events.length ? events.map(e => `
-    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No events.</td></tr>';
+    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events.</td></tr>';
+  $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
+    if (!btn.dataset.id || !confirm('Delete this event?')) return;
+    try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadEvents(true); await loadSystemStatus(); }
+    catch (e) { toast(e.message, 'error'); }
+  }));
   const shown = state.eventsOffset + events.length;
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (type ? ` · type=${type}` : '');
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;

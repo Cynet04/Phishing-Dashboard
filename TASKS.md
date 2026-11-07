@@ -313,7 +313,11 @@
 - [x] Backend/API: `DELETE /api/events/:id` for demo hygiene (404-safe, 405 for unsupported methods) and regression test — 57/57 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 70 — Expansion (active, in progress)
-- [~] Frontend UI: add delete action for individual events in Recent Events table (with confirmation, refresh, safe error handling)
+## Phase 70 — Expansion (complete)
+- [x] Frontend UI: added per-row delete action in Recent Events table (confirmation, calls `DELETE /api/events/:id`, reloads events/system status, safe errors) — 57/57 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 71 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/campaigns/:id/events/export.csv?type=` passthrough filter support and regression test (route currently ignores filters)
 - [ ] Run verification, docs/log updates, commit/push per item
 
