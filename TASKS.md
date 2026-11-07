@@ -133,8 +133,13 @@
 - [x] Add dashboard defensive rendering for missing recent event fields
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 27 — Expansion (active)
-- [ ] Add `GET /api/campaigns/:id/export.csv` 404 handling for unknown campaign (explicit) and test
-- [ ] Add `GET /api/campaigns/:id/events.csv` 404 handling for unknown campaign (optional explicit behavior) and test
+## Phase 27 — Expansion (complete)
+- [x] Add `GET /api/campaigns/:id/export.csv` and `events.csv` 404 handling for unknown campaign with tests — 29/29 passing
+- [x] Keep dashboard/analytics behavior stable
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 28 — Expansion (active)
+- [ ] Add JSON `GET /api/campaigns/:id/targets` endpoint (alias/filter support) and tests
+- [ ] Add template ID collision/default override protection (clear validation) and tests
 - [ ] Run verification, docs/log updates, commit/push per item
 

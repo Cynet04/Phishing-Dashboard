@@ -397,6 +397,15 @@ test('events list returns stable empty shape for unknown campaign filter', async
   });
 });
 
+test('campaign CSV exports return 404 for unknown campaign', async () => {
+  await withServer(async (base) => {
+    const t = await req(base, '/api/campaigns/99999/export.csv');
+    assert.equal(t.status, 404);
+    const e = await req(base, '/api/campaigns/99999/events.csv');
+    assert.equal(e.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

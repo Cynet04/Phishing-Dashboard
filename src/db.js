@@ -278,6 +278,10 @@ function targetsToCsv(rows) {
 function exportTargetsCsv(opts = {}) {
   const db = load();
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
+  if (opts.campaignId) {
+    const id = String(opts.campaignId);
+    if (!db.campaigns.some(c => c.id === id)) throw Object.assign(new Error('campaign not found'), { status: 404 });
+  }
   let rows = db.targets.map(t => ({ ...t, campaignName: cmap[t.campaignId] || t.campaignId }));
   if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
   rows.sort((a, b) => String(a.campaignId).localeCompare(String(b.campaignId)) || String(a.id).localeCompare(String(b.id)));
@@ -338,6 +342,10 @@ function listEvents(opts = {}) {
 function exportEventsCsv(opts = {}) {
   const db = load();
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
+  if (opts.campaignId) {
+    const id = String(opts.campaignId);
+    if (!db.campaigns.some(c => c.id === id)) throw Object.assign(new Error('campaign not found'), { status: 404 });
+  }
   let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
   if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
   if (opts.type) rows = rows.filter(r => r.type === String(opts.type).toLowerCase());
