@@ -111,6 +111,7 @@ async function selectCampaign(id, quiet) {
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
+      <button class="btn small secondary" id="copyLandingBtn" ${c.targets[0]?.id ? '' : 'disabled'}>Copy Landing Link</button>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/export.csv">Export Targets CSV</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/events.csv">Export Events CSV</a>
       <button class="btn small secondary" id="deleteCampaignBtn">Delete Campaign</button>
@@ -129,6 +130,13 @@ async function selectCampaign(id, quiet) {
       toast(`Imported ${r.added} target(s).`);
       await refresh();
     } catch (e) { toast(e.message, 'error'); }
+  });
+  $('#copyLandingBtn')?.addEventListener('click', async () => {
+    const targetId = c.targets[0]?.id;
+    if (!targetId) return toast('No target available for landing link.', 'error');
+    const link = `${location.origin}/login-simulation?target=${encodeURIComponent(targetId)}`;
+    try { await navigator.clipboard?.writeText(link); toast('Landing link copied.'); }
+    catch { prompt('Copy landing link:', link); }
   });
   $('#deleteCampaignBtn')?.addEventListener('click', async () => {
     if (!confirm(`Delete campaign "${c.name}" and all related targets/events?`)) return;

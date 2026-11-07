@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:24Z — Phase 46: POST /api/events validation tests
-- Added API tests covering `POST /api/events` invalid type (400), unknown target (404), and successful event creation with campaign linkage.
-- `node --check` (tests); `node --test --test-concurrency=1` — 46/46 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:25Z — Phase 47: campaign landing-link UX
+- Campaign detail now includes “Copy Landing Link” (clipboard with prompt fallback) for the first target’s mock landing URL.
+- `node --check` (ui); `node --test --test-concurrency=1` — 46/46 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). Go to `http://localhost:3000` → select a campaign → use **Copy Landing Link** / **Open Mock Landing Page**.

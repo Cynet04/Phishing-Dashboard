@@ -221,7 +221,11 @@
 - [x] Backend validation/testing: added `POST /api/events` validation coverage (invalid type 400, unknown target 404, valid event records with correct campaignId) — 46/46 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 47 — Expansion (active, in progress)
-- [~] Frontend UI/UX: add campaign detail “copy landing link” helper and improve action button layout/responsive polish (safe DOM escaping)
+## Phase 47 — Expansion (complete)
+- [x] Frontend UI/UX: added campaign detail “Copy Landing Link” helper (clipboard with prompt fallback) and improved action button layout — 46/46 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 48 — Expansion (active, in progress)
+- [~] Backend/refactor: add `GET /api/targets/:id/events` endpoint (target-scoped event history, paginated/filterable) and tests
 - [ ] Run verification, docs/log updates, commit/push per item
 
