@@ -208,8 +208,10 @@ async function loadTargets(reset = false) {
       const [t, ev] = await Promise.all([api(`/api/targets/${targetDetailId}`), api(`/api/targets/${targetDetailId}/events?limit=20`)]);
       targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
       const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
+      const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
+      const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
       body.className = '';
-      body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+      body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
     }
     catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
   }));

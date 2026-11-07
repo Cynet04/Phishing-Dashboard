@@ -158,6 +158,8 @@ ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (7bbfe81). Das
 
 ## 2026-11-07 14:18Z — Phase 86: target detail enrichment
 - Enriched GET /api/targets/:id (db.getTarget) with backward-compatible eventCount, eventCounts, and lastEventAt. README updated; target detail regression assertions added.
-- 
-ode --check (db/tests); 
-ode --test --test-concurrency=1 — 62/62 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+- `node --check` (db/tests); `node --test --test-concurrency=1` — 62/62 passing. Committed/pushed (`27f75b8`, docs `d5b6333`). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 14:19Z — Phase 87: target detail modal metadata
+- Target detail modal now displays enriched target metadata: `eventCount`, `eventCounts` summary, and `lastEventAt` (alongside existing fields/actions).
+- `node --check` (ui); `node --test --test-concurrency=1` — 62/62 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: open target **Details** ? metadata row.

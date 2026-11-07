@@ -377,11 +377,11 @@
 - [x] Frontend UI: global events export link now syncs with current `targetId`/toolbar `type` filter context (`updateEventsExportLink`, applied on global/scoped loads and toolbar changes; keeps `/api/events/export.csv` compatibility) — 62/62 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 86 — Expansion (complete)
-- [x] Backend/API: enriched `GET /api/targets/:id` payload with backward-compatible `eventCount`, `eventCounts`, and `lastEventAt` (DB `getTarget`); README/test updated — 62/62 passing
+## Phase 87 — Expansion (complete)
+- [x] Frontend UI: target detail modal now surfaces enriched metadata (`eventCount`, `eventCounts`, `lastEventAt`) alongside existing target fields and actions — 62/62 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 87 — Expansion (active, in progress)
-- [~] Frontend UI: surface enriched target detail metadata (event counts/last event) in target detail modal and keep modal actions consistent
+## Phase 88 — Expansion (active, in progress)
+- [~] Backend/API: add method consistency (405) for global events CSV routes (`/api/events/export.csv`, `/api/events.csv`) for unsupported methods in a shared handler path (covered by alias test; ensure consistent behavior/docs) and tighten route guard if needed
 - [ ] Run verification, docs/log updates, commit/push per item
 
