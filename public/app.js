@@ -597,11 +597,11 @@ $('#copyEventsCsvLink')?.addEventListener('click', async () => {
   const href = $('#eventsExportLink')?.getAttribute('href') || '';
   if (!href) return toast('No events CSV link available.', 'error');
   const url = new URL(href, location.href).href;
-  try { await navigator.clipboard?.writeText(url); toast('Events CSV link copied.'); } catch { prompt('Copy events CSV link:', url); }
+  try { await navigator.clipboard?.writeText(url); toast(state.eventsScope === 'campaign' && state.eventsCampaignId ? 'Campaign events CSV link copied.' : 'Events CSV link copied.'); } catch { prompt('Copy events CSV link:', url); }
 });
 $('#copyEventsJsonLink')?.addEventListener('click', async () => {
   const url = new URL(eventsJsonPathForToolbar(), location.href).href;
-  try { await navigator.clipboard?.writeText(url); toast('Events JSON link copied.'); } catch { prompt('Copy events JSON link:', url); }
+  try { await navigator.clipboard?.writeText(url); toast(state.eventsScope === 'campaign' && state.eventsCampaignId ? 'Campaign events JSON link copied.' : 'Events JSON link copied.'); } catch { prompt('Copy events JSON link:', url); }
 });
 $('#eventsExportType')?.addEventListener('change', updateEventsExportLink);
 $('#eventsExportFrom')?.addEventListener('change', updateEventsExportLink);
