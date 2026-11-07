@@ -469,6 +469,13 @@ test('campaign events JSON endpoint returns paginated filtered events', async ()
   });
 });
 
+test('auth logout GET returns 405', async () => {
+  await withServer(async (base) => {
+    const res = await fetch(`${base}/api/auth/logout`, { method: 'GET', redirect: 'manual' });
+    assert.equal(res.status, 405);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

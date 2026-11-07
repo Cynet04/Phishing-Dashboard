@@ -139,9 +139,12 @@ async function handler(req, res) {
       res.writeHead(302, { 'Set-Cookie': `pd_session=${encodeURIComponent(makeSession())}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`, Location: '/' });
       return res.end();
     }
-    if (req.method === 'POST' && pathname === '/api/auth/logout') {
-      res.writeHead(302, { 'Set-Cookie': 'pd_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0', Location: adminPassword() ? '/login' : '/' });
-      return res.end();
+    if (pathname === '/api/auth/logout') {
+      if (req.method === 'POST') {
+        res.writeHead(302, { 'Set-Cookie': 'pd_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0', Location: adminPassword() ? '/login' : '/' });
+        return res.end();
+      }
+      return send(res, 405, { error: 'method not allowed' });
     }
     if (adminPassword() && req.method === 'GET' && pathname === '/login') return send(res, 200, loginPage(), { 'Content-Type': 'text/html; charset=utf-8' });
     if (authRequired(pathname) && !authed(req)) {

@@ -163,8 +163,13 @@
 - [x] Keep dashboard behavior stable (no breaking UI dependency required for this endpoint)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 33 — Expansion (active)
-- [ ] Add README API docs for campaign events JSON endpoint and templates/campaign targets endpoints added recently
-- [ ] Add `GET /api/auth/logout` safety handling (405/redirect behavior consistency) and tests
+## Phase 33 — Expansion (complete)
+- [x] Add README API docs for campaign events JSON endpoint (and related recent endpoints) — updated
+- [x] Add `GET /api/auth/logout` method safety (405) and regression test — 36/36 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 34 — Expansion (active)
+- [ ] Add `GET /api/campaigns/:id` support for `includeTargets=false` (lighter summary) and tests
+- [ ] Add `GET /api/campaigns` optional `q`/name filter (safe substring search) and tests
 - [ ] Run verification, docs/log updates, commit/push per item
 
