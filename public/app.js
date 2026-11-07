@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0 };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '' };
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
@@ -84,24 +84,29 @@ async function loadCampaigns() {
 
 async function selectCampaign(id, quiet) {
   state.selected = id;
-  const c = await api(`/api/campaigns/${id}`);
+  state.campaignStatus = state.campaignStatus || '';
+  const q = state.campaignStatus ? `?status=${encodeURIComponent(state.campaignStatus)}` : '';
+  const c = await api(`/api/campaigns/${id}${q}`);
   const stats = await api(`/api/campaigns/${id}/stats`);
+  const statuses = ['','pending','sent','opened','clicked','submitted'];
   $('#detail').innerHTML = `
     <div><strong>${esc(c.name)}</strong> <span class="pill ${esc(c.status)}">${esc(c.status)}</span></div>
-    <div class="muted" style="margin:8px 0">Targets: ${c.targets.length} · Sent: ${stats.totals.emailsSent} · Opened: ${stats.totals.opened} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
+    <div class="muted" style="margin:8px 0">Targets (filtered): ${c.targets.length} · Sent: ${stats.totals.emailsSent} · Opened: ${stats.totals.opened} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
     <div class="muted" style="margin:0 0 8px">Rates — Open: ${stats.totals.openRate}% · Click: ${stats.totals.clickRate}% · Submit: ${stats.totals.submitRate}%</div>
+    <label class="muted">Filter targets by status <select id="campaignStatusFilter">${statuses.map(s => `<option value="${s}" ${s===state.campaignStatus?'selected':''}>${s || 'all'}</option>`).join('')}</select></label>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
       <button class="btn small secondary" id="deleteCampaignBtn">Delete Campaign</button>
     </div>
     <div class="muted">Tip: send simulation, open the mock landing page (records Opened), then simulate click or submit the form (records Submitted).</div>`;
+  $('#campaignStatusFilter')?.addEventListener('change', async (e) => { state.campaignStatus = e.target.value; await selectCampaign(id, true); });
   $('#sendSimBtn')?.addEventListener('click', async () => {
     try { await api(`/api/campaigns/${id}/send`, { method: 'POST', body: '{}' }); toast('Simulation sent.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   });
   $('#deleteCampaignBtn')?.addEventListener('click', async () => {
     if (!confirm(`Delete campaign "${c.name}" and all related targets/events?`)) return;
-    try { await api(`/api/campaigns/${id}`, { method: 'DELETE' }); state.selected = null; $('#detail').innerHTML = '<div class="muted">Select a campaign.</div>'; toast('Campaign deleted.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
+    try { await api(`/api/campaigns/${id}`, { method: 'DELETE' }); state.selected = null; state.campaignStatus = ''; $('#detail').innerHTML = '<div class="muted">Select a campaign.</div>'; toast('Campaign deleted.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   });
 }
 
