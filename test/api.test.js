@@ -143,6 +143,17 @@ test('delete campaign removes related records and method errors are clear', asyn
   });
 });
 
+test('csv export returns campaign targets', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CSV', template: 'generic', targets: 'csv1@example.com,csv2@example.com' }) });
+    const r = await req(base, `/api/campaigns/${created.data.id}/export.csv`);
+    assert.equal(r.status, 200);
+    assert.match(String(r.data), /campaignId,campaignName,targetId,email,status/);
+    assert.match(String(r.data), /csv1@example.com/);
+    assert.match(String(r.headers['content-type'] || ''), /text\/csv/);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

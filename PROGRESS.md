@@ -32,9 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:29Z — Phase 7 continuous hardening loop
-- Resumed after user confirmed environment fixed and requested non-stop completion loop.
-- Baseline: tests 5/5 pass; `node --check` clean; git `main...origin/main` clean except ignored runtime data.
-- Implemented: `DELETE /api/campaigns/:id` (DB cascade of targets/events + UI delete action), campaign route `405` handling, robust landing-page submit body parsing (`application/x-www-form-urlencoded`/JSON-safe).
-- Tests expanded to 7 cases (added form-submit regression and delete/405 coverage). `node --test --test-concurrency=1` — 7/7 passing.
-- Pushed `cf502d0`. No additional safe defects found in this pass; all tracked tasks complete.
+## 2026-11-07 10:36Z — Phase 8 expansion: CSV export
+- Added `GET /api/campaigns/:id/export.csv` and `GET /api/targets/export.csv` (CSV escaping, campaign name mapping). Dashboard "Recent Targets" now has Export CSV action.
+- Added regression test; `node --test --test-concurrency=1` — 8/8 passing. Commit/push in progress.

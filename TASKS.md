@@ -38,11 +38,22 @@
 - 2026-11-07 08:27Z: Initial blockers (no Node/npm, no push auth) resolved by environment fix.
 - 2026-11-07 09:14Z: Verified Node v26.13.0 at `C:\Program Files\nodejs`. Smoke tests pass (2/2). End-to-end server sanity check passed (health, create campaign, send simulation, stats). Local commits pushed/synced to `origin/main`.
 
-## Phase 7 — Continuous hardening (complete)
-- [x] Add method-not-allowed/validation coverage and safe API method handling
-- [x] Add campaign delete/reset capability for demo hygiene (API + UI action) with tests
-- [x] Add regression test for form-urlencoded landing simulation submit path (fixed server body parsing)
-- [x] Run full verification (7/7 passing)
-- [x] Update docs/logs and commit/push Phase 7 batch (`cf502d0`)
-- [x] No additional defects found in current safe-improvement pass; monitoring loop can continue with new findings
+## Phase 8 — Advanced Analytics (expansion, active)
+- [x] Add CSV export for campaign/global targets (API + dashboard action) with tests — 8/8 passing
+- [ ] Add recent targets pagination (`limit`/`offset`) and UI "Load more" with tests
+- [ ] Add campaign stats timeline filtering by date range (API) with tests
+- [ ] Run verification, docs/log updates, commit/push per item
+
+## Phase 9 — Template Management (expansion)
+- [ ] CRUD API for email templates (stored in JSON DB) with tests
+- [ ] Dashboard template management UI + live preview
+
+## Phase 10 — Security & Auth (expansion)
+- [ ] Optional admin login screen/token for dashboard/API (env-configured) with tests
+
+## Phase 11 — UI/UX Polish (expansion)
+- [ ] Toast notifications, dark/light toggle persistence, responsive refinements
+
+## Phase 12 — Edge Cases & Performance (expansion)
+- [ ] Additional validation/pagination/query optimizations as needed
 

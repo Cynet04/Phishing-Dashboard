@@ -172,6 +172,27 @@ function stats(id) {
   };
 }
 
+function csvEscape(value) {
+  const s = String(value ?? '');
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function targetsToCsv(rows) {
+  const header = ['campaignId', 'campaignName', 'targetId', 'email', 'status', 'createdAt', 'updatedAt'];
+  const lines = [header.join(',')];
+  for (const r of rows) lines.push(header.map(k => csvEscape(r[k])).join(','));
+  return lines.join('\n') + '\n';
+}
+
+function exportTargetsCsv(opts = {}) {
+  const db = load();
+  const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
+  let rows = db.targets.map(t => ({ ...t, campaignName: cmap[t.campaignId] || t.campaignId }));
+  if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
+  rows.sort((a, b) => String(a.campaignId).localeCompare(String(b.campaignId)) || String(a.id).localeCompare(String(b.id)));
+  return targetsToCsv(rows);
+}
+
 function recentTargets(limit = 50) {
   const db = load();
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
@@ -202,7 +223,7 @@ function resetForTests(file) {
   save(emptyDb());
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, resetForTests, dbFile };
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 
