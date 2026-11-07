@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:11Z — Phase 33: docs + auth logout method safety
-- README updated with campaign events JSON endpoint. `GET /api/auth/logout` now returns 405 JSON (POST still clears session/redirects); regression test added.
-- `node --check`/tests green: `node --test --test-concurrency=1` — 36/36 passing. Commit/push in progress.
+## 2026-11-07 11:12Z — Phase 34: campaign search + lighter summary
+- Added `GET /api/campaigns?q=` (case-insensitive name substring) and `GET /api/campaigns/:id?includeTargets=false` (omits heavy targets/events arrays). Regression test added.
+- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 37/37 passing. Commit/push in progress.

@@ -127,9 +127,12 @@ function createCampaign(input = {}) {
   return { ...campaign, targetCount: db.targets.filter(t => t.campaignId === campaign.id).length };
 }
 
-function listCampaigns() {
+function listCampaigns(opts = {}) {
   const db = load();
-  return db.campaigns.map(c => {
+  const q = String(opts.q || '').trim().toLowerCase();
+  let campaigns = db.campaigns.slice();
+  if (q) campaigns = campaigns.filter(c => String(c.name || '').toLowerCase().includes(q));
+  return campaigns.map(c => {
     const targets = db.targets.filter(t => t.campaignId === c.id);
     const statusCounts = targets.reduce((acc, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc; }, {});
     return { ...c, targetCount: targets.length, statusCounts };
@@ -140,21 +143,25 @@ function getCampaign(id, opts = {}) {
   const db = load();
   const campaign = db.campaigns.find(c => c.id === String(id));
   if (!campaign) throw Object.assign(new Error('campaign not found'), { status: 404 });
-  const status = opts.status ? String(opts.status).trim().toLowerCase() : '';
+  const status = String(opts.status || '').trim();
+  const includeTargets = String(opts.includeTargets ?? 'true').toLowerCase() !== 'false';
   const allTargets = db.targets.filter(t => t.campaignId === campaign.id);
   const events = db.events.filter(e => e.campaignId === campaign.id);
   const statusCounts = allTargets.reduce((acc, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc; }, {});
   let targets = allTargets;
   if (status) targets = targets.filter(t => t.status === status);
-  return {
+  const out = {
     ...campaign,
     statusFilter: status || null,
     targetCount: allTargets.length,
     statusCounts,
     eventCount: events.length,
-    targets,
-    events: events.slice(0, 200),
   };
+  if (includeTargets) {
+    out.targets = targets;
+    out.events = events.slice(0, 200);
+  }
+  return out;
 }
 
 function sendSimulation(id) {

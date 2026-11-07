@@ -476,6 +476,22 @@ test('auth logout GET returns 405', async () => {
   });
 });
 
+test('campaign summary and search filters work', async () => {
+  await withServer(async (base) => {
+    const a = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Finance Q4', template: 'generic', targets: 'f@example.com' }) });
+    await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'HR Benefits', template: 'generic', targets: 'h@example.com' }) });
+    const search = await req(base, '/api/campaigns?q=finance');
+    assert.equal(search.status, 200);
+    assert.equal(search.data.length, 1);
+    assert.equal(search.data[0].name, 'Finance Q4');
+    const summary = await req(base, `/api/campaigns/${a.data.id}?includeTargets=false`);
+    assert.equal(summary.status, 200);
+    assert.equal(summary.data.targets, undefined);
+    assert.equal(summary.data.events, undefined);
+    assert.equal(summary.data.targetCount, 1);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
