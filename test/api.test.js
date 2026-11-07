@@ -519,6 +519,21 @@ test('campaign events JSON endpoint returns stable shape for unknown campaign', 
   });
 });
 
+test('campaign events returns stable empty shape when targetId is not in campaign', async () => {
+  await withServer(async (base) => {
+    const c1 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'C1', template: 'generic', targets: 'a@example.com' }) });
+    const c2 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'C2', template: 'generic', targets: 'b@example.com' }) });
+    const d2 = await req(base, `/api/campaigns/${c2.data.id}`);
+    const foreignTargetId = d2.data.targets[0].id;
+    await req(base, `/api/campaigns/${c2.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${foreignTargetId}/click`, { method: 'POST', body: '{}' });
+    const r = await req(base, `/api/campaigns/${c1.data.id}/events?targetId=${foreignTargetId}&limit=10`);
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.data.items, []);
+    assert.equal(r.data.total, 0);
+  });
+});
+
 test('campaign target import rejects invalid payload shape', async () => {
   await withServer(async (base) => {
     const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'BadImport', template: 'generic', targets: 'x@example.com' }) });

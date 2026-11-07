@@ -359,10 +359,25 @@ function eventsToCsv(rows) {
 function listEvents(opts = {}) {
   const db = load();
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
+  const campaignId = opts.campaignId != null && opts.campaignId !== '' ? String(opts.campaignId) : '';
+  const targetId = opts.targetId != null && opts.targetId !== '' ? String(opts.targetId) : '';
+  const type = opts.type != null && opts.type !== '' ? String(opts.type).toLowerCase() : '';
+  // Stable 404-safe shape for unknown campaign (preserve existing behavior)
+  if (campaignId && !db.campaigns.some(c => c.id === campaignId)) {
+    const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
+    const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
+    return { items: [], total: 0, limit, offset };
+  }
+  // If campaign+targetId are both provided and target does not belong to campaign, return stable empty
+  if (campaignId && targetId && !db.targets.some(t => t.id === targetId && t.campaignId === campaignId)) {
+    const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
+    const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
+    return { items: [], total: 0, limit, offset };
+  }
   let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
-  if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
-  if (opts.targetId) rows = rows.filter(r => r.targetId === String(opts.targetId));
-  if (opts.type) rows = rows.filter(r => r.type === String(opts.type).toLowerCase());
+  if (campaignId) rows = rows.filter(r => r.campaignId === campaignId);
+  if (targetId) rows = rows.filter(r => r.targetId === targetId);
+  if (type) rows = rows.filter(r => r.type === type);
   rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
   const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
   const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
