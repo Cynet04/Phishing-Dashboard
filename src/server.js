@@ -13,7 +13,13 @@ const MIME = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf
 function send(res, status, body, headers = {}) {
   const isObj = body !== null && typeof body === 'object' && !Buffer.isBuffer(body);
   const data = isObj ? JSON.stringify(body) : body;
-  res.writeHead(status, { 'Content-Type': isObj ? 'application/json; charset=utf-8' : 'text/plain; charset=utf-8', ...headers });
+  res.writeHead(status, {
+    'Content-Type': isObj ? 'application/json; charset=utf-8' : 'text/plain; charset=utf-8',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    ...headers,
+  });
   res.end(data);
 }
 
@@ -27,13 +33,15 @@ function readJson(req) {
 }
 
 function serveStatic(req, res, pathname) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return false;
   const rel = pathname === '/' ? '/index.html' : pathname;
-  const file = path.normalize(path.join(PUBLIC, rel));
-  if (!file.startsWith(PUBLIC)) return send(res, 403, 'forbidden');
-  if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) return false;
-  const ext = path.extname(file).toLowerCase();
-  res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
-  fs.createReadStream(file).pipe(res);
+  const resolved = path.resolve(PUBLIC, '.' + rel);
+  if (!resolved.startsWith(path.resolve(PUBLIC))) return send(res, 403, { error: 'forbidden' });
+  if (!fs.existsSync(resolved) || fs.statSync(resolved).isDirectory()) return false;
+  const ext = path.extname(resolved).toLowerCase();
+  res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'X-Content-Type-Options': 'nosniff' });
+  if (req.method === 'HEAD') return res.end(), true;
+  fs.createReadStream(resolved).pipe(res);
   return true;
 }
 
@@ -74,6 +82,7 @@ async function handler(req, res) {
       const targetId = pathname.split('/')[3];
       return send(res, 201, db.recordEvent({ targetId, type: 'clicked', meta: { source: 'dashboard-simulate' } }));
     }
+    if (pathname.startsWith('/api/')) return send(res, 404, { error: 'not found' });
     if (req.method === 'GET' && pathname === '/login-simulation') {
       const targetId = searchParams.get('target');
       if (targetId) try { db.recordEvent({ targetId, type: 'opened', meta: { source: 'login-simulation' } }); } catch {}

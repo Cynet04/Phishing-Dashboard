@@ -19,18 +19,20 @@ async function loadStats() {
   const stats = await api('/api/stats');
   $('#mCampaigns').textContent = stats.totals.campaigns;
   $('#mSent').textContent = stats.totals.emailsSent;
+  $('#mOpenRate').textContent = `${stats.totals.openRate}%`;
   $('#mClickRate').textContent = `${stats.totals.clickRate}%`;
   $('#mSubmitRate').textContent = `${stats.totals.submitRate}%`;
   renderChart(stats.timeline || []);
 }
 
 function renderChart(timeline) {
-  if (!timeline.length) { $('#chart').innerHTML = '<div class="muted">No click/submit events yet. Use “Simulate Click” on a sent target.</div>'; return; }
-  const max = Math.max(1, ...timeline.map(d => Math.max(d.clicked || 0, d.submitted || 0)));
+  if (!timeline.length) { $('#chart').innerHTML = '<div class="muted">No open/click/submit events yet. Use "Send Simulation", open the mock landing page, or "Simulate Click".</div>'; return; }
+  const max = Math.max(1, ...timeline.map(d => Math.max(d.opened || 0, d.clicked || 0, d.submitted || 0)));
   $('#chart').innerHTML = timeline.map(d => `
     <div class="bar-group">
       <div class="bars">
-        <div class="bar" style="height:${((d.clicked||0)/max)*100}%" title="Clicked: ${d.clicked||0}"></div>
+        <div class="bar" style="height:${((d.opened||0)/max)*100}%" title="Opened: ${d.opened||0}"></div>
+        <div class="bar click" style="height:${((d.clicked||0)/max)*100}%" title="Clicked: ${d.clicked||0}"></div>
         <div class="bar sub" style="height:${((d.submitted||0)/max)*100}%" title="Submitted: ${d.submitted||0}"></div>
       </div>
       <div class="bar-label">${esc(d.day.slice(5))}</div>
@@ -54,12 +56,13 @@ async function selectCampaign(id, quiet) {
   const stats = await api(`/api/campaigns/${id}/stats`);
   $('#detail').innerHTML = `
     <div><strong>${esc(c.name)}</strong> <span class="pill ${esc(c.status)}">${esc(c.status)}</span></div>
-    <div class="muted" style="margin:8px 0">Targets: ${c.targets.length} · Sent: ${stats.totals.emailsSent} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
+    <div class="muted" style="margin:8px 0">Targets: ${c.targets.length} · Sent: ${stats.totals.emailsSent} · Opened: ${stats.totals.opened} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
+    <div class="muted" style="margin:0 0 8px">Rates — Open: ${stats.totals.openRate}% · Click: ${stats.totals.clickRate}% · Submit: ${stats.totals.submitRate}%</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
     </div>
-    <div class="muted">Tip: create a target, send simulation, then use “Simulate Click” in the table or submit the mock landing page.</div>`;
+    <div class="muted">Tip: send simulation, open the mock landing page (records Opened), then simulate click or submit the form (records Submitted).</div>`;
   $('#sendSimBtn')?.addEventListener('click', async () => {
     await api(`/api/campaigns/${id}/send`, { method: 'POST', body: '{}' });
     await refresh();

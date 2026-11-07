@@ -42,9 +42,9 @@
 - [x] Re-read task/progress state after environment restore; baseline tests 5/5
 - [x] Review unstaged data-layer refactor; verify compatibility and run tests
 - [x] Commit/push data-layer normalization/compat hardening
-- [ ] Add security/robustness polish (headers, safe static routing, API 404 consistency)
-- [ ] Expand metrics: include opened count/rate and opened activity where useful
-- [ ] Extend tests for new behavior and run full verification
-- [ ] Update README/PROGRESS/TASKS; commit/push each completed item
+- [x] Add security/robustness polish (headers, safe static routing, API 404 consistency)
+- [x] Expand metrics: include opened count/rate and opened activity where useful
+- [x] Extend tests for new behavior and run full verification (5/5)
+- [x] Commit/push analytics and hardening changes
 - [ ] Final end-to-end smoke (server + UI/API paths) and clean status check
 

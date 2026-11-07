@@ -26,14 +26,18 @@ async function req(base, p, opts) {
   const res = await fetch(base + p, { headers: { 'Content-Type': 'application/json' }, ...opts });
   const text = await res.text();
   let data; try { data = JSON.parse(text); } catch { data = text; }
-  return { status: res.status, data, headers: res.headers };
+  return { status: res.status, data, headers: Object.fromEntries(res.headers.entries()) };
 }
 
 test('health endpoint', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/health');
     assert.equal(r.status, 200);
-    assert.equal(r.data.ok, true);
+    assert.match(JSON.stringify(r.headers), /x-content-type-options/i);
+
+    const missing = await req(base, '/api/campaigns/9999');
+    assert.equal(missing.status, 404);
+    assert.ok(missing.data.error);
   });
 });
 
@@ -60,6 +64,9 @@ test('campaign flow records send/click/submit stats', async () => {
     assert.equal(stats.data.totals.emailsSent, 2);
     assert.equal(stats.data.totals.clicked, 1);
     assert.equal(stats.data.totals.submitted, 1);
+    assert.equal(stats.data.totals.opened, 1);
+    assert.equal(stats.data.totals.openRate, 50);
+    assert.equal(stats.data.totals.clickRate, 50);
   });
 });
 
@@ -80,6 +87,10 @@ test('campaign validation and opened event flow', async () => {
     assert.equal(opened.status, 201);
     const after = await req(base, `/api/campaigns/${created.data.id}`);
     assert.equal(after.data.targets[0].status, 'opened');
+    const stats = await req(base, `/api/campaigns/${created.data.id}/stats`);
+    assert.equal(stats.data.totals.opened, 1);
+    assert.equal(stats.data.totals.openRate, 100);
+    assert.equal(stats.data.timeline.some(d => d.opened === 1), true);
   });
 });
 

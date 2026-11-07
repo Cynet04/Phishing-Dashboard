@@ -143,15 +143,16 @@ function stats(id) {
   const events = id ? db.events.filter(e => e.campaignId === String(id)) : db.events;
   const totalTargets = targets.length;
   const sent = targets.filter(t => ['sent', 'opened', 'clicked', 'submitted'].includes(t.status)).length;
+  const opened = targets.filter(t => ['opened', 'clicked', 'submitted'].includes(t.status)).length;
   const clicked = targets.filter(t => ['clicked', 'submitted'].includes(t.status)).length;
   const submitted = targets.filter(t => t.status === 'submitted').length;
   const rate = (n, d) => d ? Math.round((n / d) * 1000) / 10 : 0;
   const byDay = {};
 
   for (const e of events) {
-    if (e.type !== 'clicked' && e.type !== 'submitted') continue;
+    if (e.type !== 'opened' && e.type !== 'clicked' && e.type !== 'submitted') continue;
     const day = String(e.at).slice(0, 10);
-    byDay[day] = byDay[day] || { day, clicked: 0, submitted: 0 };
+    byDay[day] = byDay[day] || { day, opened: 0, clicked: 0, submitted: 0 };
     byDay[day][e.type]++;
   }
 
@@ -159,9 +160,11 @@ function stats(id) {
     totals: {
       campaigns: campaigns.length,
       emailsSent: sent,
+      openRate: rate(opened, sent || totalTargets),
       clickRate: rate(clicked, sent || totalTargets),
       submitRate: rate(submitted, sent || totalTargets),
       targets: totalTargets,
+      opened,
       clicked,
       submitted,
     },
