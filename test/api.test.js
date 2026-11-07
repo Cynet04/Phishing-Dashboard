@@ -435,6 +435,20 @@ test('events endpoint returns 405 for unsupported methods', async () => {
   });
 });
 
+test('pagination query params are clamped and validated safely', async () => {
+  await withServer(async (base) => {
+    await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Clamp', template: 'generic', targets: 'c1@example.com,c2@example.com' }) });
+    const targets = await req(base, '/api/targets/recent?limit=-5&offset=-1');
+    assert.equal(targets.status, 200);
+    assert.equal(targets.data.limit >= 1, true);
+    assert.equal(targets.data.offset, 0);
+    const events = await req(base, '/api/events?limit=0&offset=-10');
+    assert.equal(events.status, 200);
+    assert.equal(events.data.limit >= 1, true);
+    assert.equal(events.data.offset, 0);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

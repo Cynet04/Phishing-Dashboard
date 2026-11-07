@@ -148,8 +148,13 @@
 - [x] Add dashboard campaign detail quick status counts display (uses `statusCounts`)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 30 — Expansion (active)
-- [ ] Add `GET /api/targets/recent` query validation (clamp/handle negative offset/limit) and tests
-- [ ] Add `GET /api/events` query validation (clamp negative offset/limit) and tests
+## Phase 30 — Expansion (complete)
+- [x] Add `GET /api/targets/recent` and `GET /api/events` query clamp/validation regression tests (negative/zero limit/offset) — 33/33 passing
+- [x] Confirmed clamping behavior in DB layer (no unsafe behavior observed)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 31 — Expansion (active)
+- [ ] Add `POST /api/campaigns` validation for missing/invalid JSON body shape and test
+- [ ] Add dashboard-safe handling for template save when body/subject missing (already API-validated; improve UX message) with no test regression
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:07Z — Phase 29: events 405 handling + status counts UI
-- `POST /api/events` remains supported; other `/api/events` methods now return 405 JSON. Campaign detail UI displays `statusCounts`.
-- `node --check` (server/ui/tests); `node --test --test-concurrency=1` — 32/32 passing. Commit/push in progress.
+## 2026-11-07 11:08Z — Phase 30: pagination clamp regression
+- Added regression test confirming negative/zero pagination query params are safely clamped for recent targets and events endpoints.
+- `node --test --test-concurrency=1` — 33/33 passing. Commit/push in progress.
