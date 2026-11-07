@@ -348,3 +348,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 23:30Z — Phase 141: per-row Target action in Recent Events
 - Added per-row **Target** button in Recent Events (global/campaign-scoped). Opens target detail with row target/campaign context; campaign scope uses scoped ownership context. UI syntax checked, 81/81 passing. Committed/pushed.
+
+## 2026-11-07 23:45Z — Phase 144: campaign events JSON from/to docs/test parity
+- Documented `from=&to=` for `GET /api/campaigns/:id/events` and added regression coverage (validated dates, empty range, invalid date, stable unknown-campaign shape). API behavior already supported. 82/82 passing. Committed/pushed.
