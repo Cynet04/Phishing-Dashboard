@@ -253,7 +253,11 @@
 - [x] Frontend UI: made campaign list loader accept array or paginated envelope (forward-compatible with `GET /api/campaigns?limit/offset`) and kept safe empty states — 49/49 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 55 — Expansion (active, in progress)
-- [~] Testing: add auth-enabled integration test coverage for login rate-limit 429 behavior (isolated server state) and ensure existing auth tests remain stable
+## Phase 55 — Expansion (complete)
+- [x] Testing/Security: added auth-enabled login rate-limit 429 integration test with server `resetLoginAttempts` hook; scoped rate limit to auth-enabled mode to avoid side effects — 50/50 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 56 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/targets/export.csv?campaignId=&status=` filter support and tests (backward-compatible)
 - [ ] Run verification, docs/log updates, commit/push per item
 
