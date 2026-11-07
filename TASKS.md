@@ -357,7 +357,11 @@
 - [x] Frontend UI: target detail modal adds **Show in Recent Events** action (prefills Recent Events `targetId` filter, clears campaign-scoped quick view, reloads global events, scrolls to panel) — 60/60 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 81 — Expansion (active, in progress)
-- [~] Backend/API: add method consistency (405) for `GET /api/targets/recent` and `GET /api/targets/export.csv` routes with regression test
+## Phase 81 — Expansion (complete)
+- [x] Backend/API: `GET /api/targets/recent` and `GET /api/targets/export.csv` now enforce GET-only method handling (405 for unsupported methods) with regression test — 61/61 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 82 — Expansion (active, in progress)
+- [~] Frontend UI: add “View target in events” quick action from Recent Targets rows (opens target context in Recent Events filter) for easier investigation workflow
 - [ ] Run verification, docs/log updates, commit/push per item
 

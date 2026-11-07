@@ -817,6 +817,15 @@ test('events endpoint supports targetId filter', async () => {
   });
 });
 
+test('targets recent and export routes enforce GET method', async () => {
+  await withServer(async (base) => {
+    for (const path of ['/api/targets/recent', '/api/targets/export.csv']) {
+      const res = await fetch(`${base}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      assert.equal(res.status, 405, `expected 405 for ${path}`);
+    }
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
