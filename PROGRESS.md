@@ -63,3 +63,7 @@
 ## 2026-11-07 11:44Z — Phase 66: target detail modal UX/accessibility
 - Target detail modal now supports **Copy JSON** (clipboard with prompt fallback), stores fetched target+events JSON, closes on Escape/click-outside, and focuses the close control.
 - `node --check` (ui/app.js); `node --test --test-concurrency=1` — 55/55 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets ? **Details** ? **Copy JSON** / press **Esc**.
+
+## 2026-11-07 11:45Z — Phase 67: events CSV target filter
+- `/api/events/export.csv` accepts optional `targetId` (404-safe for unknown target) alongside existing filters. Added regression test; README updated.
+- `node --check` (db/server/tests); `node --test --test-concurrency=1` — 56/56 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
