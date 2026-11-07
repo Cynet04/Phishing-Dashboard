@@ -413,7 +413,11 @@
 - [x] Backend/API: `db.listEvents` now returns stable empty paginated shape when `campaignId + targetId` are provided but target does not belong to campaign (and preserves unknown-campaign stable shape). Regression test added — 66/66 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 96 — Expansion (active, in progress)
-- [~] Frontend UI: add global API loading indicator (request counter + visible spinner/status) for dashboard fetches; keep existing refresh/loading behavior intact
+## Phase 96 — Expansion (complete)
+- [x] Frontend UI: global API loading indicator (`#apiStatus`, request counter + spinner/status) for dashboard `api()` fetches; existing refresh/loading behavior intact
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 97 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/campaigns/:id/targets/:targetId/events` campaign-scoped target events endpoint (ownership-validated, pagination/filter-safe, GET-only 405) with regression test and README/docs update
 - [ ] Run verification, docs/log updates, commit/push per item
 
