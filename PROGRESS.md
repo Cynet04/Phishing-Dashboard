@@ -321,3 +321,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 21:15Z — Phase 132: target detail modal type filter
 - Added type filter in target detail modal (campaign-scoped/global); wired to target events JSON/export/copy-link and filter context display/copy-JSON. UI syntax checked, 80/80 passing. Committed/pushed.
+
+## 2026-11-07 21:30Z — Phase 133: copy events link in target detail modal
+- Added **Copy events link** in target detail modal (copies resolved JSON events endpoint URL with active type/from/to filters; campaign-scoped/global). UI syntax checked, 80/80 passing. Committed/pushed.
