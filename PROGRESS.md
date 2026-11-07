@@ -390,3 +390,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 02:45Z — Phase 157: optional campaignId ownership validation for POST /api/events
 - Documented and regression-tested optional `campaignId` body field for `POST /api/events` (ownership-validated via existing `db.recordEvent`, 404-safe, backward-compatible). 85/85 passing. Committed/pushed.
+
+## 2026-11-08 03:00Z — Phase 158: carry resolved campaign context from target detail to Recent Events
+- `showTargetEventsInRecent` now accepts optional resolved `campaignId` (keeps global scope semantics) and target detail modal **Show in Recent Events** passes resolved/explicit campaign context for ownership clarity. UI syntax checked, 85/85 passing. Committed/pushed.
