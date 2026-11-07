@@ -315,3 +315,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 20:20Z — Phase 130: campaign-scoped target events JSON from/to parity
 - Added validated `from`/`to` date-filter parity to `GET /api/campaigns/:id/targets/:targetId/events` (ownership/404/405-safe, uses `db.listEvents`). README updated, regression test added. 80/80 passing. Committed/pushed.
+
+## 2026-11-07 21:00Z — Phase 131: target detail modal from/to filters
+- Added From/To date controls + Apply/Clear in target detail modal (campaign-scoped/global). Refreshes scoped target events JSON, updates export URL/copy-link, and includes filter context in copied JSON. UI/server syntax checked, 80/80 passing. Committed/pushed.
