@@ -333,3 +333,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 22:15Z — Phase 136: Recent Events toolbar copy links
 - Added **Copy CSV link** / **Copy JSON link** in Recent Events toolbar for current scoped/filtered events URLs (campaign-scoped/global). Export link helper now scope-aware and aligned with active filters. UI syntax checked, 80/80 passing. Committed/pushed.
+
+## 2026-11-07 22:30Z — Phase 137: README UI behavior docs
+- Documented target detail modal (scope, type/from/to filters, Apply/Clear, pagination/Load more, export/copy CSV/copy events JSON/copy JSON, Show in Recent Events) and Recent Events toolbar copy-link/filters/Details behaviors in README. 80/80 passing. Committed/pushed.
