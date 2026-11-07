@@ -366,3 +366,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 01:00Z — Phase 149: resolved campaign context for target-filtered Recent Events
 - Recent Events now resolves unambiguous campaign context from loaded events when a target filter is applied (safe/ambiguous fallback to empty). Uses resolved context for **Open target detail** ownership/title hint and shows it in meta filters. 83/83 passing. Committed/pushed.
+
+## 2026-11-08 01:15Z — Phase 150: Recent Events resolved campaign in scope indicator
+- Global Recent Events scope indicator now shows resolved campaign context for unambiguous target-filtered views (keeps global pagination/export semantics primary). 83/83 passing. Committed/pushed.
