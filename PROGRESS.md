@@ -327,3 +327,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 21:45Z — Phase 134: evaluated campaign events targetId ownership behavior
 - Evaluated changing campaign-scoped `events`/`events.csv` to 404 when `targetId` is not in campaign. Current stable empty paginated/envelope behavior is intentional (Phase 95) and covered by regression tests; 404 would break backward compatibility. No API change. Activated Phase 135 (target detail modal events pagination).
+
+## 2026-11-07 22:00Z — Phase 135: target detail modal events pagination
+- Added events pagination in target detail modal (campaign-scoped/global): `limit=20`/`offset`, shown/total meta, **Load more events**; filters reset pagination and copy-JSON includes loaded page state. UI syntax checked, 80/80 passing. Committed/pushed.
