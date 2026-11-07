@@ -369,3 +369,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 01:15Z — Phase 150: Recent Events resolved campaign in scope indicator
 - Global Recent Events scope indicator now shows resolved campaign context for unambiguous target-filtered views (keeps global pagination/export semantics primary). 83/83 passing. Committed/pushed.
+
+## 2026-11-08 01:30Z — Phase 151: README resolved campaign context/ownership hints
+- Documented Recent Events resolved campaign context for unambiguous target-filtered global views (global pagination/export semantics preserved) and ownership/context hints for target detail/open flows. 83/83 passing. Committed/pushed.
