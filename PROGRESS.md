@@ -111,3 +111,9 @@
 ## 2026-11-07 11:50Z ? Phase 72: target route method consistency
 - `GET /api/targets/:id` and `GET /api/targets/:id/events` enforce GET-only handling (405 for unsupported methods). Added regression test.
 - `node --check` (server/tests); `node --test --test-concurrency=1` ? 59/59 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 11:54Z — Phase 76: campaign events targetId passthrough
+- GET /api/campaigns/:id/events now forwards 	argetId filter. Campaign events JSON filter test extended with 	argetId assertion.
+- 
+ode --check (server/tests); 
+ode --test --test-concurrency=1 — 60/60 passing. Committed/pushed (ce20b89, amended cd4563, force-with-lease). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
