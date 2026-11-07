@@ -51,3 +51,7 @@
 ## 2026-11-07 11:41Z — Phase 63: campaign filtered export UI
 - Campaign detail adds **Export Filtered Targets** link that follows the selected status filter (`/api/campaigns/:id/targets/export.csv?status=`) alongside **Export All Targets**.
 - `node --check` (ui); `node --test --test-concurrency=1` — 54/54 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Campaign Detail ? filter status ? **Export Filtered Targets**.
+
+## 2026-11-07 11:42Z — Phase 64: template endpoint coverage
+- Added API test for `GET /api/templates` shape and custom template delete 404 (documents current PUT-upsert behavior for unknown custom IDs).
+- `node --check` (tests); `node --test --test-concurrency=1` — 55/55 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
