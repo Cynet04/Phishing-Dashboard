@@ -47,3 +47,7 @@
 ## 2026-11-07 11:40Z — Phase 62: campaign targets filtered CSV export route
 - Added `GET /api/campaigns/:id/targets/export.csv?status=` (404-safe, reuses filtered export). Added regression test; README updated.
 - `node --check` (server/tests); `node --test --test-concurrency=1` — 54/54 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 11:41Z — Phase 63: campaign filtered export UI
+- Campaign detail adds **Export Filtered Targets** link that follows the selected status filter (`/api/campaigns/:id/targets/export.csv?status=`) alongside **Export All Targets**.
+- `node --check` (ui); `node --test --test-concurrency=1` — 54/54 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Campaign Detail ? filter status ? **Export Filtered Targets**.

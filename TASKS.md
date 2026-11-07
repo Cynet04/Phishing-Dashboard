@@ -285,7 +285,11 @@
 - [x] Backend/API: added `GET /api/campaigns/:id/targets/export.csv?status=` (reuses export logic, 404-safe) and regression test — 54/54 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 63 — Expansion (active, in progress)
-- [~] Frontend UI: add campaign detail “Export Filtered Targets” link using selected campaign status filter (targets/export.csv?status=)
+## Phase 63 — Expansion (complete)
+- [x] Frontend UI: campaign detail adds “Export Filtered Targets” (uses current status filter via `targets/export.csv?status=`) and keeps “Export All Targets” — 54/54 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 64 — Expansion (active, in progress)
+- [~] Testing/refactor: add test for `GET /api/templates` shape and `PUT /api/templates/:id` 404 for unknown custom template (already partial); tighten template 404 consistency if needed
 - [ ] Run verification, docs/log updates, commit/push per item
 
