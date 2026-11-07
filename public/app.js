@@ -105,7 +105,7 @@ async function selectCampaign(id, quiet) {
   $('#detail').innerHTML = `
     <div><strong>${esc(c.name)}</strong> <span class="pill ${esc(c.status)}">${esc(c.status)}</span></div>
     <div class="muted" style="margin:8px 0">Targets (filtered): ${c.targets.length} · All targets: ${c.targetCount ?? c.targets.length} · Events: ${c.eventCount ?? 0} · Sent: ${stats.totals.emailsSent} · Opened: ${stats.totals.opened} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
-    <div class="muted" style="margin:0 0 8px">Rates — Open: ${stats.totals.openRate}% · Click: ${stats.totals.clickRate}% · Submit: ${stats.totals.submitRate}%</div>
+    <div class="muted" style="margin:0 0 8px">Rates — Open: ${stats.totals.openRate}% · Click: ${stats.totals.clickRate}% · Submit: ${stats.totals.submitRate}% · Status counts: ${esc(Object.entries(c.statusCounts||{}).map(([k,v])=>`${k}:${v}`).join(', ') || '—')}</div>
     <label class="muted">Filter targets by status <select id="campaignStatusFilter">${statuses.map(s => `<option value="${s}" ${s===state.campaignStatus?'selected':''}>${s || 'all'}</option>`).join('')}</select></label>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>

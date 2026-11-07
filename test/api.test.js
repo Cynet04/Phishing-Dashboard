@@ -427,6 +427,14 @@ test('default templates cannot be modified via template API', async () => {
   });
 });
 
+test('events endpoint returns 405 for unsupported methods', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/events', { method: 'DELETE' });
+    assert.equal(r.status, 405);
+    assert.equal(r.data.error, 'method not allowed');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

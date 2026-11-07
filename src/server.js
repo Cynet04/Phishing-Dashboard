@@ -161,7 +161,11 @@ async function handler(req, res) {
     if (req.method === 'GET' && pathname === '/api/events/export.csv') {
       return send(res, 200, db.exportEventsCsv({ campaignId: searchParams.get('campaignId') || undefined, type: searchParams.get('type') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="events.csv"' });
     }
-    if (req.method === 'GET' && pathname === '/api/events') return send(res, 200, db.listEvents({ campaignId: searchParams.get('campaignId') || undefined, type: searchParams.get('type') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
+    if (pathname === '/api/events') {
+      if (req.method === 'GET') return send(res, 200, db.listEvents({ campaignId: searchParams.get('campaignId') || undefined, type: searchParams.get('type') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
+      if (req.method === 'POST') return send(res, 201, db.recordEvent(await readJson(req)));
+      return send(res, 405, { error: 'method not allowed' });
+    }
     if (req.method === 'GET' && pathname === '/api/campaigns') return send(res, 200, db.listCampaigns());
     if (req.method === 'POST' && pathname === '/api/campaigns') return send(res, 201, db.createCampaign(await readJson(req)));
     if (req.method === 'GET' && pathname === '/api/targets/export.csv') {
@@ -179,7 +183,6 @@ async function handler(req, res) {
     if (m && req.method === 'GET' && m[2] === 'export.csv') return send(res, 200, db.exportTargetsCsv({ campaignId: m[1] }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-targets.csv"` });
     if (m && req.method === 'GET' && m[2] === 'events.csv') return send(res, 200, db.exportEventsCsv({ campaignId: m[1] }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-events.csv"` });
     if (m) return send(res, 405, { error: 'method not allowed' });
-    if (req.method === 'POST' && pathname === '/api/events') return send(res, 201, db.recordEvent(await readJson(req)));
     if (req.method === 'POST' && /^\/api\/targets\/[^/]+\/click$/.test(pathname)) {
       const targetId = pathname.split('/')[3];
       return send(res, 201, db.recordEvent({ targetId, type: 'clicked', meta: { source: 'dashboard-simulate' } }));
