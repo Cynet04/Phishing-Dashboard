@@ -304,6 +304,17 @@ $('#copyTargetDetail')?.addEventListener('click', async () => {
   try { await navigator.clipboard?.writeText(targetDetailJson); toast('Target JSON copied.'); }
   catch { prompt('Copy target JSON:', targetDetailJson); }
 });
+$('#showTargetInEvents')?.addEventListener('click', async () => {
+  if (!targetDetailId) return toast('No target selected.', 'error');
+  try {
+    state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetDetailId; state.eventsOffset = 0;
+    if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
+    if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = targetDetailId;
+    closeTargetDetail();
+    await loadEvents(true);
+    document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
+});
 $('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'targetDetailModal') closeTargetDetail(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTargetDetail(); });
 let autoTimer = null;

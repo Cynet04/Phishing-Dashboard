@@ -353,7 +353,11 @@
 - [x] Tests/API coverage: strengthened `GET /api/campaigns/:id/events` regression to assert `targetId + type` combined filtering and stable empty result for mismatched target/type — 60/60 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 80 — Expansion (active, in progress)
-- [~] Frontend UI: add **Show in Recent Events** action in target detail modal (prefills Recent Events `targetId` filter, clears campaign-scoped quick view, reloads global events)
+## Phase 80 — Expansion (complete)
+- [x] Frontend UI: target detail modal adds **Show in Recent Events** action (prefills Recent Events `targetId` filter, clears campaign-scoped quick view, reloads global events, scrolls to panel) — 60/60 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 81 — Expansion (active, in progress)
+- [~] Backend/API: add method consistency (405) for `GET /api/targets/recent` and `GET /api/targets/export.csv` routes with regression test
 - [ ] Run verification, docs/log updates, commit/push per item
 
