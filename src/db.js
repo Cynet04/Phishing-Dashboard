@@ -362,6 +362,9 @@ function listEvents(opts = {}) {
   const campaignId = opts.campaignId != null && opts.campaignId !== '' ? String(opts.campaignId) : '';
   const targetId = opts.targetId != null && opts.targetId !== '' ? String(opts.targetId) : '';
   const type = opts.type != null && opts.type !== '' ? String(opts.type).toLowerCase() : '';
+  const from = parseDateFilter(opts.from, 'from');
+  const to = parseDateFilter(opts.to, 'to');
+  if (from && to && from > to) throw Object.assign(new Error('invalid date range: from must be <= to'), { status: 400 });
   // Stable 404-safe shape for unknown campaign (preserve existing behavior)
   if (campaignId && !db.campaigns.some(c => c.id === campaignId)) {
     const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
@@ -378,6 +381,8 @@ function listEvents(opts = {}) {
   if (campaignId) rows = rows.filter(r => r.campaignId === campaignId);
   if (targetId) rows = rows.filter(r => r.targetId === targetId);
   if (type) rows = rows.filter(r => r.type === type);
+  if (from) rows = rows.filter(r => String(r.at || '').slice(0, 10) >= from);
+  if (to) rows = rows.filter(r => String(r.at || '').slice(0, 10) <= to);
   rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
   const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));
   const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
