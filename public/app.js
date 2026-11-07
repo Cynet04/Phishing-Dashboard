@@ -178,10 +178,24 @@ async function loadEvents(reset = false) {
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
 }
 
+async function loadSystemStatus() {
+  try {
+    const [health, auth, campaigns, events] = await Promise.all([
+      api('/api/health'), api('/api/auth/status'), api('/api/campaigns'), api('/api/events?limit=1')
+    ]);
+    $('#sysApi').textContent = health?.ok ? 'OK' : 'Unknown';
+    $('#sysAuth').textContent = auth?.authEnabled ? (auth.authenticated ? 'Enabled (signed in)' : 'Enabled') : 'Disabled';
+    $('#sysCampaigns').textContent = String(Array.isArray(campaigns) ? campaigns.length : 0);
+    $('#sysEvents').textContent = String(events?.total ?? 0);
+  } catch (e) {
+    $('#sysApi').textContent = `Error: ${e.message}`;
+  }
+}
+
 async function refresh() {
   const btn = $('#refreshBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...'; }
   try {
-    await Promise.all([loadStats(), loadCampaigns(), loadTargets(true), loadEvents(true)]);
+    await Promise.all([loadStats(), loadCampaigns(), loadTargets(true), loadEvents(true), loadSystemStatus()]);
   } catch (e) { toast(e.message || 'Refresh failed', 'error'); }
   finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
 }

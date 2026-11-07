@@ -213,7 +213,11 @@
 - [x] Backend/testing: hardened `POST /api/auth/login` to return 405 for non-POST methods; added auth login method/body safety tests (unknown event type behavior already covered as stable empty shape) — 45/45 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 45 — Expansion (active, in progress)
-- [~] Frontend UI: add dashboard “system status” card showing API health, auth status, and DB counts (lightweight fetches); responsive/professional styling
+## Phase 45 — Expansion (complete)
+- [x] Frontend UI: added “System Status” dashboard card (API/auth/campaign/event counts) with lightweight fetches and responsive grid styling — 45/45 API tests still passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 46 — Expansion (active, in progress)
+- [~] Backend validation: reject invalid `POST /api/events` target/campaign mismatch and unknown event type with clear 400/404 tests; keep simulation flows working
 - [ ] Run verification, docs/log updates, commit/push per item
 
