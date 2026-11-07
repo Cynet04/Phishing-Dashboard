@@ -192,3 +192,10 @@ ode --test --test-concurrency=1 — 65/65 passing. Commit/push in progress. Dashbo
 - 
 ode --check (ui); 
 ode --test --test-concurrency=1 — 65/65 passing. Committed/pushed (6e2fb8). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign detail ? pick target ? **Target Details**.
+
+## 2026-11-07 15:02Z — Phase 94: target detail scope indicator and cleanup
+- Target detail modal now shows a scope indicator: campaign-scoped (with campaign ID) when opened from campaign context, or global when opened from Recent Targets/global flows. Export/events actions remain target-based and correct.
+- Cleaned up duplicate openTargetDetail/broken insertion inside loadTargets from reset state and fixed mojibake text artifacts in public/app.js.
+- 
+ode --check (ui); 
+ode --test --test-concurrency=1 — 65/65 passing. Committed/pushed ( 151777). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign picker **Target Details** vs Recent Targets **Details**.
