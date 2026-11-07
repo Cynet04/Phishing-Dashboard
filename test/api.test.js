@@ -616,6 +616,14 @@ test('target events endpoint returns target-scoped paginated events', async () =
   });
 });
 
+test('campaign targets endpoint enforces method handling', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TMethod', template: 'generic', targets: 'tm@example.com' }) });
+    const r = await req(base, `/api/campaigns/${created.data.id}/targets`, { method: 'DELETE' });
+    assert.equal(r.status, 405);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

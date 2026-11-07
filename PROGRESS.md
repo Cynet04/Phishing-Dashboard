@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:27Z — Phase 49: target detail event history UI
-- Target detail modal fetches target details and `/api/targets/:id/events` in parallel, rendering escaped target fields + recent event rows.
-- `node --check` (ui); `node --test --test-concurrency=1` — 47/47 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: open dashboard → Recent Targets → **Details**.
+## 2026-11-07 11:28Z — Phase 50: campaign targets method handling
+- Added explicit 405 handling for unsupported methods on `/api/campaigns/:id/targets` (GET/POST remain supported) and regression test.
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 48/48 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

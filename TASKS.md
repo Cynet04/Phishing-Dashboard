@@ -233,7 +233,11 @@
 - [x] Frontend UI: target detail modal now shows target fields + recent target-scoped event history (uses `/api/targets/:id/events`) with escaped rendering — 47/47 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 50 — Expansion (active, in progress)
-- [~] Backend/testing: add `GET /api/campaigns/:id/targets` method validation (405 for unsupported) and test; add 405 coverage for `/api/campaigns/:id/targets` POST missing body safety already handled
+## Phase 50 — Expansion (complete)
+- [x] Backend/testing: `GET|POST /api/campaigns/:id/targets` supported; other methods now return 405 (regression test added) — 48/48 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 51 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/health` extended info (uptime/node version) and test; keep backward-compatible shape
 - [ ] Run verification, docs/log updates, commit/push per item
 
