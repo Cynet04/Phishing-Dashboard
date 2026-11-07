@@ -381,3 +381,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 02:00Z — Phase 154: clarify ownership-only resolved campaign context in Recent Events
 - Clarified global Recent Events scope indicator for unambiguous target-filtered resolved campaign context (“ownership context only”; global pagination/export semantics unchanged). UI syntax checked, 83/83 passing. Committed/pushed.
+
+## 2026-11-08 02:15Z — Phase 155: optional campaignId ownership validation for target click
+- Added optional `?campaignId=` ownership validation to `POST /api/targets/:id/click` (server passes query; `db.recordEvent` validates campaign/target ownership when provided, 404-safe, backward-compatible). README/test updated. 84/84 passing. Committed/pushed.

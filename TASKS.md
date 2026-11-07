@@ -608,6 +608,10 @@
 ## Phase 154 — Expansion (complete)
 - [x] Frontend UI: clarified global Recent Events scope indicator for resolved campaign as ownership context only — 83/83 passing
 
-## Phase 155 — Expansion (active, in progress)
-- [~] Backend/API: low-risk parity/safety improvement — add optional `?campaignId=` ownership validation to `POST /api/targets/:id/click` (404-safe, backward-compatible) with README/test
+## Phase 155 — Expansion (complete)
+- [x] Backend/API: optional `?campaignId=` ownership validation for `POST /api/targets/:id/click` (404-safe, backward-compatible; validates campaign/ownership in `db.recordEvent` and passes query in server) — README/test updated — 84/84 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 156 — Expansion (active, in progress)
+- [~] Frontend UI: pass resolved campaign context to dashboard **Simulate Click** actions (targets table/campaign detail rows where campaignId known) using `?campaignId=` hardening; keep backward-compatible fallback
 - [ ] Run verification, docs/log updates, commit/push per item
