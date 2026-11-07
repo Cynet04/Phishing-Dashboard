@@ -540,11 +540,24 @@ $('#clearExportFiltersBtn')?.addEventListener('click', () => {
   updateTargetsExportLink();
   loadTargets(true).catch((e) => toast(`Targets filter failed: ${e.message}`, 'error'));
 });
-function updateEventsExportLink() {
-  const type = String($('#eventsExportType')?.value || '').trim();
+function eventsJsonPathForToolbar() {
+  const type = String($('#eventsTypeFilter')?.value || state.eventsType || $('#eventsExportType')?.value || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
-  const from = String($('#eventsExportFrom')?.value || '').trim();
-  const to = String($('#eventsExportTo')?.value || '').trim();
+  const from = String($('#eventsFromFilter')?.value || state.eventsFrom || $('#eventsExportFrom')?.value || '').trim();
+  const to = String($('#eventsToFilter')?.value || state.eventsTo || $('#eventsExportTo')?.value || '').trim();
+  const p = new URLSearchParams();
+  if (type) p.set('type', type);
+  if (targetId) p.set('targetId', targetId);
+  if (from) p.set('from', from);
+  if (to) p.set('to', to);
+  const base = state.eventsScope === 'campaign' && state.eventsCampaignId ? `/api/campaigns/${encodeURIComponent(state.eventsCampaignId)}/events` : '/api/events';
+  return p.toString() ? `${base}?${p.toString()}` : base;
+}
+function updateEventsExportLink() {
+  const type = String($('#eventsExportType')?.value || $('#eventsTypeFilter')?.value || state.eventsType || '').trim();
+  const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
+  const from = String($('#eventsExportFrom')?.value || $('#eventsFromFilter')?.value || state.eventsFrom || '').trim();
+  const to = String($('#eventsExportTo')?.value || $('#eventsToFilter')?.value || state.eventsTo || '').trim();
   const a = $('#eventsExportLink');
   if (!a) return;
   const p = new URLSearchParams();
@@ -552,8 +565,19 @@ function updateEventsExportLink() {
   if (targetId) p.set('targetId', targetId);
   if (from) p.set('from', from);
   if (to) p.set('to', to);
-  a.href = '/api/events/export.csv' + (p.toString() ? `?${p}` : '');
+  const base = state.eventsScope === 'campaign' && state.eventsCampaignId ? `/api/campaigns/${encodeURIComponent(state.eventsCampaignId)}/events.csv` : '/api/events/export.csv';
+  a.href = p.toString() ? `${base}?${p.toString()}` : base;
 }
+$('#copyEventsCsvLink')?.addEventListener('click', async () => {
+  const href = $('#eventsExportLink')?.getAttribute('href') || '';
+  if (!href) return toast('No events CSV link available.', 'error');
+  const url = new URL(href, location.href).href;
+  try { await navigator.clipboard?.writeText(url); toast('Events CSV link copied.'); } catch { prompt('Copy events CSV link:', url); }
+});
+$('#copyEventsJsonLink')?.addEventListener('click', async () => {
+  const url = new URL(eventsJsonPathForToolbar(), location.href).href;
+  try { await navigator.clipboard?.writeText(url); toast('Events JSON link copied.'); } catch { prompt('Copy events JSON link:', url); }
+});
 $('#eventsExportType')?.addEventListener('change', updateEventsExportLink);
 $('#eventsExportFrom')?.addEventListener('change', updateEventsExportLink);
 $('#eventsExportTo')?.addEventListener('change', updateEventsExportLink);
