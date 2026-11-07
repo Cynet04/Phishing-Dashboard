@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 const db = require('./db');
-const { templates } = require('./templates');
+const { allTemplates } = require('./templates');
 
 const PUBLIC = path.join(__dirname, '..', 'public');
 const PORT = Number(process.env.PORT || 3000);
@@ -85,7 +85,15 @@ async function handler(req, res) {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const { pathname, searchParams } = url;
     if (req.method === 'GET' && pathname === '/api/health') return send(res, 200, { ok: true, service: 'phishing-dashboard', time: new Date().toISOString() });
-    if (req.method === 'GET' && pathname === '/api/templates') return send(res, 200, templates);
+    if (req.method === 'GET' && pathname === '/api/templates') return send(res, 200, allTemplates(db));
+    if (req.method === 'POST' && pathname === '/api/templates') return send(res, 201, db.saveCustomTemplate(await readJson(req)));
+    if (pathname.startsWith('/api/templates/')) {
+      const id = decodeURIComponent(pathname.split('/')[3] || '');
+      if (!id) return send(res, 404, { error: 'not found' });
+      if (req.method === 'PUT') return send(res, 200, db.saveCustomTemplate({ ...(await readJson(req)), id }));
+      if (req.method === 'DELETE') return send(res, 200, db.deleteCustomTemplate(id));
+      return send(res, 405, { error: 'method not allowed' });
+    }
     if (req.method === 'GET' && pathname === '/api/campaigns') return send(res, 200, db.listCampaigns());
     if (req.method === 'POST' && pathname === '/api/campaigns') return send(res, 201, db.createCampaign(await readJson(req)));
     if (req.method === 'GET' && pathname === '/api/targets/export.csv') {

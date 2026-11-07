@@ -8,7 +8,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function dbFile() { return process.env.PHISH_DASH_DB || path.join(DATA_DIR, 'db.json'); }
 
 function emptyDb() {
-  return { campaigns: [], targets: [], events: [], seq: { campaign: 0, target: 0, event: 0 } };
+  return { campaigns: [], targets: [], events: [], templates: [], seq: { campaign: 0, target: 0, event: 0, template: 0 } };
 }
 
 function ensure() {
@@ -45,6 +45,43 @@ function nextId(db, key) {
 }
 
 function now() { return new Date().toISOString(); }
+
+function normalizeTemplate(input = {}, existingId) {
+  const name = String(input.name || '').trim();
+  const subject = String(input.subject || '').trim();
+  const body = String(input.body || input.preview || '').trim();
+  if (!name) throw Object.assign(new Error('template name required'), { status: 400 });
+  if (!subject) throw Object.assign(new Error('template subject required'), { status: 400 });
+  if (!body) throw Object.assign(new Error('template body required'), { status: 400 });
+  const id = existingId || String(input.id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `tpl-${Date.now()}`);
+  return { id, name, subject, body, preview: body.slice(0, 160), custom: true, updatedAt: now() };
+}
+
+function listCustomTemplates() {
+  return load().templates || [];
+}
+
+function saveCustomTemplate(input = {}) {
+  const db = load();
+  db.templates = db.templates || [];
+  const id = input.id ? String(input.id) : null;
+  const idx = id ? db.templates.findIndex(t => t.id === id) : -1;
+  const tpl = normalizeTemplate(input, id || undefined);
+  if (!tpl.createdAt) tpl.createdAt = idx >= 0 ? db.templates[idx].createdAt : now();
+  if (idx >= 0) db.templates[idx] = tpl; else db.templates.unshift(tpl);
+  save(db);
+  return tpl;
+}
+
+function deleteCustomTemplate(id) {
+  const db = load();
+  db.templates = db.templates || [];
+  const idx = db.templates.findIndex(t => t.id === String(id));
+  if (idx === -1) throw Object.assign(new Error('template not found'), { status: 404 });
+  const removed = db.templates.splice(idx, 1)[0];
+  save(db);
+  return { ok: true, id: removed.id };
+}
 
 function normalizeEmails(rawInput) {
   const items = Array.isArray(rawInput) ? rawInput : String(rawInput ?? '').split(/[\n,;]+/);
@@ -230,7 +267,7 @@ function resetForTests(file) {
   save(emptyDb());
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, resetForTests, dbFile };
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, sendSimulation, recordEvent, stats, recentTargets, exportTargetsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 

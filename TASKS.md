@@ -44,9 +44,11 @@
 - [x] Add campaign stats timeline filtering by date range (API) with tests — 10/10 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 9 — Template Management (expansion)
-- [ ] CRUD API for email templates (stored in JSON DB) with tests
-- [ ] Dashboard template management UI + live preview
+## Phase 9 — Template Management (complete)
+- [x] Seed/template compatibility preserved (existing template IDs remain valid)
+- [x] CRUD API for custom email templates stored in JSON DB (`/api/templates`, GET/POST/PUT/DELETE) with validation/tests — 11/11 passing
+- [x] Dashboard template management UI + live preview of selected template
+- [x] Run verification, docs/log updates, commit/push per item
 
 ## Phase 10 — Security & Auth (expansion)
 - [ ] Optional admin login screen/token for dashboard/API (env-configured) with tests

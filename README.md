@@ -30,7 +30,7 @@ node --test --test-concurrency=1
 
 ## API
 - `GET /api/health`
-- `GET /api/templates`
+- `GET /api/templates`, `POST /api/templates`, `PUT /api/templates/:id`, `DELETE /api/templates/:id`
 - `GET /api/stats?from=YYYY-MM-DD&to=YYYY-MM-DD`
 - `GET /api/campaigns`, `POST /api/campaigns`
 - `GET /api/campaigns/:id`, `DELETE /api/campaigns/:id` (demo hygiene), `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`

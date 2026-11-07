@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:38Z — Phase 8 expansion: stats timeline filters
-- Added `from`/`to` date filtering to global and per-campaign stats timeline (`/api/stats`, `/api/campaigns/:id/stats`); response includes `filter`.
-- Added regression test; `node --test --test-concurrency=1` — 10/10 passing. Commit/push in progress.
+## 2026-11-07 10:40Z — Phase 9: template management
+- Added custom template persistence in JSON DB and CRUD API (`/api/templates`) while preserving default template IDs. Dashboard supports template save/edit selection and live preview.
+- Added template CRUD regression test; `node --test --test-concurrency=1` — 11/11 passing. Commit/push in progress.

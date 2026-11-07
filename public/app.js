@@ -12,7 +12,32 @@ function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;',
 
 async function loadTemplates() {
   const templates = await api('/api/templates');
+  state.templates = templates;
   $('#templateSelect').innerHTML = templates.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+  $('#templateList').innerHTML = templates.map(t => `<div class="item template-item" data-id="${esc(t.id)}"><strong>${esc(t.name)}</strong> ${t.custom ? '<span class="pill">custom</span>' : '<span class="pill sent">default</span>'}<div class="muted">${esc(t.subject || '')}</div></div>`).join('');
+  $('#templateList').querySelectorAll('.template-item').forEach(el => el.addEventListener('click', () => editTemplate(el.dataset.id)));
+  renderTemplatePreview();
+}
+
+function renderTemplatePreview() {
+  const id = $('#templateSelect')?.value || $('#templateId')?.value;
+  const form = { subject: $('#templateSubject')?.value, body: $('#templateBody')?.value, name: $('#templateName')?.value };
+  const t = (state.templates || []).find(x => x.id === id) || {};
+  const subject = (form.subject || t.subject || '').trim();
+  const body = (form.body || t.body || t.preview || '').trim();
+  $('#templatePreview').innerHTML = `<div><strong>Subject:</strong> ${esc(subject || '(none)')}</div><div style="margin-top:8px;white-space:pre-wrap">${esc(body || 'Enter template details for a live preview.')}</div>`;
+}
+
+
+function editTemplate(id) {
+  const t = (state.templates || []).find(x => x.id === id);
+  if (!t || !t.custom) return;
+  $('#templateId').value = t.id;
+  $('#templateName').value = t.name || '';
+  $('#templateSubject').value = t.subject || '';
+  $('#templateBody').value = t.body || t.preview || '';
+  $('#templateMsg').textContent = `Editing custom template ${t.id}.`;
+  renderTemplatePreview();
 }
 
 async function loadStats() {
@@ -120,6 +145,28 @@ $('#campaignForm').addEventListener('submit', async (e) => {
     await selectCampaign(campaign.id);
   } catch (err) { $('#formMsg').textContent = `Error: ${err.message}`; }
 });
+
+$('#templateForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = Object.fromEntries(new FormData(e.target));
+  const id = String(fd.id || '').trim();
+  const path = id ? `/api/templates/${encodeURIComponent(id)}` : '/api/templates';
+  const method = id ? 'PUT' : 'POST';
+  try {
+    await api(path, { method, body: JSON.stringify({ name: fd.name, subject: fd.subject, body: fd.body }) });
+    $('#templateMsg').textContent = id ? 'Template updated.' : 'Template created.';
+    e.target.reset();
+    await loadTemplates();
+  } catch (err) { $('#templateMsg').textContent = `Error: ${err.message}`; }
+});
+$('#templateResetBtn').addEventListener('click', () => { $('#templateForm').reset(); $('#templateMsg').textContent = ''; renderTemplatePreview(); });
+$('#templateDeleteBtn').addEventListener('click', async () => {
+  const id = String($('#templateId').value || '').trim();
+  if (!id) return $('#templateMsg').textContent = 'Select a custom template to delete.';
+  try { await api(`/api/templates/${encodeURIComponent(id)}`, { method: 'DELETE' }); $('#templateForm').reset(); $('#templateMsg').textContent = 'Template deleted.'; await loadTemplates(); } catch (err) { $('#templateMsg').textContent = `Error: ${err.message}`; }
+});
+['templateName','templateSubject','templateBody'].forEach(id => $(`#${id}`).addEventListener('input', renderTemplatePreview));
+$('#templateSelect').addEventListener('change', renderTemplatePreview);
 
 $('#refreshBtn').addEventListener('click', refresh);
 loadTemplates().then(refresh).catch(err => { $('#formMsg').textContent = `Load error: ${err.message}`; });

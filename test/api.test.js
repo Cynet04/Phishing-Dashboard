@@ -175,6 +175,22 @@ test('stats endpoint accepts timeline date filters', async () => {
   });
 });
 
+test('template CRUD stores custom templates', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/templates', { method: 'POST', body: JSON.stringify({ name: 'HR Notice', subject: 'HR update', body: 'Please review the HR portal update.' }) });
+    assert.equal(created.status, 201);
+    assert.ok(created.data.id);
+    const list = await req(base, '/api/templates');
+    assert.equal(list.status, 200);
+    assert.ok(list.data.some(t => t.id === created.data.id && t.subject === 'HR update'));
+    const updated = await req(base, `/api/templates/${encodeURIComponent(created.data.id)}`, { method: 'PUT', body: JSON.stringify({ name: 'HR Notice v2', subject: 'HR update v2', body: 'Updated body' }) });
+    assert.equal(updated.status, 200);
+    assert.equal(updated.data.subject, 'HR update v2');
+    const del = await req(base, `/api/templates/${encodeURIComponent(created.data.id)}`, { method: 'DELETE' });
+    assert.equal(del.status, 200);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
