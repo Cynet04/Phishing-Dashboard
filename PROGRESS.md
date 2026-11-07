@@ -357,3 +357,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 00:15Z — Phase 146: campaign-scoped Recent Events pagination UX clarity
 - Clarified campaign-scoped Recent Events quick view: meta notes pagination is in global scope; Load more is disabled with global-only label/title. 82/82 passing. Committed/pushed.
+
+## 2026-11-08 00:30Z — Phase 147: optional campaignId ownership validation for target events endpoints
+- Added optional `?campaignId=` ownership validation (404-safe, backward-compatible) to `GET /api/targets/:id/events` and `GET /api/targets/:id/events.csv`/alias `/api/targets/:id.csv`. README/test updated. 83/83 passing. Committed/pushed.
