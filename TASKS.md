@@ -317,7 +317,11 @@
 - [x] Frontend UI: added per-row delete action in Recent Events table (confirmation, calls `DELETE /api/events/:id`, reloads events/system status, safe errors) — 57/57 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 71 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/campaigns/:id/events/export.csv?type=` passthrough filter support and regression test (route currently ignores filters)
+## Phase 71 — Expansion (complete)
+- [x] Backend/API: `GET /api/campaigns/:id/events.csv` now passes through `type` and `targetId` filters (backward-compatible) with regression test — 58/58 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 72 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/targets/:id` method validation (405 for unsupported methods) and test for route consistency
 - [ ] Run verification, docs/log updates, commit/push per item
 

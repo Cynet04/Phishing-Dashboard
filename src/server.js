@@ -220,7 +220,7 @@ async function handler(req, res) {
     if (m && req.method === 'GET' && m[2] === 'events') return send(res, 200, db.listEvents({ campaignId: m[1], type: searchParams.get('type') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     if (m && req.method === 'GET' && m[2] === 'stats') return send(res, 200, db.stats(m[1], { from: searchParams.get('from'), to: searchParams.get('to') }));
     if (m && req.method === 'GET' && m[2] === 'export.csv') return send(res, 200, db.exportTargetsCsv({ campaignId: m[1] }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-targets.csv"` });
-    if (m && req.method === 'GET' && m[2] === 'events.csv') return send(res, 200, db.exportEventsCsv({ campaignId: m[1] }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-events.csv"` });
+    if (m && req.method === 'GET' && m[2] === 'events.csv') return send(res, 200, db.exportEventsCsv({ campaignId: m[1], targetId: searchParams.get('targetId') || undefined, type: searchParams.get('type') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-events.csv"` });
     if (m) return send(res, 405, { error: 'method not allowed' });
     if (req.method === 'POST' && /^\/api\/targets\/[^/]+\/click$/.test(pathname)) {
       const targetId = pathname.split('/')[3];

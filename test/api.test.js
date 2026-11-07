@@ -763,6 +763,21 @@ test('DELETE /api/events/:id removes event and enforces 404/405', async () => {
   });
 });
 
+test('campaign events.csv supports type and targetId filters', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CEFilters', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    await fetch(`${base}/login-simulation?target=${encodeURIComponent(detail.data.targets[1].id)}`);
+    const csv = await req(base, `/api/campaigns/${created.data.id}/events.csv?type=clicked&targetId=${detail.data.targets[0].id}`);
+    assert.equal(csv.status, 200);
+    assert.match(csv.raw, /clicked/);
+    assert.doesNotMatch(csv.raw, /,opened,/);
+    assert.match(csv.raw, new RegExp(`,${detail.data.targets[0].id},`));
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
