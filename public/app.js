@@ -251,13 +251,13 @@ async function loadTargets(reset = false) {
       <td>${esc(t.email)}</td>
       <td><span class="pill ${esc(t.status)}">${esc(t.status)}</span></td>
       <td class="muted">${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</td>
-      <td><span class="row" style="flex-wrap:wrap">${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : ''}<button class="btn small secondary view-target" data-id="${esc(t.id)}">Details</button><button class="btn small secondary view-target-events" data-id="${esc(t.id)}">Events</button></span></td>
+      <td><span class="row" style="flex-wrap:wrap">${['sent','opened','clicked'].includes(t.status) ? `<button class="btn small secondary sim-click" data-id="${esc(t.id)}">Simulate Click</button>` : ''}<button class="btn small secondary view-target" data-id="${esc(t.id)}" data-campaign-id="${esc(t.campaignId || '')}">Details</button><button class="btn small secondary view-target-events" data-id="${esc(t.id)}">Events</button></span></td>
     </tr>`).join('') : '<tr><td colspan="5" class="muted">No targets match.</td></tr>';
   $('#targetsBody').querySelectorAll('.sim-click').forEach(btn => btn.addEventListener('click', async () => {
     try { await api(`/api/targets/${btn.dataset.id}/click`, { method: 'POST', body: '{}' }); toast('Click simulated.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
   }));
   $('#targetsBody').querySelectorAll('.view-target').forEach(btn => btn.addEventListener('click', async () => {
-    try { await openTargetDetail(btn.dataset.id || ''); }
+    try { await openTargetDetail(btn.dataset.id || '', btn.dataset.campaignId || ''); }
     catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); }
   }));
   $('#targetsBody').querySelectorAll('.view-target-events').forEach(btn => btn.addEventListener('click', async () => {
