@@ -251,3 +251,7 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 ## 2026-11-07 17:04Z — Phase 108: System Status dataFile
 - System Status card now displays `dataFile` from `/api/health` (read-only) in `public/index.html`/`public/app.js`; existing fields/refresh behavior preserved.
 - `node --check public/app.js`; `node --test --test-concurrency=1` — 70/70 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 17:10Z — Phase 109: campaign targets.csv alias
+- Added `GET /api/campaigns/:id/targets.csv?status=` alias (same behavior/filters/404/405 as `targets/export.csv`) via campaign route match/handler. README updated. Regression test added.
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 71/71 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
