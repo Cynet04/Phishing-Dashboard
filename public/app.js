@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '', eventsTargetId: '', eventsFrom: '', eventsTo: '', eventsScope: 'global', eventsCampaignId: '' };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '', eventsTargetId: '', eventsFrom: '', eventsTo: '', eventsScope: 'global', eventsCampaignId: '', eventsResolvedCampaignId: '' };
 const THEME_KEY = 'pd-theme';
 function applyTheme(theme) {
   const t = theme === 'light' ? 'light' : 'dark';
@@ -274,6 +274,7 @@ function updateEventsTargetDetailButton() {
   const tid = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
   btn.classList.toggle('hidden', !tid);
   btn.disabled = !tid;
+  if (tid && state.eventsResolvedCampaignId) btn.title = `Open target detail (campaign ${state.eventsResolvedCampaignId})`; else btn.title = tid ? 'Open target detail' : '';
 }
 function renderEventsRows(events) {
   return events.length ? events.map(e => {
@@ -303,6 +304,7 @@ function wireEventsRowActions(reload) {
 async function loadCampaignEvents(campaignId, reset = false) {
   state.eventsScope = 'campaign';
   state.eventsCampaignId = campaignId;
+  state.eventsResolvedCampaignId = campaignId;
   if (reset) state.eventsOffset = 0;
   const type = String($('#eventsTypeFilter')?.value || state.eventsType || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
@@ -317,6 +319,10 @@ async function loadCampaignEvents(campaignId, reset = false) {
   const page = await api(`/api/campaigns/${encodeURIComponent(campaignId)}/events?${params.toString()}`);
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
+  if (targetId) {
+    const cids = [...new Set(events.map(e => String(e.campaignId || '').trim()).filter(Boolean))];
+    state.eventsResolvedCampaignId = cids.length === 1 ? cids[0] : campaignId;
+  }
   $('#eventsBody').innerHTML = events.length ? renderEventsRows(events) : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
   wireEventsRowActions(() => loadCampaignEvents(state.eventsCampaignId || campaignId));
   const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
@@ -331,6 +337,7 @@ async function loadCampaignEvents(campaignId, reset = false) {
 async function loadEvents(reset = false) {
   state.eventsScope = 'global';
   state.eventsCampaignId = '';
+  state.eventsResolvedCampaignId = '';
   if (reset) state.eventsOffset = 0;
   const type = String($('#eventsTypeFilter')?.value || state.eventsType || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
@@ -346,10 +353,14 @@ async function loadEvents(reset = false) {
   const page = await api(q);
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
+  if (targetId) {
+    const cids = [...new Set(events.map(e => String(e.campaignId || '').trim()).filter(Boolean))];
+    state.eventsResolvedCampaignId = cids.length === 1 ? cids[0] : '';
+  }
   $('#eventsBody').innerHTML = renderEventsRows(events);
   wireEventsRowActions(() => loadEvents(true));
   const shown = state.eventsOffset + events.length;
-  const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
+  const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : '', (targetId && state.eventsResolvedCampaignId) ? `campaign=${state.eventsResolvedCampaignId}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
   const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = 'Scope: global';
   const loadMore = $('#loadMoreEventsBtn'); if (loadMore) { loadMore.disabled = shown >= state.eventsTotal; loadMore.textContent = 'Load more'; loadMore.title = ''; }
@@ -361,7 +372,7 @@ async function loadEvents(reset = false) {
 $('#openEventsTargetDetailBtn')?.addEventListener('click', async () => {
   const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
   if (!targetId) return toast('No target selected.', 'error');
-  const campaignId = state.eventsScope === 'campaign' ? String(state.eventsCampaignId || '').trim() : '';
+  const campaignId = state.eventsScope === 'campaign' ? String(state.eventsCampaignId || state.eventsResolvedCampaignId || '').trim() : String(state.eventsResolvedCampaignId || '').trim();
   try { await openTargetDetail(targetId, campaignId); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); }
 });
 
@@ -542,7 +553,7 @@ $('#clearTargetDetailDates')?.addEventListener('click', async () => { targetDeta
 $('#targetDetailEventsMore')?.addEventListener('click', async () => { try { await refreshTargetDetailEvents(false); } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); } });
 async function showTargetEventsInRecent(targetId) {
   if (!targetId) return toast('No target selected.', 'error');
-  state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsFrom = ''; state.eventsTo = ''; state.eventsOffset = 0;
+  state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsResolvedCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsFrom = ''; state.eventsTo = ''; state.eventsOffset = 0;
   if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
   if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = targetId;
   if ($('#eventsFromFilter')) $('#eventsFromFilter').value = '';
@@ -635,7 +646,7 @@ $('#returnGlobalEventsBtn')?.addEventListener('click', () => {
   if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = '';
   if ($('#eventsFromFilter')) $('#eventsFromFilter').value = '';
   if ($('#eventsToFilter')) $('#eventsToFilter').value = '';
-  state.eventsType = ''; state.eventsTargetId = ''; state.eventsFrom = ''; state.eventsTo = '';
+  state.eventsType = ''; state.eventsTargetId = ''; state.eventsFrom = ''; state.eventsTo = ''; state.eventsResolvedCampaignId = '';
   loadEvents(true).catch((e) => toast(`Events load failed: ${e.message}`, 'error'));
 });
 
