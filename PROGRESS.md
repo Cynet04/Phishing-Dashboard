@@ -300,3 +300,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 19:15Z — Phase 125: /api/readyz endpoint
 - Added auth-exempt `GET /api/readyz` readiness check (ensures/loads data store) in `src/server.js`. README updated. Regression test added. 77/77 passing. Committed/pushed.
+
+## 2026-11-07 19:25Z — Phase 126: System Status readiness
+- System Status fetches `/api/readyz` and displays readiness (`#sysReady`) with existing fields/refresh preserved. `node --check`; 77/77 passing. Committed/pushed.

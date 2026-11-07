@@ -342,8 +342,8 @@ async function loadEvents(reset = false) {
 
 async function loadSystemStatus() {
   try {
-    const [health, version, auth, campaigns, events] = await Promise.all([
-      api('/api/health'), api('/api/version'), api('/api/auth/status'), api('/api/campaigns'), api('/api/events?limit=1')
+    const [health, version, ready, auth, campaigns, events] = await Promise.all([
+      api('/api/health'), api('/api/version'), api('/api/readyz'), api('/api/auth/status'), api('/api/campaigns'), api('/api/events?limit=1')
     ]);
     $('#sysApi').textContent = health?.ok ? 'OK' : 'Unknown';
     $('#sysAuth').textContent = auth?.authEnabled ? (auth.authenticated ? 'Enabled (signed in)' : 'Enabled') : 'Disabled';
@@ -353,6 +353,7 @@ async function loadSystemStatus() {
     $('#sysRequestId').textContent = lastRequestId || '—';
     $('#sysResponseMs').textContent = lastResponseMs ? `${lastResponseMs} ms` : '—';
     $('#sysVersion').textContent = version?.version ? String(version.version) : '—';
+    $('#sysReady').textContent = ready?.ready ? 'Ready' : 'Not ready';
   } catch (e) {
     $('#sysApi').textContent = `Error: ${e.message}`;
   }
