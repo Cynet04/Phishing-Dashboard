@@ -82,8 +82,13 @@
 - [x] Add basic events table in dashboard (recent events) with load controls
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 17 — Expansion (in progress)
-- [x] Add campaign target CSV/upload-style import endpoint (`POST /api/campaigns/:id/targets`) with validation/dedup and tests — 18/18 passing
-- [ ] Add dashboard UI for importing targets into a selected campaign
+## Phase 17 — Expansion (complete)
+- [x] Add campaign target CSV/upload-style import endpoint (`POST /api/campaigns/:id/targets`) with validation/dedup and tests — 18/18 passing (`e70a7b1`)
+- [x] Add dashboard UI for importing targets into a selected campaign
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 18 — Expansion (active)
+- [ ] Add basic audit-friendly event metadata normalization and event detail columns where useful (no breaking changes)
+- [ ] Add API smoke check for template delete of non-custom/default-safe behavior and campaign event export route coverage
 - [ ] Run verification, docs/log updates, commit/push per item
 

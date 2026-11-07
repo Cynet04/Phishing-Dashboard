@@ -108,10 +108,20 @@ async function selectCampaign(id, quiet) {
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
       <button class="btn small secondary" id="deleteCampaignBtn">Delete Campaign</button>
     </div>
-    <div class="muted">Tip: send simulation, open the mock landing page (records Opened), then simulate click or submit the form (records Submitted).</div>`;
+    <label class="muted">Import additional targets <textarea id="importTargetsText" rows="2" placeholder="new1@example.com,new2@example.com"></textarea></label>
+    <button class="btn small secondary" id="importTargetsBtn" type="button">Import Targets</button>
+    <div class="muted" style="margin-top:8px">Tip: send simulation, open the mock landing page (records Opened), then simulate click or submit the form (records Submitted).</div>`;
   $('#campaignStatusFilter')?.addEventListener('change', async (e) => { state.campaignStatus = e.target.value; await selectCampaign(id, true); });
   $('#sendSimBtn')?.addEventListener('click', async () => {
     try { await api(`/api/campaigns/${id}/send`, { method: 'POST', body: '{}' }); toast('Simulation sent.'); await refresh(); } catch (e) { toast(e.message, 'error'); }
+  });
+  $('#importTargetsBtn')?.addEventListener('click', async () => {
+    try {
+      const targets = $('#importTargetsText').value;
+      const r = await api(`/api/campaigns/${id}/targets`, { method: 'POST', body: JSON.stringify({ targets }) });
+      toast(`Imported ${r.added} target(s).`);
+      await refresh();
+    } catch (e) { toast(e.message, 'error'); }
   });
   $('#deleteCampaignBtn')?.addEventListener('click', async () => {
     if (!confirm(`Delete campaign "${c.name}" and all related targets/events?`)) return;
