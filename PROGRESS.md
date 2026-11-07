@@ -247,3 +247,7 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 ## 2026-11-07 16:58Z — Phase 107: health dataFile field
 - Extended `GET /api/health` with safe `dataFile` basename (from `db.dbFile()`, no secrets/full path). README and health regression test updated.
 - `node --check` (server/tests); `node --test --test-concurrency=1` — 70/70 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 17:04Z — Phase 108: System Status dataFile
+- System Status card now displays `dataFile` from `/api/health` (read-only) in `public/index.html`/`public/app.js`; existing fields/refresh behavior preserved.
+- `node --check public/app.js`; `node --test --test-concurrency=1` — 70/70 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

@@ -461,7 +461,11 @@
 - [x] Backend/API: `/api/health` now includes safe `dataFile` basename (no full path/secrets) alongside existing fields; README and health regression test updated — 70/70 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 108 — Expansion (active, in progress)
-- [~] Frontend UI: show `dataFile` in the System Status card (read-only) when present from `/api/health`; preserve existing status fields/refresh behavior
+## Phase 108 — Expansion (complete)
+- [x] Frontend UI: System Status card shows `dataFile` from `/api/health` (read-only) while preserving existing fields/refresh behavior — 70/70 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 109 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/campaigns/:id/targets.csv` alias for campaign targets export (same filters/404/405-safe behavior as existing route) with regression test and README/docs update
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -331,6 +331,7 @@ async function loadSystemStatus() {
     $('#sysAuth').textContent = auth?.authEnabled ? (auth.authenticated ? 'Enabled (signed in)' : 'Enabled') : 'Disabled';
     $('#sysCampaigns').textContent = String(Array.isArray(campaigns) ? campaigns.length : 0);
     $('#sysEvents').textContent = String(events?.total ?? 0);
+    $('#sysDataFile').textContent = health?.dataFile ? String(health.dataFile) : '—';
   } catch (e) {
     $('#sysApi').textContent = `Error: ${e.message}`;
   }
