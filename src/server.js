@@ -288,8 +288,8 @@ async function handler(req, res) {
     if (m && req.method === 'GET' && m[2] === 'events.csv') return send(res, 200, db.exportEventsCsv({ campaignId: m[1], targetId: searchParams.get('targetId') || undefined, type: searchParams.get('type') || undefined, from: searchParams.get('from') || undefined, to: searchParams.get('to') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-events.csv"` });
     if (m) return send(res, 405, { error: 'method not allowed' });
     if (req.method === 'POST' && /^\/api\/targets\/[^/]+\/click$/.test(pathname)) {
-      const targetId = pathname.split('/')[3];
-      return send(res, 201, db.recordEvent({ targetId, type: 'clicked', meta: { source: 'dashboard-simulate' } }));
+      const targetId = decodeURIComponent(pathname.split('/')[3] || '');
+      return send(res, 201, db.recordEvent({ targetId, campaignId: searchParams.get('campaignId') || undefined, type: 'clicked', meta: { source: 'dashboard-simulate' } }));
     }
     if (pathname.startsWith('/api/')) return send(res, 404, { error: 'not found' });
     if (req.method === 'GET' && pathname === '/login-simulation') {

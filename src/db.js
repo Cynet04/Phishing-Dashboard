@@ -223,10 +223,15 @@ function recordEvent(input = {}) {
   const type = String(input.type || '').trim().toLowerCase();
   const allowed = new Set(['opened', 'clicked', 'submitted']);
   if (!allowed.has(type)) throw Object.assign(new Error('invalid event type'), { status: 400 });
+  const campaignId = String(input.campaignId || '').trim();
 
   const db = load();
   const target = db.targets.find(t => t.id === String(input.targetId));
   if (!target) throw Object.assign(new Error('target not found'), { status: 404 });
+  if (campaignId) {
+    if (!db.campaigns.some(c => c.id === campaignId)) throw Object.assign(new Error('campaign not found'), { status: 404 });
+    if (target.campaignId !== campaignId) throw Object.assign(new Error('target not found in campaign'), { status: 404 });
+  }
 
   const rank = { pending: 0, sent: 1, opened: 2, clicked: 3, submitted: 4 };
   if ((rank[type] || 0) > (rank[target.status] || 0)) {
