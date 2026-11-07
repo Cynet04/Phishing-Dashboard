@@ -917,3 +917,24 @@ test('unknown target errors cleanly', async () => {
     assert.equal(r.status, 404);
   });
 });
+
+test('campaign-scoped target events endpoint validates ownership, pagination, and method', async () => {
+  await withServer(async (base) => {
+    const c1 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CSE1', template: 'generic', targets: 'a@example.com' }) });
+    const c2 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CSE2', template: 'generic', targets: 'b@example.com' }) });
+    const d1 = await req(base, `/api/campaigns/${c1.data.id}`);
+    const d2 = await req(base, `/api/campaigns/${c2.data.id}`);
+    const t1 = d1.data.targets[0].id;
+    const t2 = d2.data.targets[0].id;
+    await req(base, `/api/campaigns/${c1.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${t1}/click`, { method: 'POST', body: '{}' });
+    const ok = await req(base, `/api/campaigns/${c1.data.id}/targets/${t1}/events?limit=10`);
+    assert.equal(ok.status, 200);
+    assert.equal(ok.data.total >= 1, true);
+    assert.equal(ok.data.items.every(e => e.targetId === t1 && e.campaignId === c1.data.id), true);
+    const wrong = await req(base, `/api/campaigns/${c1.data.id}/targets/${t2}/events`);
+    assert.equal(wrong.status, 404);
+    const m = await req(base, `/api/campaigns/${c1.data.id}/targets/${t1}/events`, { method: 'POST', body: '{}' });
+    assert.equal(m.status, 405);
+  });
+});

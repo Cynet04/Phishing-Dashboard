@@ -417,7 +417,11 @@
 - [x] Frontend UI: global API loading indicator (`#apiStatus`, request counter + spinner/status) for dashboard `api()` fetches; existing refresh/loading behavior intact
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 97 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/campaigns/:id/targets/:targetId/events` campaign-scoped target events endpoint (ownership-validated, pagination/filter-safe, GET-only 405) with regression test and README/docs update
+## Phase 97 — Expansion (complete)
+- [x] Backend/API: added `GET /api/campaigns/:id/targets/:targetId/events` (ownership-validated via `getCampaignTarget`, pagination/type filter, GET-only 405) with regression test and README update — 67/67 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 98 — Expansion (active, in progress)
+- [~] Frontend UI: make campaign-scoped target detail modal use `GET /api/campaigns/:id/targets/:targetId/events` when opened in campaign context (keep global fallback), preserving export/actions behavior
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -138,68 +138,76 @@ ode --test --test-concurrency=1 â€” 60/60 passing. Committed/pushed. Dashboard: 
 - Recent Targets rows now include an **Events** quick action. It reuses the global-scope target-events recovery flow (Phase 80/78): prefills Recent Events `targetId` filter, clears campaign-scoped/type state, reloads global `/api/events`, and scrolls to the panel.
 - `node --check` (ui); `node --test --test-concurrency=1` â€” 61/61 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Targets** â†’ row **Events**.
 
-## 2026-11-07 14:15Z — Phase 83: campaign-scoped events Global list recovery
+## 2026-11-07 14:15Z ï¿½ Phase 83: campaign-scoped events Global list recovery
 - Recent Events adds **Global list** control when campaign-scoped quick view is active. It clears scope/filters and reloads global /api/events with normal pagination; control hides in global view.
 - 
 ode --check (ui); 
-ode --test --test-concurrency=1 — 61/61 passing. Committed/pushed. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign **View Campaign Events** ? **Global list**.
+ode --test --test-concurrency=1 ï¿½ 61/61 passing. Committed/pushed. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign **View Campaign Events** ? **Global list**.
 
-## 2026-11-07 14:16Z — Phase 84: global events CSV alias
+## 2026-11-07 14:16Z ï¿½ Phase 84: global events CSV alias
 - Added GET /api/events.csv alias to global events CSV export (same filters as /api/events/export.csv, GET-only 405). README updated; regression test added.
 - 
 ode --check (server/tests); 
-ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (3c60432). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+ode --test --test-concurrency=1 ï¿½ 62/62 passing. Committed/pushed (3c60432). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
-## 2026-11-07 14:17Z — Phase 85: global events export link sync
+## 2026-11-07 14:17Z ï¿½ Phase 85: global events export link sync
 - Global events export link now syncs with current 	argetId filter (Recent Events) and toolbar export type selection (/api/events/export.csv?...), updating on global/scoped loads and toolbar changes.
 - 
 ode --check (ui); 
-ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (7bbfe81). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: set events target/type filters ? **Export Events CSV** href reflects filters.
+ode --test --test-concurrency=1 ï¿½ 62/62 passing. Committed/pushed (7bbfe81). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: set events target/type filters ? **Export Events CSV** href reflects filters.
 
-## 2026-11-07 14:18Z — Phase 86: target detail enrichment
+## 2026-11-07 14:18Z ï¿½ Phase 86: target detail enrichment
 - Enriched GET /api/targets/:id (db.getTarget) with backward-compatible eventCount, eventCounts, and lastEventAt. README updated; target detail regression assertions added.
-- `node --check` (db/tests); `node --test --test-concurrency=1` — 62/62 passing. Committed/pushed (`27f75b8`, docs `d5b6333`). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+- `node --check` (db/tests); `node --test --test-concurrency=1` ï¿½ 62/62 passing. Committed/pushed (`27f75b8`, docs `d5b6333`). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
-## 2026-11-07 14:19Z — Phase 87: target detail modal metadata
+## 2026-11-07 14:19Z ï¿½ Phase 87: target detail modal metadata
 - Target detail modal now displays enriched target metadata: `eventCount`, `eventCounts` summary, and `lastEventAt` (alongside existing fields/actions).
-- `node --check` (ui); `node --test --test-concurrency=1` — 62/62 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: open target **Details** ? metadata row.
+- `node --check` (ui); `node --test --test-concurrency=1` ï¿½ 62/62 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: open target **Details** ? metadata row.
 
-## 2026-11-07 14:20Z — Phase 88: global events export route method coverage
+## 2026-11-07 14:20Z ï¿½ Phase 88: global events export route method coverage
 - Added explicit regression coverage for GET-only enforcement (405 on POST/DELETE) on /api/events/export.csv and /api/events.csv (shared handler behavior already correct).
 - 
 ode --check (tests); 
-ode --test --test-concurrency=1 — 63/63 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+ode --test --test-concurrency=1 ï¿½ 63/63 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
-## 2026-11-07 14:21Z — Phase 90: campaign targets pagination envelope
+## 2026-11-07 14:21Z ï¿½ Phase 90: campaign targets pagination envelope
 - Added db.listCampaignTargets(campaignId, {status,limit,offset}) and routed GET /api/campaigns/:id/targets through it: backward-compatible array by default; returns {items,total,limit,offset} when limit/offset provided; validates status/pagination; 404-safe. README updated; regression test added.
 - 
 ode --check (db/server/tests); 
-ode --test --test-concurrency=1 — 64/64 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+ode --test --test-concurrency=1 ï¿½ 64/64 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
 ## 2026-11-07 14:22Z â€” Phase 91: campaign detail target picker -> Recent Events
 - Campaign detail now includes a target picker (from current filtered campaign targets) and **Show Target Events** action that routes the selected target into global Recent Events 	argetId filter via showTargetEventsInRecent recovery flow.
 - 
 ode --check (ui); 
 ode --test --test-concurrency=1 â€” 64/64 passing. Committed/pushed (10beea1). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: select campaign â†’ pick target â†’ **Show Target Events**.
-## 2026-11-07 14:23Z — Phase 92: campaign-scoped target detail endpoint
+## 2026-11-07 14:23Z ï¿½ Phase 92: campaign-scoped target detail endpoint
 - Added GET /api/campaigns/:id/targets/:targetId via db.getCampaignTarget (campaign ownership validation, 404 for missing campaign/target-not-in-campaign, GET-only 405). Updated route guard to preserve 	argets/export.csv. README and regression test added.
 - 
 ode --check (db/server/tests); 
-ode --test --test-concurrency=1 — 65/65 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+ode --test --test-concurrency=1 ï¿½ 65/65 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
-## 2026-11-07 15:00Z — Phase 93: campaign-scoped target details from campaign picker (reset/continued)
+## 2026-11-07 15:00Z ï¿½ Phase 93: campaign-scoped target details from campaign picker (reset/continued)
 - Refactored target detail modal into top-level openTargetDetail(targetId, campaignId?). Campaign detail target picker now includes **Target Details** (uses campaign-scoped /api/campaigns/:id/targets/:targetId); Recent Targets **Details** uses global target detail. Repaired loadTargets structure after partial edit.
 - 
 ode --check (ui); 
-ode --test --test-concurrency=1 — 65/65 passing. Committed/pushed (6e2fb8). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign detail ? pick target ? **Target Details**.
+ode --test --test-concurrency=1 ï¿½ 65/65 passing. Committed/pushed (6e2fb8). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign detail ? pick target ? **Target Details**.
 
-## 2026-11-07 15:02Z — Phase 94: target detail scope indicator and cleanup
+## 2026-11-07 15:02Z ï¿½ Phase 94: target detail scope indicator and cleanup
 - Target detail modal now shows a scope indicator: campaign-scoped (with campaign ID) when opened from campaign context, or global when opened from Recent Targets/global flows. Export/events actions remain target-based and correct.
 - Cleaned up duplicate openTargetDetail/broken insertion inside loadTargets from reset state and fixed mojibake text artifacts in public/app.js.
 - 
 ode --check (ui); 
-ode --test --test-concurrency=1 — 65/65 passing. Committed/pushed ( 151777). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign picker **Target Details** vs Recent Targets **Details**.
+ode --test --test-concurrency=1 ï¿½ 65/65 passing. Committed/pushed ( 151777). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: campaign picker **Target Details** vs Recent Targets **Details**.
 
 ## 2026-11-07 15:45Z â€” Phase 95: campaign events target-not-in-campaign consistency
 - `db.listEvents` now returns a stable empty paginated shape for `campaignId + targetId` queries when the target does not belong to the campaign (prevents cross-campaign leakage/confusion; unknown-campaign stable shape preserved). Added regression test.
 - `node --check` (db/tests); `node --test --test-concurrency=1` â€” 66/66 passing. Committed/pushed (`3dc39f3`, docs `dc4f8b9`). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 15:58Z â€” Phase 96: global API loading indicator
+- Added a lightweight global loading indicator in the dashboard header (`#apiStatus`) backed by an `api()` request counter in `public/app.js`, with spinner styling in `public/styles.css`. Shows pending request count during concurrent fetches; preserves existing refresh/auth/error behavior.
+- `node --check public/app.js`; `node --test --test-concurrency=1` â€” 66/66 passing. Committed/pushed (`96b1761`). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 16:05Z â€” Phase 97: campaign-scoped target events endpoint
+- Added `GET /api/campaigns/:id/targets/:targetId/events` in `src/server.js` (ownership validated via `db.getCampaignTarget`, supports `type/limit/offset`, GET-only 405). README updated. Regression test added (ownership/404/405/pagination shape).
+- `node --check` (server/tests); `node --test --test-concurrency=1` â€” 67/67 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
