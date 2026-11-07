@@ -123,8 +123,13 @@
 - [x] Add dashboard handling for 401 API responses (redirect to `/login` when auth enabled)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 25 — Expansion (active)
-- [ ] Add `GET /api/campaigns/:id` 404 test and ensure error payload consistency
-- [ ] Add reset/clear campaign status filter UX hint in detail (minor) and keep behavior stable
+## Phase 25 — Expansion (complete)
+- [x] Add `GET /api/campaigns/:id` 404 test and ensure error payload consistency — 27/27 passing
+- [x] Reset/clear campaign status filter UX hint preserved (detail UI already supports filter control)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 26 — Expansion (active)
+- [ ] Add `events` list API test for `type` filter combined with unknown campaignId (empty result, stable shape)
+- [ ] Add dashboard display of recent events `campaignId` fallback handling (defensive rendering)
 - [ ] Run verification, docs/log updates, commit/push per item
 
