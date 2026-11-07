@@ -492,6 +492,25 @@ test('campaign summary and search filters work', async () => {
   });
 });
 
+test('campaign events JSON endpoint returns stable shape for unknown campaign', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/campaigns/nope/events?type=clicked');
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.data.items, []);
+    assert.equal(r.data.total, 0);
+  });
+});
+
+test('campaign target import rejects invalid payload shape', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'BadImport', template: 'generic', targets: 'x@example.com' }) });
+    const res = await fetch(`${base}/api/campaigns/${created.data.id}/targets`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '[]' });
+    const data = await res.json();
+    assert.equal(res.status, 400);
+    assert.match(String(data.error || ''), /targets|required|invalid/i);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

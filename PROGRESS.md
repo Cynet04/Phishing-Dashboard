@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:14Z — Phase 36: login rate-limit guard
-- Added demo-safe in-memory login attempt rate limiting for `POST /api/auth/login` (10-minute window, 429 after threshold) without changing normal auth flow.
-- `node --check` (server); `node --test --test-concurrency=1` — 37/37 passing. Commit/push in progress. Dashboard/server: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:15Z — Phase 37: API edge-case tests + target import validation
+- Hardened `addTargets` to reject invalid payload shapes (e.g. array body/empty object misuse) with 400 `targets required`; accepts wrapped `{targets:...}`. Added regression tests for unknown-campaign campaign-events stable shape and invalid target-import payload.
+- `node --check` (db/tests); `node --test --test-concurrency=1` — 39/39 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

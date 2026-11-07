@@ -181,7 +181,11 @@
 - [x] Security/Auth hardening: added demo-safe in-memory login rate-limit guard for `POST /api/auth/login` (windowed, 429 after threshold) while preserving existing auth behavior — 37/37 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 37 — Expansion (active, in progress)
-- [~] Testing: add API test for `GET /api/campaigns/:id/events` 404 on unknown campaign and `POST /api/campaigns/:id/targets` invalid payload handling
+## Phase 37 — Expansion (complete)
+- [x] Testing: add API tests for campaign events JSON stable empty shape on unknown campaign and stricter `POST /api/campaigns/:id/targets` payload validation (400) — 39/39 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 38 — Expansion (active, in progress)
+- [~] Backend/UI: add `GET /api/stats` optional `campaignId`/date support consistency and expose global timeline chart/table polish in dashboard (safe DOM rendering)
 - [ ] Run verification, docs/log updates, commit/push per item
 
