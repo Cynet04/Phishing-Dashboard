@@ -275,6 +275,31 @@ function updateEventsTargetDetailButton() {
   btn.classList.toggle('hidden', !tid);
   btn.disabled = !tid;
 }
+function renderEventsRows(events) {
+  return events.length ? events.map(e => {
+    const tid = esc(e.targetId || '');
+    const cid = esc(e.campaignId || '');
+    const targetBtn = e.targetId ? ` <button class="btn small secondary view-event-target" data-target-id="${tid}" data-campaign-id="${cid}">Target</button>` : '';
+    return `<tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${tid || '—'}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary view-event" data-id="${esc(e.id || '')}">Details</button>${targetBtn} <button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`;
+  }).join('') : '<tr><td colspan="5" class="muted">No events.</td></tr>';
+}
+function wireEventsRowActions(reload) {
+  $('#eventsBody').querySelectorAll('.view-event').forEach(btn => btn.addEventListener('click', async () => {
+    if (!btn.dataset.id) return;
+    try { await openEventDetail(btn.dataset.id); } catch (e) { toast(e.message, 'error'); }
+  }));
+  $('#eventsBody').querySelectorAll('.view-event-target').forEach(btn => btn.addEventListener('click', async () => {
+    const targetId = String(btn.dataset.targetId || '').trim();
+    if (!targetId) return toast('No target on event.', 'error');
+    const campaignId = state.eventsScope === 'campaign' ? String(state.eventsCampaignId || btn.dataset.campaignId || '').trim() : String(btn.dataset.campaignId || '').trim();
+    try { await openTargetDetail(targetId, campaignId); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); }
+  }));
+  $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
+    if (!btn.dataset.id || !confirm('Delete this event?')) return;
+    try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await reload(); await loadSystemStatus(); }
+    catch (e) { toast(e.message, 'error'); }
+  }));
+}
 async function loadCampaignEvents(campaignId, reset = false) {
   state.eventsScope = 'campaign';
   state.eventsCampaignId = campaignId;
@@ -292,17 +317,8 @@ async function loadCampaignEvents(campaignId, reset = false) {
   const page = await api(`/api/campaigns/${encodeURIComponent(campaignId)}/events?${params.toString()}`);
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
-  $('#eventsBody').innerHTML = events.length ? events.map(e => `
-    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary view-event" data-id="${esc(e.id || '')}">Details</button> <button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
-  $('#eventsBody').querySelectorAll('.view-event').forEach(btn => btn.addEventListener('click', async () => {
-    if (!btn.dataset.id) return;
-    try { await openEventDetail(btn.dataset.id); } catch (e) { toast(e.message, 'error'); }
-  }));
-  $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
-    if (!btn.dataset.id || !confirm('Delete this event?')) return;
-    try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadCampaignEvents(state.eventsCampaignId || campaignId); await loadSystemStatus(); }
-    catch (e) { toast(e.message, 'error'); }
-  }));
+  $('#eventsBody').innerHTML = events.length ? renderEventsRows(events) : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
+  wireEventsRowActions(() => loadCampaignEvents(state.eventsCampaignId || campaignId));
   const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped campaign view';
   const scopeEl = $('#eventsScopeIndicator'); if (scopeEl) scopeEl.textContent = `Scope: campaign-scoped (campaign ${state.eventsCampaignId || campaignId})`;
@@ -330,17 +346,8 @@ async function loadEvents(reset = false) {
   const page = await api(q);
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
-  $('#eventsBody').innerHTML = events.length ? events.map(e => `
-    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary view-event" data-id="${esc(e.id || '')}">Details</button> <button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events.</td></tr>';
-  $('#eventsBody').querySelectorAll('.view-event').forEach(btn => btn.addEventListener('click', async () => {
-    if (!btn.dataset.id) return;
-    try { await openEventDetail(btn.dataset.id); } catch (e) { toast(e.message, 'error'); }
-  }));
-  $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
-    if (!btn.dataset.id || !confirm('Delete this event?')) return;
-    try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadEvents(true); await loadSystemStatus(); }
-    catch (e) { toast(e.message, 'error'); }
-  }));
+  $('#eventsBody').innerHTML = renderEventsRows(events);
+  wireEventsRowActions(() => loadEvents(true));
   const shown = state.eventsOffset + events.length;
   const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : '', from ? `from=${from}` : '', to ? `to=${to}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
