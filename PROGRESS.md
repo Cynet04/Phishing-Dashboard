@@ -288,3 +288,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 18:35Z — Phase 121: X-Response-Time-Ms header
 - Added `X-Response-Time-Ms` header on API/static responses (handler start timestamp, `send()`/static). Health regression asserts numeric header. 75/75 passing. Committed/pushed.
+
+## 2026-11-07 18:45Z — Phase 122: System Status response time
+- System Status now shows last `X-Response-Time-Ms` captured by `api()` (`#sysResponseMs`) with existing request ID/data file/status behavior preserved. `node --check`; 75/75 passing. Committed/pushed.

@@ -26,6 +26,7 @@ function beginApi() { apiPending += 1; renderApiStatus(); }
 function endApi() { apiPending = Math.max(0, apiPending - 1); renderApiStatus(); }
 
 let lastRequestId = '';
+let lastResponseMs = '';
 
 async function api(path, opts = {}) {
   beginApi();
@@ -33,6 +34,8 @@ async function api(path, opts = {}) {
     const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
     const rid = String(res.headers.get('x-request-id') || '').trim();
     if (rid) lastRequestId = rid;
+    const rt = String(res.headers.get('x-response-time-ms') || '').trim();
+    if (rt) lastResponseMs = rt;
     if (res.status === 401 && !path.startsWith('/api/auth/')) {
       location.href = '/login';
       throw new Error('Authentication required');
@@ -348,6 +351,7 @@ async function loadSystemStatus() {
     $('#sysEvents').textContent = String(events?.total ?? 0);
     $('#sysDataFile').textContent = health?.dataFile ? String(health.dataFile) : '—';
     $('#sysRequestId').textContent = lastRequestId || '—';
+    $('#sysResponseMs').textContent = lastResponseMs ? `${lastResponseMs} ms` : '—';
   } catch (e) {
     $('#sysApi').textContent = `Error: ${e.message}`;
   }
