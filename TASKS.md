@@ -616,6 +616,10 @@
 - [x] Frontend UI: **Simulate Click** in Recent Targets table now passes `campaignId` query for ownership hardening (backward-compatible) — 84/84 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 157 — Expansion (active, in progress)
-- [~] Backend/API: allow optional `campaignId` in `POST /api/events` body for ownership-validated event recording (uses existing db.recordEvent validation; backward-compatible) with README/test
+## Phase 157 — Expansion (complete)
+- [x] Backend/API/docs/test: optional `campaignId` ownership validation for `POST /api/events` body (backward-compatible; leverages `db.recordEvent` validation) — README/test updated — 85/85 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 158 — Expansion (active, in progress)
+- [~] Frontend UI: in target detail modal (global-scope open), pass resolved `campaignId` to showTargetEventsInRecent path or ensure Recent Events filter/open flows carry ownership context safely when pivoting (evaluate minimal safe improvement)
 - [ ] Run verification, docs/log updates, commit/push per item
