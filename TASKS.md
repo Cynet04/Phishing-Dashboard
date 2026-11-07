@@ -393,7 +393,11 @@
 - [x] Backend/API: `GET /api/campaigns/:id/targets` supports `limit`/`offset` (paginated envelope when requested; backward-compatible array default), `status` validation, and 404-safe campaign lookup via `db.listCampaignTargets`; README/test updated — 64/64 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 91 — Expansion (active, in progress)
-- [~] Frontend UI: add “Show target events” context in campaign detail by selecting first matching target (or add small target picker) and wiring to global Recent Events target filter/recovery flow
+## Phase 91 — Expansion (complete)
+- [x] Frontend UI: campaign detail adds target picker + **Show Target Events** action (uses current filtered campaign targets) wiring selected target into global Recent Events target filter via recovery flow; also retains **Show Targets in Table** — 64/64 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 92 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/campaigns/:id/targets/:targetId` or validate target belongs to campaign in a targeted endpoint/test utility (inspect need); otherwise add regression coverage for campaign/target consistency edge cases
 - [ ] Run verification, docs/log updates, commit/push per item
 

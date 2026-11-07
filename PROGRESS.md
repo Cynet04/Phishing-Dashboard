@@ -169,3 +169,9 @@ ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (7bbfe81). Das
 - 
 ode --check (tests); 
 ode --test --test-concurrency=1 — 63/63 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 14:21Z — Phase 90: campaign targets pagination envelope
+- Added db.listCampaignTargets(campaignId, {status,limit,offset}) and routed GET /api/campaigns/:id/targets through it: backward-compatible array by default; returns {items,total,limit,offset} when limit/offset provided; validates status/pagination; 404-safe. README updated; regression test added.
+- 
+ode --check (db/server/tests); 
+ode --test --test-concurrency=1 — 64/64 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

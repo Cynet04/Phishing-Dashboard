@@ -128,11 +128,18 @@ async function selectCampaign(id, quiet) {
     <div class="muted" style="margin:8px 0">Targets (filtered): ${c.targets.length} · All targets: ${c.targetCount ?? c.targets.length} · Events: ${c.eventCount ?? 0} · Sent: ${stats.totals.emailsSent} · Opened: ${stats.totals.opened} · Clicks: ${stats.totals.clicked} · Submits: ${stats.totals.submitted}</div>
     <div class="muted" style="margin:0 0 8px">Rates — Open: ${stats.totals.openRate}% · Click: ${stats.totals.clickRate}% · Submit: ${stats.totals.submitRate}% · Status counts: ${esc(Object.entries(c.statusCounts||{}).map(([k,v])=>`${k}:${v}`).join(', ') || '—')}</div>
     <label class="muted">Filter targets by status <select id="campaignStatusFilter">${statuses.map(s => `<option value="${s}" ${s===state.campaignStatus?'selected':''}>${s || 'all'}</option>`).join('')}</select></label>
+    <div class="row" style="margin:8px 0;flex-wrap:wrap">
+      <select id="campaignTargetPicker" aria-label="Select campaign target" ${c.targets.length ? '' : 'disabled'} style="min-width:220px;max-width:100%">
+        ${c.targets.length ? c.targets.map(t => `<option value="${esc(t.id)}">${esc(t.email || t.id)} · ${esc(t.status || 'pending')}</option>`).join('') : '<option value="">No targets in current filter</option>'}
+      </select>
+      <button class="btn small secondary" id="showCampaignTargetEventsBtn" type="button" ${c.targets.length ? '' : 'disabled'}>Show Target Events</button>
+    </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <button class="btn small" id="sendSimBtn">Send Simulation</button>
       <a class="btn small secondary" href="/login-simulation?target=${encodeURIComponent(c.targets[0]?.id||'')}" target="_blank" rel="noopener">Open Mock Landing Page</a>
       <button class="btn small secondary" id="copyLandingBtn" ${c.targets[0]?.id ? '' : 'disabled'}>Copy Landing Link</button>
       <button class="btn small secondary" id="viewCampaignEventsBtn" type="button">View Campaign Events</button>
+      <button class="btn small secondary" id="viewCampaignTargetsBtn" type="button">Show Targets in Table</button>
       <a class="btn small secondary" id="campaignFilteredTargetsExport" href="/api/campaigns/${encodeURIComponent(id)}/targets/export.csv${state.campaignStatus ? `?status=${encodeURIComponent(state.campaignStatus)}` : ''}">Export Filtered Targets</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/export.csv">Export All Targets</a>
       <a class="btn small secondary" href="/api/campaigns/${encodeURIComponent(id)}/events.csv">Export Events CSV</a>
@@ -153,6 +160,13 @@ async function selectCampaign(id, quiet) {
       await refresh();
     } catch (e) { toast(e.message, 'error'); }
   });
+  $('#showCampaignTargetEventsBtn')?.addEventListener('click', async () => {
+    try {
+      const targetId = String($('#campaignTargetPicker')?.value || c.targets[0]?.id || '').trim();
+      if (!targetId) return toast('No target available.', 'error');
+      await showTargetEventsInRecent(targetId);
+    } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
+  });
   $('#viewCampaignEventsBtn')?.addEventListener('click', async () => {
     try {
       if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
@@ -162,6 +176,15 @@ async function selectCampaign(id, quiet) {
       await loadCampaignEvents(id);
       document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
+  });
+  $('#viewCampaignTargetsBtn')?.addEventListener('click', async () => {
+    try {
+      const sel = $('#targetExportCampaign'); if (sel) sel.value = String(id);
+      if ($('#targetExportStatus')) $('#targetExportStatus').value = String(state.campaignStatus || '');
+      updateTargetsExportLink();
+      await loadTargets(true);
+      document.querySelector('#targetsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (e) { toast(`Targets load failed: ${e.message}`, 'error'); }
   });
   $('#copyLandingBtn')?.addEventListener('click', async () => {
     const targetId = c.targets[0]?.id;
