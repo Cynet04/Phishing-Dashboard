@@ -37,6 +37,7 @@ test('health endpoint', async () => {
     assert.equal(r.data.service, 'phishing-dashboard');
     assert.equal(typeof r.data.uptimeSeconds, 'number');
     assert.match(String(r.data.node || ''), /^v\d+/);
+    assert.match(String(r.data.dataFile || ''), /\.json$/);
     assert.match(JSON.stringify(r.headers), /x-content-type-options/i);
     assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
 

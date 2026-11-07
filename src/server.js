@@ -167,7 +167,10 @@ async function handler(req, res) {
       if (pathname.startsWith('/api/')) return send(res, 401, { error: 'unauthorized' });
       res.writeHead(302, { Location: '/login' }); return res.end();
     }
-    if (req.method === 'GET' && pathname === '/api/health') return send(res, 200, { ok: true, service: 'phishing-dashboard', time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()), node: process.version });
+    if (req.method === 'GET' && pathname === '/api/health') {
+      const dataFile = typeof db.dbFile === 'function' ? path.basename(db.dbFile()) : undefined;
+      return send(res, 200, { ok: true, service: 'phishing-dashboard', time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()), node: process.version, dataFile });
+    }
     if (req.method === 'GET' && pathname === '/api/templates') return send(res, 200, allTemplates(db));
     if (req.method === 'POST' && pathname === '/api/templates') return send(res, 201, db.saveCustomTemplate(await readJson(req)));
     if (pathname.startsWith('/api/templates/')) {
