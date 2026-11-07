@@ -372,3 +372,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 01:30Z — Phase 151: README resolved campaign context/ownership hints
 - Documented Recent Events resolved campaign context for unambiguous target-filtered global views (global pagination/export semantics preserved) and ownership/context hints for target detail/open flows. 83/83 passing. Committed/pushed.
+
+## 2026-11-08 01:45Z — Phase 152: Recent Events campaign pivot for target-filtered global view
+- Added **Show campaign events** action in Recent Events when a target filter has unambiguous resolved campaign context (global view). Pivots to campaign-scoped events while preserving active filters. UI syntax checked, 83/83 passing. Committed/pushed.
