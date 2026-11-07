@@ -258,3 +258,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 17:16Z — Phase 110: campaign filtered targets alias link
 - Campaign detail filtered targets export link now uses `GET /api/campaigns/:id/targets.csv` alias; legacy endpoints remain. `node --check public/app.js`; 71/71 passing. Committed/pushed.
+
+## 2026-11-07 17:22Z — Phase 112: global targets.csv export link
+- Recent Targets global export toolbar now uses `/api/targets.csv` alias in `public/app.js`; legacy endpoint remains. `node --check`; 72/72 passing. Committed/pushed.

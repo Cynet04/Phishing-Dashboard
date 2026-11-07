@@ -110,7 +110,7 @@ function updateTargetsExportLink() {
   const p = new URLSearchParams();
   if (cid) p.set('campaignId', cid);
   if (status) p.set('status', status);
-  const href = '/api/targets/export.csv' + (p.toString() ? `?${p}` : '');
+  const href = '/api/targets.csv' + (p.toString() ? `?${p}` : '');
   const a = $('#targetsExportLink'); if (a) a.href = href;
 }
 $('#targetExportCampaign')?.addEventListener('change', () => { updateTargetsExportLink(); loadTargets(true).catch((e) => toast(`Targets filter failed: ${e.message}`, 'error')); });
