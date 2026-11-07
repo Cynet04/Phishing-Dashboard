@@ -138,8 +138,13 @@
 - [x] Keep dashboard/analytics behavior stable
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 28 — Expansion (active)
-- [ ] Add JSON `GET /api/campaigns/:id/targets` endpoint (alias/filter support) and tests
-- [ ] Add template ID collision/default override protection (clear validation) and tests
+## Phase 28 — Expansion (complete)
+- [x] Add JSON `GET /api/campaigns/:id/targets` endpoint (status filter support) and tests — 31/31 passing
+- [x] Add template ID default override protection (cannot modify built-in templates via PUT) and tests
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 29 — Expansion (active)
+- [ ] Add defensive 405 handling for events endpoint methods not supported and regression test
+- [ ] Add dashboard campaign detail quick status counts display (uses `statusCounts`) for clarity
 - [ ] Run verification, docs/log updates, commit/push per item
 

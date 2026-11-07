@@ -174,6 +174,7 @@ async function handler(req, res) {
     if (m && req.method === 'DELETE' && !m[2]) return send(res, 200, db.deleteCampaign(m[1]));
     if (m && req.method === 'POST' && m[2] === 'send') return send(res, 200, db.sendSimulation(m[1]));
     if (m && req.method === 'POST' && m[2] === 'targets') return send(res, 201, db.addTargets(m[1], (await readBody(req)).targets));
+    if (m && req.method === 'GET' && m[2] === 'targets') return send(res, 200, (db.getCampaign(m[1], { status: searchParams.get('status') }).targets));
     if (m && req.method === 'GET' && m[2] === 'stats') return send(res, 200, db.stats(m[1], { from: searchParams.get('from'), to: searchParams.get('to') }));
     if (m && req.method === 'GET' && m[2] === 'export.csv') return send(res, 200, db.exportTargetsCsv({ campaignId: m[1] }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-targets.csv"` });
     if (m && req.method === 'GET' && m[2] === 'events.csv') return send(res, 200, db.exportEventsCsv({ campaignId: m[1] }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="campaign-${m[1]}-events.csv"` });

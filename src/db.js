@@ -67,7 +67,9 @@ function listCustomTemplates() {
 function saveCustomTemplate(input = {}) {
   const db = load();
   db.templates = db.templates || [];
+  const defaults = require('./templates').templates || [];
   const id = input.id ? String(input.id) : null;
+  if (id && defaults.some(d => d.id === id)) throw Object.assign(new Error('cannot modify default template'), { status: 400 });
   const idx = id ? db.templates.findIndex(t => t.id === id) : -1;
   const tpl = normalizeTemplate(input, id || undefined);
   if (!tpl.createdAt) tpl.createdAt = idx >= 0 ? db.templates[idx].createdAt : now();

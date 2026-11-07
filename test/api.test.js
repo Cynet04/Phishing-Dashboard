@@ -406,6 +406,27 @@ test('campaign CSV exports return 404 for unknown campaign', async () => {
   });
 });
 
+test('campaign targets endpoint returns filtered target array', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Targets', template: 'generic', targets: 't1@example.com,t2@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const list = await req(base, `/api/campaigns/${created.data.id}/targets?status=clicked`);
+    assert.equal(list.status, 200);
+    assert.equal(Array.isArray(list.data), true);
+    assert.equal(list.data.length, 1);
+    assert.equal(list.data[0].status, 'clicked');
+  });
+});
+
+test('default templates cannot be modified via template API', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/templates/generic', { method: 'PUT', body: JSON.stringify({ name: 'X', subject: 'Y', body: 'Z' }) });
+    assert.equal(r.status, 400);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
