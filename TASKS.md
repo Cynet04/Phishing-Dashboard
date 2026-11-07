@@ -205,7 +205,11 @@
 - [x] Frontend UI/UX: added target detail modal in recent targets table using `GET /api/targets/:id` (escaped-safe JSON view, close/click-outside) — 43/43 API tests still passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 43 — Expansion (active, in progress)
-- [~] Refactor/backend: add `GET /api/campaigns/:id/summary` alias to `includeTargets=false` for clarity and tests; keep compatibility
+## Phase 43 — Expansion (complete)
+- [x] Refactor/backend: added `GET /api/campaigns/:id/summary` alias (lightweight, no targets/events) with compatibility preserved — 44/44 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 44 — Expansion (active, in progress)
+- [~] Backend/testing: validate `GET /api/events` `type` query (optional strict 400 for unknown types? keep backward-compatible: ignore/return empty is current) — add test documenting behavior; add `POST /api/auth/login` method/content-type safety tests
 - [ ] Run verification, docs/log updates, commit/push per item
 

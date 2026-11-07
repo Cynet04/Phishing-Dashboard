@@ -44,7 +44,7 @@ Public endpoints remain available for the educational simulation flow: `/api/hea
 - `GET /api/templates`, `POST /api/templates`, `PUT /api/templates/:id`, `DELETE /api/templates/:id`
 - `GET /api/stats?campaignId=&from=YYYY-MM-DD&to=YYYY-MM-DD`
 - `GET /api/campaigns?q=`, `POST /api/campaigns`
-- `GET /api/campaigns/:id?status=sent|opened|clicked|submitted|pending&includeTargets=false`, `GET /api/campaigns/:id/targets?status=`, `GET /api/campaigns/:id/events?type=&limit=&offset=`, `DELETE /api/campaigns/:id` (demo hygiene), `POST /api/campaigns/:id/targets`, `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`, `GET /api/campaigns/:id/events.csv`
+- `GET /api/campaigns/:id?status=sent|opened|clicked|submitted|pending&includeTargets=false`, `GET /api/campaigns/:id/summary`, `GET /api/campaigns/:id/targets?status=`, `GET /api/campaigns/:id/events?type=&limit=&offset=`, `DELETE /api/campaigns/:id` (demo hygiene), `POST /api/campaigns/:id/targets`, `GET /api/campaigns/:id/stats?from=&to=`, `GET /api/campaigns/:id/export.csv`, `GET /api/campaigns/:id/events.csv`
 - `POST /api/campaigns/:id/send`
 - `GET /api/targets/recent?limit=&offset=`, `GET /api/targets/:id`, `GET /api/targets/export.csv`, `GET /api/targets/export.csv`, `POST /api/targets/:id/click`
 - `GET /api/events?campaignId=&type=&limit=&offset=`, `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`)

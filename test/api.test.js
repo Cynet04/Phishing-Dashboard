@@ -564,6 +564,17 @@ test('target detail endpoint returns target with campaign name and 404 for unkno
   });
 });
 
+test('campaign summary alias returns lightweight campaign payload', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Summary Alias', template: 'generic', targets: 'sa@example.com' }) });
+    const r = await req(base, `/api/campaigns/${created.data.id}/summary`);
+    assert.equal(r.status, 200);
+    assert.equal(r.data.targets, undefined);
+    assert.equal(r.data.events, undefined);
+    assert.equal(r.data.targetCount, 1);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

@@ -194,10 +194,11 @@ async function handler(req, res) {
     if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets({ limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     if (req.method === 'GET' && /^\/api\/targets\/[^/]+$/.test(pathname)) return send(res, 200, db.getTarget(decodeURIComponent(pathname.split('/')[3] || '')));
     if (req.method === 'GET' && pathname === '/api/stats') return send(res, 200, db.stats(searchParams.get('campaignId') || null, { from: searchParams.get('from'), to: searchParams.get('to') }));
-    const m = pathname.match(/^\/api\/campaigns\/([^/]+)(?:\/(send|stats|export\.csv|events\.csv|events|targets))?$/);
+    const m = pathname.match(/^\/api\/campaigns\/([^/]+)(?:\/(send|stats|export\.csv|events\.csv|events|targets|summary))?$/);
     if (m && req.method === 'GET' && !m[2]) return send(res, 200, db.getCampaign(m[1], { status: searchParams.get('status'), includeTargets: searchParams.get('includeTargets') }));
     if (m && req.method === 'DELETE' && !m[2]) return send(res, 200, db.deleteCampaign(m[1]));
     if (m && req.method === 'POST' && m[2] === 'send') return send(res, 200, db.sendSimulation(m[1]));
+    if (m && req.method === 'GET' && m[2] === 'summary') return send(res, 200, db.getCampaign(m[1], { status: searchParams.get('status'), includeTargets: 'false' }));
     if (m && req.method === 'POST' && m[2] === 'targets') return send(res, 201, db.addTargets(m[1], (await readBody(req)).targets));
     if (m && req.method === 'GET' && m[2] === 'targets') return send(res, 200, (db.getCampaign(m[1], { status: searchParams.get('status') }).targets));
     if (m && req.method === 'GET' && m[2] === 'events') return send(res, 200, db.listEvents({ campaignId: m[1], type: searchParams.get('type') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
