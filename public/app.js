@@ -275,6 +275,11 @@ function updateEventsTargetDetailButton() {
   btn.classList.toggle('hidden', !tid);
   btn.disabled = !tid;
   if (tid && state.eventsResolvedCampaignId) btn.title = `Open target detail (campaign ${state.eventsResolvedCampaignId})`; else btn.title = tid ? 'Open target detail' : '';
+  const show = $('#showResolvedCampaignEventsBtn'); if (show) {
+    const can = Boolean(tid && state.eventsResolvedCampaignId && state.eventsScope !== 'campaign');
+    show.classList.toggle('hidden', !can); show.disabled = !can;
+    show.title = can ? `Switch to campaign-scoped events (campaign ${state.eventsResolvedCampaignId})` : '';
+  }
 }
 function renderEventsRows(events) {
   return events.length ? events.map(e => {
@@ -708,3 +713,10 @@ $('#logoutBtn').addEventListener('click', async () => {
 $('#campaignSearch')?.addEventListener('input', () => loadCampaigns().catch((e) => toast(`Search failed: ${e.message}`, 'error')));
 $('#refreshBtn').addEventListener('click', refresh);
 loadTemplates().then(async () => { await loadAuthStatus(); await refresh(); }).catch(err => { $('#formMsg').textContent = `Load error: ${err.message}`; });
+
+$('#showResolvedCampaignEventsBtn')?.addEventListener('click', async () => {
+  const campaignId = String(state.eventsResolvedCampaignId || '').trim();
+  if (!campaignId) return toast('No resolved campaign context.', 'error');
+  try { await loadCampaignEvents(campaignId, true); document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
+});
