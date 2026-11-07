@@ -329,7 +329,11 @@
 - [x] Frontend UI: added “Clear filters” for Recent Targets/export toolbar, reorganized toolbar layout for responsiveness, and wired clear to reset table/export filters — 59/59 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 74 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/events?targetId=` filter support (DB already supports targetId; route should pass through) and regression test
+## Phase 74 — Expansion (complete)
+- [x] Backend/API: `GET /api/events` now accepts `targetId` passthrough filter (DB already supported) with regression test — 60/60 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 75 — Expansion (active, in progress)
+- [~] Frontend UI: add Recent Events target filter/input (by target ID or selected target context) wired to `/api/events?targetId=` and clear/reset behavior
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -790,6 +790,20 @@ test('target detail and target events routes enforce GET method', async () => {
   });
 });
 
+test('events endpoint supports targetId filter', async () => {
+  await withServer(async (base) => {
+    const c = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EFT', template: 'generic', targets: 'a@example.com\nb@example.com' }) });
+    const detail = await req(base, `/api/campaigns/${c.data.id}`);
+    const [t1, t2] = detail.data.targets;
+    await req(base, `/api/targets/${t1.id}/click`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${t2.id}/open`, { method: 'POST', body: '{}' });
+    const ev = await req(base, `/api/events?campaignId=${c.data.id}&targetId=${t1.id}`);
+    assert.equal(ev.status, 200);
+    assert.ok(ev.data.items.length >= 1);
+    assert.ok(ev.data.items.every((e) => e.targetId === t1.id));
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
