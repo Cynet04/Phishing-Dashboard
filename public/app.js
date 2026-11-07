@@ -391,28 +391,69 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeEvent
 
 let targetDetailJson = '';
 let targetDetailId = '';
-function closeTargetDetail() { $('#targetDetailModal')?.classList.add('hidden'); targetDetailJson = ''; targetDetailId = ''; const a = $('#exportTargetEventsLink'); if (a) a.href = '#'; }
+let targetDetailCampaignId = '';
+let targetDetailFrom = '';
+let targetDetailTo = '';
+function setTargetDetailScopeLabel() { const el = $('#targetDetailScope'); if (el) el.textContent = targetDetailCampaignId ? `campaign-scoped (campaign ${targetDetailCampaignId})` : 'global'; }
+function targetDetailEventsPath() {
+  if (!targetDetailId) return '';
+  const base = targetDetailCampaignId
+    ? `/api/campaigns/${encodeURIComponent(targetDetailCampaignId)}/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`
+    : `/api/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`;
+  const q = new URLSearchParams();
+  if (targetDetailFrom) q.set('from', targetDetailFrom);
+  if (targetDetailTo) q.set('to', targetDetailTo);
+  const qs = q.toString(); return qs ? `${base}&${qs}` : base;
+}
+function targetDetailExportPath() {
+  if (!targetDetailId) return '#';
+  const base = targetDetailCampaignId
+    ? `/api/campaigns/${encodeURIComponent(targetDetailCampaignId)}/targets/${encodeURIComponent(targetDetailId)}/events.csv`
+    : `/api/targets/${encodeURIComponent(targetDetailId)}/events.csv`;
+  const q = new URLSearchParams();
+  if (targetDetailFrom) q.set('from', targetDetailFrom);
+  if (targetDetailTo) q.set('to', targetDetailTo);
+  const qs = q.toString(); return qs ? `${base}?${qs}` : base;
+}
+function syncTargetDetailExportLink() { const a = $('#exportTargetEventsLink'); if (a) a.href = targetDetailExportPath(); }
+async function refreshTargetDetailEvents() {
+  if (!targetDetailId) return;
+  const body = $('#targetDetailBody'); if (!body) return;
+  try {
+    const detailPath = targetDetailCampaignId
+      ? `/api/campaigns/${encodeURIComponent(targetDetailCampaignId)}/targets/${encodeURIComponent(targetDetailId)}`
+      : `/api/targets/${encodeURIComponent(targetDetailId)}`;
+    const [t, ev] = await Promise.all([api(detailPath), api(targetDetailEventsPath())]);
+    targetDetailJson = JSON.stringify({ target: t, events: ev, filter: { from: targetDetailFrom || null, to: targetDetailTo || null } }, null, 2);
+    const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
+    const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
+    const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
+    const scope = targetDetailCampaignId ? `<span class="pill sent">campaign-scoped</span> <span class="muted">Campaign ${esc(targetDetailCampaignId)}</span>` : `<span class="pill pending">global</span>`;
+    const dateNote = (targetDetailFrom || targetDetailTo) ? ` <span class="muted small">(filtered${targetDetailFrom ? ` from ${esc(targetDetailFrom)}` : ''}${targetDetailTo ? ` to ${esc(targetDetailTo)}` : ''})</span>` : '';
+    body.className = '';
+    body.innerHTML = `<div class="muted" style="margin-bottom:8px">Scope: ${scope}</div><div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events${dateNote}</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+  } catch (e) { body.className = 'muted'; body.textContent = `Error: ${e.message}`; toast(e.message, 'error'); }
+}
+function closeTargetDetail() {
+  $('#targetDetailModal')?.classList.add('hidden');
+  targetDetailJson = ''; targetDetailId = ''; targetDetailCampaignId = ''; targetDetailFrom = ''; targetDetailTo = '';
+  const a = $('#exportTargetEventsLink'); if (a) a.href = '#';
+  ['#targetDetailFrom','#targetDetailTo'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+  setTargetDetailScopeLabel();
+}
 async function openTargetDetail(targetId, campaignId = '') {
   const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
   targetDetailJson = '';
   targetDetailId = String(targetId || '').trim();
+  targetDetailCampaignId = String(campaignId || '').trim();
+  targetDetailFrom = ''; targetDetailTo = '';
   if (!targetDetailId) return toast('No target selected.', 'error');
-  const exportLink = $('#exportTargetEventsLink'); if (exportLink) exportLink.href = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}/events.csv` : `/api/targets/${encodeURIComponent(targetDetailId)}/events.csv`;
+  ['#targetDetailFrom','#targetDetailTo'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+  setTargetDetailScopeLabel();
+  syncTargetDetailExportLink();
   modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
   $('#closeTargetDetail')?.focus?.();
-  try {
-    const detailPath = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}` : `/api/targets/${encodeURIComponent(targetDetailId)}`;
-    const eventsPath = campaignId ? `/api/campaigns/${encodeURIComponent(campaignId)}/targets/${encodeURIComponent(targetDetailId)}/events?limit=20` : `/api/targets/${encodeURIComponent(targetDetailId)}/events?limit=20`;
-    const [t, ev] = await Promise.all([api(detailPath), api(eventsPath)]);
-    targetDetailJson = JSON.stringify({ target: t, events: ev }, null, 2);
-    const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
-    const counts = t.eventCounts && typeof t.eventCounts === 'object' ? Object.entries(t.eventCounts).map(([k,v]) => `${esc(k)}:${esc(v)}`).join(' · ') : '—';
-    const lastAt = t.lastEventAt ? esc(String(t.lastEventAt).replace('T',' ').slice(0,19)) : '—';
-    const scope = campaignId ? `<span class="pill sent">campaign-scoped</span> <span class="muted">Campaign ${esc(campaignId)}</span>` : `<span class="pill pending">global</span>`;
-    body.className = '';
-    body.innerHTML = `<div class="muted" style="margin-bottom:8px">Scope: ${scope}</div><div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div><div><span class="muted">Event count</span><div>${esc(t.eventCount ?? 0)}</div></div><div><span class="muted">Event types</span><div>${counts || '—'}</div></div><div><span class="muted">Last event</span><div>${lastAt}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
-  }
-  catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
+  await refreshTargetDetailEvents();
 }
 $('#closeTargetDetail')?.addEventListener('click', closeTargetDetail);
 $('#copyTargetDetail')?.addEventListener('click', async () => {
@@ -427,6 +468,8 @@ $('#copyTargetExportLink')?.addEventListener('click', async () => {
   try { await navigator.clipboard?.writeText(url); toast('Export link copied.'); }
   catch { prompt('Copy export link:', url); }
 });
+$('#applyTargetDetailDates')?.addEventListener('click', async () => { targetDetailFrom = String($('#targetDetailFrom')?.value || '').trim(); targetDetailTo = String($('#targetDetailTo')?.value || '').trim(); syncTargetDetailExportLink(); try { await refreshTargetDetailEvents(); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); } });
+$('#clearTargetDetailDates')?.addEventListener('click', async () => { targetDetailFrom = ''; targetDetailTo = ''; ['#targetDetailFrom','#targetDetailTo'].forEach(id => { const el = $(id); if (el) el.value = ''; }); syncTargetDetailExportLink(); try { await refreshTargetDetailEvents(); } catch (e) { toast(`Target detail failed: ${e.message}`, 'error'); } });
 async function showTargetEventsInRecent(targetId) {
   if (!targetId) return toast('No target selected.', 'error');
   state.eventsScope = 'global'; state.eventsCampaignId = ''; state.eventsType = ''; state.eventsTargetId = targetId; state.eventsFrom = ''; state.eventsTo = ''; state.eventsOffset = 0;
@@ -437,14 +480,13 @@ async function showTargetEventsInRecent(targetId) {
   await loadEvents(true);
   document.querySelector('#eventsMeta')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
-
 $('#showTargetInEvents')?.addEventListener('click', async () => {
   if (!targetDetailId) return toast('No target selected.', 'error');
   try { closeTargetDetail(); await showTargetEventsInRecent(targetDetailId); }
   catch (e) { toast(`Events load failed: ${e.message}`, 'error'); }
 });
-$('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'targetDetailModal') closeTargetDetail(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTargetDetail(); });
+$('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target?.id === 'targetDetailModal') closeTargetDetail(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#targetDetailModal')?.classList.contains('hidden')) closeTargetDetail(); });
 let autoTimer = null;
 function setAutoRefresh(on) {
   if (autoTimer) clearInterval(autoTimer);
