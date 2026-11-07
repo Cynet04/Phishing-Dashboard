@@ -342,3 +342,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 23:00Z — Phase 139: optional campaignId ownership validation for GET /api/targets/:id
 - Added optional `?campaignId=` to `GET /api/targets/:id` (ownership-validated via campaign-scoped lookup, 404-safe) with backward-compatible default. README/test updated. 81/81 passing. Committed/pushed.
+
+## 2026-11-07 23:15Z — Phase 140: pass campaign context to target detail from targets table
+- Recent Targets table rows now include `data-campaign-id` and pass it to `openTargetDetail`, leveraging ownership-validated target detail when context is known. UI syntax checked, 81/81 passing. Committed/pushed.
