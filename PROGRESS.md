@@ -42,7 +42,7 @@
 
 ## 2026-11-07 11:37Z — Phase 59: filtered events export UI
 - Dashboard Recent Targets section now includes events export type filter (`opened/clicked/submitted`) updating `GET /api/events/export.csv?type=` link.
-- `node --check` (ui); `node --test --test-concurrency=1` — 52/52 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5, restarted). View: Recent Targets controls → events type dropdown → **Export Events CSV**.
+- `node --check` (ui); `node --test --test-concurrency=1` — 52/52 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5, restarted). View: Recent Targets controls → events type dropdown → **Export Events CSV**.
 
 ## 2026-11-07 11:40Z � Phase 62: campaign targets filtered CSV export route
 - Added `GET /api/campaigns/:id/targets/export.csv?status=` (404-safe, reuses filtered export). Added regression test; README updated.
@@ -50,7 +50,7 @@
 
 ## 2026-11-07 11:41Z � Phase 63: campaign filtered export UI
 - Campaign detail adds **Export Filtered Targets** link that follows the selected status filter (`/api/campaigns/:id/targets/export.csv?status=`) alongside **Export All Targets**.
-- `node --check` (ui); `node --test --test-concurrency=1` � 54/54 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Campaign Detail ? filter status ? **Export Filtered Targets**.
+- `node --check` (ui); `node --test --test-concurrency=1` � 54/54 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Campaign Detail ? filter status ? **Export Filtered Targets**.
 
 ## 2026-11-07 11:42Z � Phase 64: template endpoint coverage
 - Added API test for `GET /api/templates` shape and custom template delete 404 (documents current PUT-upsert behavior for unknown custom IDs).
@@ -58,7 +58,7 @@
 
 ## 2026-11-07 11:43Z � Phase 65: JSON no-store cache hardening
 - Server `send()` now sets `Cache-Control: no-store` for object/JSON responses (API data and JSON errors) while preserving existing security headers. Health test asserts header.
-- `node --check` (server/tests); `node --test --test-concurrency=1` � 55/55 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+- `node --check` (server/tests); `node --test --test-concurrency=1` � 55/55 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
 ## 2026-11-07 11:44Z � Phase 66: target detail modal UX/accessibility
 - Target detail modal now supports **Copy JSON** (clipboard with prompt fallback), stores fetched target+events JSON, closes on Escape/click-outside, and focuses the close control.
@@ -74,11 +74,11 @@
 
 ## 2026-11-07 11:47Z � Phase 69: delete event API
 - Added `DELETE /api/events/:id` (404-safe, 405 for unsupported methods) and DB `deleteEvent()`. README updated; regression test added.
-- `node --check` (db/server/tests); `node --test --test-concurrency=1` � 57/57 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+- `node --check` (db/server/tests); `node --test --test-concurrency=1` � 57/57 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
 ## 2026-11-07 11:46Z � Phase 68: target detail export-events action
 - Target detail modal includes **Export Events CSV** for the selected target (`/api/events/export.csv?targetId=`), alongside Copy JSON and accessibility behavior.
-- `node --check` (ui/app.js); `node --test --test-concurrency=1` � 56/56 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets ? **Details** ? **Export Events CSV**.
+- `node --check` (ui/app.js); `node --test --test-concurrency=1` � 56/56 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets ? **Details** ? **Export Events CSV**.
 
 ## 2026-11-07 11:48Z � Phase 70: Recent Events delete UI
 - Recent Events table now includes per-row **Delete** (confirm) calling `DELETE /api/events/:id`, then reloads events and system status with toast/error handling.
@@ -94,7 +94,7 @@
 
 ## 2026-11-07 11:51Z � Phase 73: export/targets toolbar clear filters
 - Added **Clear filters** for Recent Targets/export toolbar; reorganized controls and wired clear to reset campaign/status/events-export filters and reload targets.
-- `node --check` (ui); `node --test --test-concurrency=1` � 59/59 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets toolbar ? **Clear filters**.
+- `node --check` (ui); `node --test --test-concurrency=1` � 59/59 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: Recent Targets toolbar ? **Clear filters**.
 
 ## 2026-11-07 11:52Z � Phase 74: /api/events targetId filter passthrough
 - `GET /api/events` now passes `targetId` to event listing (DB already supported). README updated; regression test added.
@@ -102,7 +102,7 @@
 
 ## 2026-11-07 11:53Z � Phase 75: Recent Events target filter UI
 - Recent Events panel adds **Target ID filter** input and **Clear** controls; UI passes `targetId` to `/api/events` and shows filter in meta.
-- `node --check` (ui); `node --test --test-concurrency=1` � 60/60 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Events** ? Target ID filter / Clear.
+- `node --check` (ui); `node --test --test-concurrency=1` � 60/60 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Events** ? Target ID filter / Clear.
 
 ## 2026-11-07 11:51Z � Phase 73: export/targets toolbar clear filters
 - Added **Clear filters** for Recent Targets/export toolbar; reorganized controls and wired clear to reset campaign/status/events-export filters and reload targets.
@@ -124,11 +124,11 @@ ode --test --test-concurrency=1 — 60/60 passing. Committed/pushed. Dashboard: 
 
 ## 2026-11-07 11:58Z — Phase 80: target detail “Show in Recent Events”
 - Target detail modal adds **Show in Recent Events**: prefills `targetId` filter, clears campaign-scoped quick view/type filter, reloads global `/api/events`, closes modal, scrolls to panel.
-- `node --check` (ui); `node --test --test-concurrency=1` — 60/60 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: open a target detail → **Show in Recent Events**.
+- `node --check` (ui); `node --test --test-concurrency=1` — 60/60 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: open a target detail → **Show in Recent Events**.
 
 ## 2026-11-07 11:57Z — Phase 79: campaign events combined filter regression
 - Strengthened campaign events JSON test: asserts `targetId+type` combined filtering and stable empty result for mismatched target/type (route behavior already correct).
-- `node --test --test-concurrency=1` — 60/60 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+- `node --test --test-concurrency=1` — 60/60 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
 
 ## 2026-11-07 11:59Z — Phase 81: targets recent/export method consistency
 - `GET /api/targets/recent` and `GET /api/targets/export.csv` enforce GET-only handling (405 for unsupported methods). Added regression test.
@@ -136,4 +136,4 @@ ode --test --test-concurrency=1 — 60/60 passing. Committed/pushed. Dashboard: 
 
 ## 2026-11-07 13:57Z — Phase 82: Recent Targets Events quick action
 - Recent Targets rows now include an **Events** quick action. It reuses the global-scope target-events recovery flow (Phase 80/78): prefills Recent Events `targetId` filter, clears campaign-scoped/type state, reloads global `/api/events`, and scrolls to the panel.
-- `node --check` (ui); `node --test --test-concurrency=1` — 61/61 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Targets** → row **Events**.
+- `node --check` (ui); `node --test --test-concurrency=1` — 61/61 passing. Committed/pushed (`5994b2d`, force-with-lease after amend). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: **Recent Targets** → row **Events**.
