@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '', eventsTargetId: '' };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '', eventsTargetId: '', eventsScope: 'global', eventsCampaignId: '' };
 const THEME_KEY = 'pd-theme';
 function applyTheme(theme) {
   const t = theme === 'light' ? 'light' : 'dark';
@@ -220,6 +220,8 @@ async function loadTargets(reset = false) {
 
 async function loadCampaignEvents(campaignId) {
   if (!campaignId) return loadEvents(true);
+  state.eventsScope = 'campaign';
+  state.eventsCampaignId = String(campaignId);
   state.eventsOffset = 0;
   const type = String($('#eventsTypeFilter')?.value || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || '').trim();
@@ -235,15 +237,17 @@ async function loadCampaignEvents(campaignId) {
     <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
   $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
     if (!btn.dataset.id || !confirm('Delete this event?')) return;
-    try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadCampaignEvents(campaignId); await loadSystemStatus(); }
+    try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadCampaignEvents(state.eventsCampaignId || campaignId); await loadSystemStatus(); }
     catch (e) { toast(e.message, 'error'); }
   }));
   const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
-  $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
-  $('#loadMoreEventsBtn').disabled = true; // campaign-scoped quick view; clear/load global to paginate
+  $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped view (use filters/Clear/Refresh for global list)';
+  $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination; return to global list to paginate
 }
 
 async function loadEvents(reset = false) {
+  state.eventsScope = 'global';
+  state.eventsCampaignId = '';
   if (reset) state.eventsOffset = 0;
   const type = String($('#eventsTypeFilter')?.value || state.eventsType || '').trim();
   const targetId = String($('#eventsTargetFilter')?.value || state.eventsTargetId || '').trim();
