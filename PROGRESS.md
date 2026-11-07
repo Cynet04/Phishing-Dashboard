@@ -312,3 +312,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 20:05Z — Phase 129: target events JSON from/to parity
 - Added validated `from`/`to` date-filter parity to `GET /api/targets/:id/events` (uses existing `db.listEvents` validation; preserves 404/405 safety). README updated, regression test added. 79/79 passing. Committed/pushed.
+
+## 2026-11-07 20:20Z — Phase 130: campaign-scoped target events JSON from/to parity
+- Added validated `from`/`to` date-filter parity to `GET /api/campaigns/:id/targets/:targetId/events` (ownership/404/405-safe, uses `db.listEvents`). README updated, regression test added. 80/80 passing. Committed/pushed.
