@@ -223,3 +223,7 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 ## 2026-11-07 16:22Z — Phase 101: event detail endpoint
 - Added `db.getEvent(id)` and `GET /api/events/:id` (returns event with `campaignName`, 404/405-safe). README updated. Regression test added.
 - `node --check` (db/server/tests); `node --test --test-concurrency=1` — 68/68 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 16:28Z — Phase 102: Recent Events details modal
+- Added read-only event detail modal (`#eventDetailModal`) and **Details** action in Recent Events rows (global + campaign-scoped) fetching `GET /api/events/:id`; copy JSON/close/Escape/click-outside supported. Delete behavior preserved.
+- `node --check public/app.js`; `node --test --test-concurrency=1` — 68/68 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

@@ -437,7 +437,11 @@
 - [x] Backend/API: added `GET /api/events/:id` (returns event with `campaignName`, 404/405-safe) via `db.getEvent`/server route, with regression test and README update — 68/68 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 102 — Expansion (active, in progress)
-- [~] Frontend UI: add Recent Events **Details** action/button that fetches `GET /api/events/:id` and shows event JSON/details in an alert-style modal or existing detail pattern (read-only)
+## Phase 102 — Expansion (complete)
+- [x] Frontend UI: Recent Events rows now include **Details** (read-only modal via `GET /api/events/:id`, copy JSON, close/Escape/click-outside) alongside Delete; works in global and campaign-scoped views — 68/68 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 103 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/events/:id` alias-safe handling? No — add `GET /api/targets/:id/export.csv` (single-target events CSV, optional `type=`) with 404/405-safe behavior, regression test, README/docs update
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -277,7 +277,7 @@ async function loadCampaignEvents(campaignId) {
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
   $('#eventsBody').innerHTML = events.length ? events.map(e => `
-    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
+    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary view-event" data-id="${esc(e.id || '')}">Details</button> <button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events for this campaign.</td></tr>';
   $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
     if (!btn.dataset.id || !confirm('Delete this event?')) return;
     try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadCampaignEvents(state.eventsCampaignId || campaignId); await loadSystemStatus(); }
@@ -307,7 +307,7 @@ async function loadEvents(reset = false) {
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
   $('#eventsBody').innerHTML = events.length ? events.map(e => `
-    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events.</td></tr>';
+    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td><td><button class="btn small secondary view-event" data-id="${esc(e.id || '')}">Details</button> <button class="btn small secondary del-event" data-id="${esc(e.id || '')}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">No events.</td></tr>';
   $('#eventsBody').querySelectorAll('.del-event').forEach(btn => btn.addEventListener('click', async () => {
     if (!btn.dataset.id || !confirm('Delete this event?')) return;
     try { await api(`/api/events/${encodeURIComponent(btn.dataset.id)}`, { method: 'DELETE' }); toast('Event deleted.'); await loadEvents(true); await loadSystemStatus(); }
@@ -343,6 +343,28 @@ async function refresh() {
   } catch (e) { toast(e.message || 'Refresh failed', 'error'); }
   finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
 }
+
+let eventDetailJson = '';
+function closeEventDetail() { $('#eventDetailModal')?.classList.add('hidden'); eventDetailJson = ''; }
+async function openEventDetail(eventId) {
+  const modal = $('#eventDetailModal'); const body = $('#eventDetailBody');
+  if (!modal || !body) return toast('Event detail UI missing.', 'error');
+  eventDetailJson = ''; modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
+  $('#closeEventDetail')?.focus?.();
+  try {
+    const ev = await api(`/api/events/${encodeURIComponent(String(eventId || '').trim())}`);
+    eventDetailJson = JSON.stringify(ev, null, 2);
+    body.className = '';
+    body.innerHTML = `<div class="detail-kv"><div><span class="muted">Event ID</span><div>${esc(ev.id)}</div></div><div><span class="muted">Type</span><div><span class="pill ${esc(ev.type)}">${esc(ev.type)}</span></div></div><div><span class="muted">Campaign</span><div>${esc(ev.campaignName || ev.campaignId || '—')}</div></div><div><span class="muted">Target</span><div>${esc(ev.targetId || '—')}</div></div><div><span class="muted">Time</span><div>${esc((ev.at||'').replace('T',' ').slice(0,19))}</div></div></div><h4 style="margin:14px 0 8px">Raw</h4><pre class="detail-pre">${esc(eventDetailJson)}</pre>`;
+  } catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
+}
+$('#closeEventDetail')?.addEventListener('click', closeEventDetail);
+$('#copyEventDetail')?.addEventListener('click', async () => {
+  if (!eventDetailJson) return toast('No event detail loaded.', 'error');
+  try { await navigator.clipboard?.writeText(eventDetailJson); toast('Event JSON copied.'); } catch { prompt('Copy event JSON:', eventDetailJson); }
+});
+$('#eventDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'eventDetailModal') closeEventDetail(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeEventDetail(); });
 
 let targetDetailJson = '';
 let targetDetailId = '';
