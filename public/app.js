@@ -74,11 +74,11 @@ function renderChart(timeline) {
   if (!timeline.length) { $('#chart').innerHTML = '<div class="muted">No open/click/submit events yet. Use "Send Simulation", open the mock landing page, or "Simulate Click".</div>'; return; }
   const max = Math.max(1, ...timeline.map(d => Math.max(d.opened || 0, d.clicked || 0, d.submitted || 0)));
   $('#chart').innerHTML = timeline.map(d => `
-    <div class="bar-group">
+    <div class="bar-group" title="${esc(d.day)} opened=${d.opened||0} clicked=${d.clicked||0} submitted=${d.submitted||0}">
       <div class="bars">
-        <div class="bar" style="height:${((d.opened||0)/max)*100}%" title="Opened: ${d.opened||0}"></div>
-        <div class="bar click" style="height:${((d.clicked||0)/max)*100}%" title="Clicked: ${d.clicked||0}"></div>
-        <div class="bar sub" style="height:${((d.submitted||0)/max)*100}%" title="Submitted: ${d.submitted||0}"></div>
+        <div class="bar" style="height:${((d.opened||0)/max)*100}%"></div>
+        <div class="bar click" style="height:${((d.clicked||0)/max)*100}%"></div>
+        <div class="bar sub" style="height:${((d.submitted||0)/max)*100}%"></div>
       </div>
       <div class="bar-label">${esc(d.day.slice(5))}</div>
     </div>`).join('');

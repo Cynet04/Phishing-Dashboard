@@ -185,7 +185,11 @@
 - [x] Testing: add API tests for campaign events JSON stable empty shape on unknown campaign and stricter `POST /api/campaigns/:id/targets` payload validation (400) — 39/39 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 38 — Expansion (active, in progress)
-- [~] Backend/UI: add `GET /api/stats` optional `campaignId`/date support consistency and expose global timeline chart/table polish in dashboard (safe DOM rendering)
+## Phase 38 — Expansion (complete)
+- [x] Backend/UI: `GET /api/stats` accepts `campaignId` for scoped global stats (test added); dashboard timeline now has legend and safer escaped day rendering — 40/40 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 39 — Expansion (active, in progress)
+- [~] Frontend UI/data table polish: add recent events “type” filter dropdown and wire to `/api/events?type=`; keep pagination/reset behavior safe
 - [ ] Run verification, docs/log updates, commit/push per item
 

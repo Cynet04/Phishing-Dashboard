@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:15Z — Phase 37: API edge-case tests + target import validation
-- Hardened `addTargets` to reject invalid payload shapes (e.g. array body/empty object misuse) with 400 `targets required`; accepts wrapped `{targets:...}`. Added regression tests for unknown-campaign campaign-events stable shape and invalid target-import payload.
-- `node --check` (db/tests); `node --test --test-concurrency=1` — 39/39 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:16Z — Phase 38: scoped stats + timeline UI polish
+- `/api/stats` accepts `campaignId`; added regression test. Dashboard timeline has legend and escaped day rendering.
+- `node --check` (server/db/ui/tests); `node --test --test-concurrency=1` — 40/40 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

@@ -511,6 +511,17 @@ test('campaign target import rejects invalid payload shape', async () => {
   });
 });
 
+test('global stats accepts campaignId filter', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Scoped', template: 'generic', targets: 's@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const stats = await req(base, `/api/stats?campaignId=${created.data.id}`);
+    assert.equal(stats.status, 200);
+    assert.equal(stats.data.totals.campaigns, 1);
+    assert.equal(stats.data.totals.emailsSent, 1);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
