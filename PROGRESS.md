@@ -32,7 +32,9 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:17Z — Phase 6 verification loop started
-- Environment confirmed: Node v26.13.0 available; git synced with `origin/main`; baseline `node --test` 5/5 passing.
-- Detected unstaged `src/db.js` refactor: centralized `normalizeEmails`, stricter invalid-email handling, seq merge on load, and backward-compatible `DB_FILE` export getter. Tests still pass.
-- Plan: commit/push this hardening, then add security/metrics/test polish and final E2E verification.
+## 2026-11-07 10:18Z — Final verification & polish
+- Added security/robustness: baseline security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`), safer static path resolution, consistent JSON 404 for `/api/*`.
+- Added open-rate analytics: `opened`/`openRate` totals and opened events in timeline; dashboard now shows Open Rate metric and open/click/submit chart bars.
+- Updated tests to 5 cases covering health headers/404, full flow metrics, validation+opened flow, landing-page open tracking, and unknown target errors. `node --test --test-concurrency=1` — 5/5 passing.
+- Final E2E smoke: running server returned security header, recorded opened event from `/login-simulation`, and `/api/stats` reported `openRate:100`.
+- README updated for current features/API/Windows test note. All phase/hardening/verification tasks complete and pushed.

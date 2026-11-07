@@ -22,24 +22,23 @@ npm run dev
 
 ## Test
 ```bash
-npm test
+node --test --test-concurrency=1
+# or: npm test
 ```
 
-## Features
-- **Overview metrics:** total campaigns, emails sent, click rate, data submitted rate.
-- **Activity chart:** recent click/submit event bars.
-- **Campaign management:** create campaign with name, target email list, template.
-- **Simulation engine:** send simulation marks targets as sent; `/login-simulation` mock hook records submit and redirects to `/education`.
-- **Dashboard actions:** simulate click events for testing.
+> Note (Windows PowerShell): `npm.ps1` may be blocked by execution policy in some environments. Use `node --test` or `npm.cmd test`.
 
 ## API
 - `GET /api/health`
 - `GET /api/templates`
+- `GET /api/stats`
 - `GET /api/campaigns`, `POST /api/campaigns`
 - `GET /api/campaigns/:id`, `GET /api/campaigns/:id/stats`
 - `POST /api/campaigns/:id/send`
 - `GET /api/targets/recent`, `POST /api/targets/:id/click`
 - `POST /api/events` (`{ targetId, type: opened|clicked|submitted }`)
+
+`/api/*` responses use JSON error objects; the server adds basic security headers and safe static-file resolution.
 
 ## Swapping the database
 `src/db.js` exposes plain functions (`createCampaign`, `listCampaigns`, `recordEvent`, `stats`, etc.). Replace JSON reads/writes with SQLite/Postgres calls while keeping the same function contracts used by `src/server.js`.

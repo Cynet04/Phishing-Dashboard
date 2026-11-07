@@ -38,13 +38,13 @@
 - 2026-11-07 08:27Z: Initial blockers (no Node/npm, no push auth) resolved by environment fix.
 - 2026-11-07 09:14Z: Verified Node v26.13.0 at `C:\Program Files\nodejs`. Smoke tests pass (2/2). End-to-end server sanity check passed (health, create campaign, send simulation, stats). Local commits pushed/synced to `origin/main`.
 
-## Phase 6 — Final Verification & Hardening (active)
+## Phase 6 — Final Verification & Hardening (complete)
 - [x] Re-read task/progress state after environment restore; baseline tests 5/5
 - [x] Review unstaged data-layer refactor; verify compatibility and run tests
 - [x] Commit/push data-layer normalization/compat hardening
 - [x] Add security/robustness polish (headers, safe static routing, API 404 consistency)
 - [x] Expand metrics: include opened count/rate and opened activity where useful
 - [x] Extend tests for new behavior and run full verification (5/5)
-- [x] Commit/push analytics and hardening changes
-- [ ] Final end-to-end smoke (server + UI/API paths) and clean status check
+- [x] Update README/PROGRESS/TASKS; commit/push each completed item
+- [x] Final end-to-end smoke (server + UI/API paths) and clean status check
 
