@@ -25,10 +25,14 @@ function renderApiStatus() {
 function beginApi() { apiPending += 1; renderApiStatus(); }
 function endApi() { apiPending = Math.max(0, apiPending - 1); renderApiStatus(); }
 
+let lastRequestId = '';
+
 async function api(path, opts = {}) {
   beginApi();
   try {
     const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+    const rid = String(res.headers.get('x-request-id') || '').trim();
+    if (rid) lastRequestId = rid;
     if (res.status === 401 && !path.startsWith('/api/auth/')) {
       location.href = '/login';
       throw new Error('Authentication required');
@@ -332,6 +336,7 @@ async function loadSystemStatus() {
     $('#sysCampaigns').textContent = String(Array.isArray(campaigns) ? campaigns.length : 0);
     $('#sysEvents').textContent = String(events?.total ?? 0);
     $('#sysDataFile').textContent = health?.dataFile ? String(health.dataFile) : '—';
+    $('#sysRequestId').textContent = lastRequestId || '—';
   } catch (e) {
     $('#sysApi').textContent = `Error: ${e.message}`;
   }
