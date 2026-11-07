@@ -229,7 +229,11 @@
 - [x] Backend/refactor: added `GET /api/targets/:id/events` (target-scoped, paginated/filterable, 404-safe) and DB `listEvents` `targetId` support — 47/47 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 49 — Expansion (active, in progress)
-- [~] Frontend UI: show target event history in target detail modal (uses `/api/targets/:id/events`) with safe rendering
+## Phase 49 — Expansion (complete)
+- [x] Frontend UI: target detail modal now shows target fields + recent target-scoped event history (uses `/api/targets/:id/events`) with escaped rendering — 47/47 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 50 — Expansion (active, in progress)
+- [~] Backend/testing: add `GET /api/campaigns/:id/targets` method validation (405 for unsupported) and test; add 405 coverage for `/api/campaigns/:id/targets` POST missing body safety already handled
 - [ ] Run verification, docs/log updates, commit/push per item
 

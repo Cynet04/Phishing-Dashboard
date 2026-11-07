@@ -162,9 +162,14 @@ async function loadTargets(reset = false) {
   }));
   $('#targetsBody').querySelectorAll('.view-target').forEach(btn => btn.addEventListener('click', async () => {
     const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
-    modal.classList.remove('hidden'); body.textContent = 'Loading…';
-    try { const t = await api(`/api/targets/${btn.dataset.id}`); body.textContent = JSON.stringify(t, null, 2); body.classList.remove('muted'); }
-    catch (e) { body.textContent = `Error: ${e.message}`; toast(e.message, 'error'); }
+    modal.classList.remove('hidden'); body.textContent = 'Loading…'; body.className = 'muted';
+    try {
+      const [t, ev] = await Promise.all([api(`/api/targets/${btn.dataset.id}`), api(`/api/targets/${btn.dataset.id}/events?limit=20`)]);
+      const rows = (ev.items || []).map(e => `<tr><td>${esc(e.type)}</td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') || '<tr><td colspan="2" class="muted">No events.</td></tr>';
+      body.className = '';
+      body.innerHTML = `<div class="detail-kv"><div><span class="muted">Email</span><div>${esc(t.email)}</div></div><div><span class="muted">Campaign</span><div>${esc(t.campaignName||t.campaignId)}</div></div><div><span class="muted">Status</span><div><span class="pill ${esc(t.status)}">${esc(t.status)}</span></div></div><div><span class="muted">Updated</span><div>${esc((t.updatedAt||t.createdAt||'').replace('T',' ').slice(0,19))}</div></div></div><h4 style="margin:14px 0 8px">Recent Events</h4><table class="mini-table"><thead><tr><th>Type</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+    catch (e) { body.textContent = `Error: ${e.message}`; body.className = 'muted'; toast(e.message, 'error'); }
   }));
   const shown = Math.min(state.targetsOffset + targets.length, state.targetsTotal);
   $('#targetsMeta').textContent = state.targetsTotal ? `Showing ${shown} of ${state.targetsTotal}` : '';
