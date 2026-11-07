@@ -236,13 +236,15 @@ async function handler(req, res) {
       if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
       const seg = decodeURIComponent(pathname.split('/')[3] || '');
       const targetId = seg.endsWith('.csv') ? seg.slice(0, -4) : seg;
-      db.getTarget(targetId); // 404-safe
+      const campaignId = searchParams.get('campaignId') || undefined;
+      db.getTarget(targetId, { campaignId }); // 404-safe; optional ownership validation
       return send(res, 200, db.exportEventsCsv({ targetId, type: searchParams.get('type') || undefined, from: searchParams.get('from') || undefined, to: searchParams.get('to') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="target-${targetId}-events.csv"` });
     }
     if (/^\/api\/targets\/[^/]+\/events$/.test(pathname)) {
       if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
       const targetId = decodeURIComponent(pathname.split('/')[3] || '');
-      db.getTarget(targetId); // 404-safe
+      const campaignId = searchParams.get('campaignId') || undefined;
+      db.getTarget(targetId, { campaignId }); // 404-safe; optional ownership validation
       return send(res, 200, db.listEvents({ targetId, type: searchParams.get('type') || undefined, from: searchParams.get('from') || undefined, to: searchParams.get('to') || undefined, limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
     }
     if (/^\/api\/targets\/[^/]+$/.test(pathname) && !pathname.endsWith('.csv')) {

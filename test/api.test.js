@@ -1231,3 +1231,31 @@ test('campaign events JSON endpoint supports from/to date filters and validation
     assert.equal(missing.status, 200); assert.equal(missing.data.total, 0); // preserves stable 404-safe unknown campaign events shape
   });
 });
+
+
+test('target events endpoints support optional campaignId ownership validation', async () => {
+  await withServer(async (base) => {
+    const c1 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TEO1', template: 'generic', targets: 'teo1@example.com' }) });
+    const c2 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TEO2', template: 'generic', targets: 'teo2@example.com' }) });
+    const d1 = await req(base, `/api/campaigns/${c1.data.id}`);
+    const d2 = await req(base, `/api/campaigns/${c2.data.id}`);
+    const t1 = d1.data.targets[0].id; const t2 = d2.data.targets[0].id;
+    await req(base, `/api/campaigns/${c1.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${t1}/click`, { method: 'POST', body: '{}' });
+    const okJson = await req(base, `/api/targets/${t1}/events?campaignId=${c1.data.id}&type=clicked`);
+    assert.equal(okJson.status, 200); assert.equal(okJson.data.total >= 1, true);
+    const okCsv = await req(base, `/api/targets/${t1}/events.csv?campaignId=${c1.data.id}&type=clicked`);
+    assert.equal(okCsv.status, 200); assert.match(okCsv.raw, /clicked/);
+    const okAlias = await req(base, `/api/targets/${t1}.csv?campaignId=${c1.data.id}&type=clicked`);
+    assert.equal(okAlias.status, 200); assert.match(okAlias.raw, /clicked/);
+    const wrongJson = await req(base, `/api/targets/${t2}/events?campaignId=${c1.data.id}`);
+    assert.equal(wrongJson.status, 404);
+    const wrongCsv = await req(base, `/api/targets/${t2}/events.csv?campaignId=${c1.data.id}`);
+    assert.equal(wrongCsv.status, 404);
+    const badCampaign = await req(base, `/api/targets/${t1}/events?campaignId=nope`);
+    assert.equal(badCampaign.status, 404);
+    // backward-compatible default
+    const legacy = await req(base, `/api/targets/${t1}/events?type=clicked`);
+    assert.equal(legacy.status, 200); assert.equal(legacy.data.total >= 1, true);
+  });
+});
