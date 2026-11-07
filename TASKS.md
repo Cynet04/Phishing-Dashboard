@@ -241,7 +241,11 @@
 - [x] Backend/API: extended `GET /api/health` with `uptimeSeconds` and `node` (backward-compatible) and strengthened health test assertions — 48/48 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 52 — Expansion (active, in progress)
-- [~] Frontend UI: add dashboard auto-refresh toggle (interval) with safe cleanup and visible state; keep manual refresh
+## Phase 52 — Expansion (complete)
+- [x] Frontend UI: added Auto-refresh toggle (30s interval, persisted in `localStorage`, safe interval cleanup; manual Refresh preserved) — 48/48 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 53 — Expansion (active, in progress)
+- [~] Backend/DB validation: add `GET /api/campaigns?limit=&offset=` pagination support with stable envelope/count and tests (backward-compatible shape consideration)
 - [ ] Run verification, docs/log updates, commit/push per item
 

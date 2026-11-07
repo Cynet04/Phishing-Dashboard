@@ -215,6 +215,15 @@ async function refresh() {
 
 $('#closeTargetDetail')?.addEventListener('click', () => $('#targetDetailModal')?.classList.add('hidden'));
 $('#targetDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'targetDetailModal') e.currentTarget.classList.add('hidden'); });
+let autoTimer = null;
+function setAutoRefresh(on) {
+  if (autoTimer) clearInterval(autoTimer);
+  autoTimer = on ? setInterval(() => refresh().catch(() => {}), 30000) : null;
+  const btn = $('#autoRefreshBtn'); if (btn) btn.textContent = on ? 'Auto: on' : 'Auto: off';
+  localStorage.setItem('pd-auto-refresh', on ? '1' : '0');
+}
+$('#autoRefreshBtn')?.addEventListener('click', () => setAutoRefresh(!autoTimer));
+setAutoRefresh(localStorage.getItem('pd-auto-refresh') === '1');
 $('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
 

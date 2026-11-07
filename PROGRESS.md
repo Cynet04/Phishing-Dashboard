@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:29Z — Phase 51: health endpoint metadata
-- `/api/health` now includes `uptimeSeconds` and `node` (backward-compatible). Health test asserts new fields.
-- `node --check` (server/tests); `node --test --test-concurrency=1` — 48/48 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:30Z — Phase 52: dashboard auto-refresh
+- Added Auto-refresh toggle (30s), persisted in `localStorage` (`pd-auto-refresh`) with interval cleanup; manual Refresh still works.
+- `node --check` (ui); `node --test --test-concurrency=1` — 48/48 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: header **Auto: off/on** + **Refresh**.
