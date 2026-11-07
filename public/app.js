@@ -245,8 +245,9 @@ async function loadCampaignEvents(campaignId) {
     catch (e) { toast(e.message, 'error'); }
   }));
   const filters = [`campaign=${campaignId}`, type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
-  $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped view (use filters/Clear/Refresh for global list)';
-  $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination; return to global list to paginate
+  $('#eventsMeta').textContent = `${Math.min(events.length, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '') + ' · scoped campaign view';
+  $('#loadMoreEventsBtn').disabled = true; // scoped quick view avoids mixed pagination
+  $('#returnGlobalEventsBtn')?.classList.remove('hidden');
 }
 
 async function loadEvents(reset = false) {
@@ -275,6 +276,7 @@ async function loadEvents(reset = false) {
   const filters = [type ? `type=${type}` : '', targetId ? `target=${targetId}` : ''].filter(Boolean).join(' · ');
   $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (filters ? ` · ${filters}` : '');
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
+  $('#returnGlobalEventsBtn')?.classList.add('hidden');
 }
 
 async function loadSystemStatus() {
@@ -353,6 +355,12 @@ $('#clearEventsFilterBtn')?.addEventListener('click', () => {
   loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error'));
 });
 $('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
+$('#returnGlobalEventsBtn')?.addEventListener('click', () => {
+  if ($('#eventsTypeFilter')) $('#eventsTypeFilter').value = '';
+  if ($('#eventsTargetFilter')) $('#eventsTargetFilter').value = '';
+  state.eventsType = ''; state.eventsTargetId = '';
+  loadEvents(true).catch((e) => toast(`Events load failed: ${e.message}`, 'error'));
+});
 
 $('#loadMoreTargetsBtn').addEventListener('click', async () => {
   state.targetsOffset += state.targetsLimit;

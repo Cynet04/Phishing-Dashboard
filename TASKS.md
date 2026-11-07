@@ -365,7 +365,11 @@
 - [x] Frontend UI: Recent Targets rows add **Events** quick action that prefills Recent Events `targetId` filter (reusing Phase 80/78 global-scope recovery helper), reloads global events, and scrolls to panel — 61/61 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 83 — Expansion (active, in progress)
-- [~] Frontend UI: add “Return to global events” control/indicator when in campaign-scoped quick view and keep Load More/pagination behavior consistent
+## Phase 83 — Expansion (complete)
+- [x] Frontend UI: added **Global list** control/indicator for campaign-scoped Recent Events quick view; hides when global, restores global `/api/events` pagination/filter state cleanly — 61/61 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 84 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/events.csv?targetId=` alias or align docs/UI to existing `/api/events/export.csv` (improve consistency, avoid 404 confusion) with regression test and README update
 - [ ] Run verification, docs/log updates, commit/push per item
 
