@@ -12,11 +12,9 @@ function tmpDb() {
 }
 
 async function withServer(run) {
-  tmpDb();
-  // db reads from module path; reset via direct file creation
-  const dbPath = require('../src/db').DB_FILE;
-  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
-  fs.writeFileSync(dbPath, JSON.stringify({ campaigns: [], targets: [], events: [], seq: { campaign: 0, target: 0, event: 0 } }, null, 2));
+  const file = tmpDb();
+  const db = require('../src/db');
+  db.resetForTests(file);
   const server = createServer();
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   const { port } = server.address();

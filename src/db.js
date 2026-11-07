@@ -3,21 +3,24 @@ const path = require('path');
 const crypto = require('crypto');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
-const DB_FILE = path.join(DATA_DIR, 'db.json');
+function dbFile() { return process.env.PHISH_DASH_DB || path.join(DATA_DIR, 'db.json'); }
 
 function emptyDb() {
   return { campaigns: [], targets: [], events: [], seq: { campaign: 0, target: 0, event: 0 } };
 }
 
 function ensure() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(DB_FILE)) fs.writeFileSync(DB_FILE, JSON.stringify(emptyDb(), null, 2));
+  const file = dbFile();
+  const dir = path.dirname(file);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify(emptyDb(), null, 2));
 }
 
 function load() {
   ensure();
+  const file = dbFile();
   try {
-    const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
     return { ...emptyDb(), ...data };
   } catch {
     const data = emptyDb();
@@ -28,9 +31,10 @@ function load() {
 
 function save(data) {
   ensure();
-  const tmp = DB_FILE + '.' + crypto.randomBytes(4).toString('hex') + '.tmp';
+  const file = dbFile();
+  const tmp = file + '.' + crypto.randomBytes(4).toString('hex') + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
-  fs.renameSync(tmp, DB_FILE);
+  fs.renameSync(tmp, file);
 }
 
 function nextId(db, key) {
@@ -144,9 +148,9 @@ function recentTargets(limit = 50) {
 }
 
 function resetForTests(file) {
-  if (file) module.exports.DB_FILE = file;
+  if (file) process.env.PHISH_DASH_DB = file;
   ensure();
   save(emptyDb());
 }
 
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, sendSimulation, recordEvent, stats, recentTargets, resetForTests, DB_FILE };
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, sendSimulation, recordEvent, stats, recentTargets, resetForTests, dbFile };
