@@ -189,7 +189,11 @@
 - [x] Backend/UI: `GET /api/stats` accepts `campaignId` for scoped global stats (test added); dashboard timeline now has legend and safer escaped day rendering — 40/40 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 39 — Expansion (active, in progress)
-- [~] Frontend UI/data table polish: add recent events “type” filter dropdown and wire to `/api/events?type=`; keep pagination/reset behavior safe
+## Phase 39 — Expansion (complete)
+- [x] Frontend UI/data table polish: added Recent Events type filter (`opened/clicked/submitted`) wired to `/api/events?type=` with pagination reset/safe errors; README stats docs include `campaignId` — 40/40 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 40 — Expansion (active, in progress)
+- [~] Testing/DB: add tests for `GET /api/events` invalid type handling behavior (current: accepts filter value; add coverage) and add campaign deletion cascade safety check for events list/export shape
 - [ ] Run verification, docs/log updates, commit/push per item
 

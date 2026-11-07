@@ -83,7 +83,15 @@
     <section class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <h2 style="margin:0">Recent Events</h2>
-        <button id="loadMoreEventsBtn" class="btn small secondary">Load more</button>
+        <div class="row">
+          <select id="eventsTypeFilter" aria-label="Filter events by type">
+            <option value="">All types</option>
+            <option value="opened">Opened</option>
+            <option value="clicked">Clicked</option>
+            <option value="submitted">Submitted</option>
+          </select>
+          <button id="loadMoreEventsBtn" class="btn small secondary">Load more</button>
+        </div>
       </div>
       <div class="table-wrap" style="margin-top:12px">
         <table>

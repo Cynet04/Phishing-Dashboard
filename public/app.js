@@ -1,5 +1,5 @@
 const $ = (s) => document.querySelector(s);
-const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0 };
+const state = { selected: null, targetsLimit: 25, targetsOffset: 0, targetsTotal: 0, campaignStatus: '', eventsLimit: 25, eventsOffset: 0, eventsTotal: 0, eventsType: '' };
 const THEME_KEY = 'pd-theme';
 function applyTheme(theme) {
   const t = theme === 'light' ? 'light' : 'dark';
@@ -159,13 +159,16 @@ async function loadTargets(reset = false) {
 
 async function loadEvents(reset = false) {
   if (reset) state.eventsOffset = 0;
-  const page = await api(`/api/events?limit=${state.eventsLimit}&offset=${state.eventsOffset}`);
+  const type = String($('#eventsTypeFilter')?.value || state.eventsType || '').trim();
+  state.eventsType = type;
+  const q = `/api/events?limit=${state.eventsLimit}&offset=${state.eventsOffset}` + (type ? `&type=${encodeURIComponent(type)}` : '');
+  const page = await api(q);
   state.eventsTotal = page.total || 0;
   const events = page.items || [];
   $('#eventsBody').innerHTML = events.length ? events.map(e => `
-    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No events yet.</td></tr>';
-  const shown = Math.min(state.eventsOffset + events.length, state.eventsTotal);
-  $('#eventsMeta').textContent = state.eventsTotal ? `Showing ${shown} of ${state.eventsTotal}` : '';
+    <tr><td>${esc(e.campaignName || e.campaignId || '—')}</td><td>${esc(e.targetId || '—')}</td><td><span class="pill ${esc(e.type || 'unknown')}">${esc(e.type || 'unknown')}</span></td><td class="muted">${esc((e.at||'').replace('T',' ').slice(0,19))}</td></tr>`).join('') : '<tr><td colspan="4" class="muted">No events.</td></tr>';
+  const shown = state.eventsOffset + events.length;
+  $('#eventsMeta').textContent = `${Math.min(shown, state.eventsTotal)} / ${state.eventsTotal} events` + (type ? ` · type=${type}` : '');
   $('#loadMoreEventsBtn').disabled = shown >= state.eventsTotal;
 }
 
@@ -177,6 +180,7 @@ async function refresh() {
   finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
 }
 
+$('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
 
 $('#loadMoreTargetsBtn').addEventListener('click', async () => {
