@@ -316,10 +316,12 @@ function recentTargets(opts = {}) {
   const offset = Math.max(0, Number(opts.offset ?? 0) || 0);
   const db = load();
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
-  const all = db.targets
+  let all = db.targets
     .slice()
     .sort((a, b) => String(b.updatedAt || b.createdAt).localeCompare(String(a.updatedAt || a.createdAt)))
     .map(t => ({ ...t, campaignName: cmap[t.campaignId] || t.campaignId }));
+  if (opts.campaignId) all = all.filter(t => t.campaignId === String(opts.campaignId));
+  if (opts.status) all = all.filter(t => t.status === String(opts.status).toLowerCase());
   return { items: all.slice(offset, offset + limit), total: all.length, limit, offset };
 }
 

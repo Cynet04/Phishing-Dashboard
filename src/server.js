@@ -193,7 +193,7 @@ async function handler(req, res) {
     if (req.method === 'GET' && pathname === '/api/targets/export.csv') {
       return send(res, 200, db.exportTargetsCsv({ campaignId: searchParams.get('campaignId') || undefined, status: searchParams.get('status') || undefined }), { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="targets.csv"' });
     }
-    if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets({ limit: searchParams.get('limit'), offset: searchParams.get('offset') }));
+    if (req.method === 'GET' && pathname === '/api/targets/recent') return send(res, 200, db.recentTargets({ limit: searchParams.get('limit'), offset: searchParams.get('offset'), campaignId: searchParams.get('campaignId') || undefined, status: searchParams.get('status') || undefined }));
     if (req.method === 'GET' && /^\/api\/targets\/[^/]+\/events$/.test(pathname)) {
       const targetId = decodeURIComponent(pathname.split('/')[3] || '');
       db.getTarget(targetId); // 404-safe

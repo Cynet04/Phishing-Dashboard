@@ -273,7 +273,11 @@
 - [x] Frontend UI: added global events export type filter control updating `/api/events/export.csv?type=` link (matches recent events filter semantics) — 52/52 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 60 — Expansion (active, in progress)
-- [~] Backend/DB: add `GET /api/targets/recent?campaignId=&status=` filter support and tests (backward-compatible)
+## Phase 60 — Expansion (complete)
+- [x] Backend/DB/API: `GET /api/targets/recent` supports `campaignId` and `status` filters (backward-compatible); regression test added — 53/53 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 61 — Expansion (active, in progress)
+- [~] Frontend UI: add Recent Targets table filters (campaign/status) wired to `/api/targets/recent` (reset pagination on filter change) and keep export controls in sync
 - [ ] Run verification, docs/log updates, commit/push per item
 

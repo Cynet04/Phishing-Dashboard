@@ -688,6 +688,19 @@ test('global events CSV supports type filter', async () => {
   });
 });
 
+test('recent targets endpoint supports campaignId and status filters', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'RTFilter', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const r = await req(base, `/api/targets/recent?campaignId=${created.data.id}&status=clicked`);
+    assert.equal(r.status, 200);
+    assert.equal(r.data.total, 1);
+    assert.equal(r.data.items[0].status, 'clicked');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
