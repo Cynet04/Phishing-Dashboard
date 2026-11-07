@@ -360,3 +360,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 00:30Z — Phase 147: optional campaignId ownership validation for target events endpoints
 - Added optional `?campaignId=` ownership validation (404-safe, backward-compatible) to `GET /api/targets/:id/events` and `GET /api/targets/:id/events.csv`/alias `/api/targets/:id.csv`. README/test updated. 83/83 passing. Committed/pushed.
+
+## 2026-11-08 00:45Z — Phase 148: target detail modal resolved campaign ownership hardening
+- Target detail modal now resolves target campaign context in global scope and applies optional `campaignId` ownership validation to subsequent target events JSON/CSV/copy-links. Explicit campaign-scoped opener behavior preserved. UI syntax checked, 83/83 passing. Committed/pushed.
