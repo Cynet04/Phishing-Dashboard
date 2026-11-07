@@ -261,3 +261,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 17:22Z — Phase 112: global targets.csv export link
 - Recent Targets global export toolbar now uses `/api/targets.csv` alias in `public/app.js`; legacy endpoint remains. `node --check`; 72/72 passing. Committed/pushed.
+
+## 2026-11-07 17:28Z — Phase 113: X-Request-Id response header
+- Added `X-Request-Id` support (preserve valid incoming `x-request-id`, else generate) in `src/server.js` (`send()`, static responses, handler attaches `res.req`). Health regression test asserts generation+echo. README updated. 72/72 passing. Committed/pushed.
