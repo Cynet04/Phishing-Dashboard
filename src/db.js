@@ -205,9 +205,11 @@ function addTargets(campaignId, rawInput) {
   return { campaignId: campaign.id, added, total: db.targets.filter(t => t.campaignId === campaign.id).length };
 }
 
-function getTarget(id) {
+function getTarget(id, opts = {}) {
   const db = load();
   const targetId = String(id);
+  const campaignId = String(opts.campaignId || '').trim();
+  if (campaignId) return getCampaignTarget(campaignId, targetId); // ownership-validated, 404-safe
   const target = db.targets.find(t => t.id === targetId);
   if (!target) throw Object.assign(new Error('target not found'), { status: 404 });
   const campaign = db.campaigns.find(c => c.id === target.campaignId);

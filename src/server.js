@@ -247,7 +247,7 @@ async function handler(req, res) {
     }
     if (/^\/api\/targets\/[^/]+$/.test(pathname) && !pathname.endsWith('.csv')) {
       if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
-      return send(res, 200, db.getTarget(decodeURIComponent(pathname.split('/')[3] || '')));
+      return send(res, 200, db.getTarget(decodeURIComponent(pathname.split('/')[3] || ''), { campaignId: searchParams.get('campaignId') || undefined }));
     }
     if (req.method === 'GET' && pathname === '/api/stats') return send(res, 200, db.stats(searchParams.get('campaignId') || null, { from: searchParams.get('from'), to: searchParams.get('to') }));
     const cteCsv = pathname.match(/^\/api\/campaigns\/([^/]+)\/targets\/([^/]+)\/events\.csv$/);

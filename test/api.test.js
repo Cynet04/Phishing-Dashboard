@@ -1189,3 +1189,24 @@ test('campaign-scoped target events endpoint supports from/to date filters and v
     assert.equal(missing.status, 404);
   });
 });
+
+
+test('GET /api/targets/:id supports optional campaignId ownership validation', async () => {
+  await withServer(async (base) => {
+    const c1 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TOWN1', template: 'generic', targets: 'town1@example.com' }) });
+    const c2 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TOWN2', template: 'generic', targets: 'town2@example.com' }) });
+    const d1 = await req(base, `/api/campaigns/${c1.data.id}`);
+    const d2 = await req(base, `/api/campaigns/${c2.data.id}`);
+    const t1 = d1.data.targets[0].id;
+    const t2 = d2.data.targets[0].id;
+    const ok = await req(base, `/api/targets/${t1}?campaignId=${c1.data.id}`);
+    assert.equal(ok.status, 200); assert.equal(ok.data.id, t1); assert.equal(ok.data.campaignId, c1.data.id);
+    const wrong = await req(base, `/api/targets/${t2}?campaignId=${c1.data.id}`);
+    assert.equal(wrong.status, 404);
+    const badCampaign = await req(base, `/api/targets/${t1}?campaignId=nope`);
+    assert.equal(badCampaign.status, 404);
+    // backward-compatible default (no campaignId)
+    const legacy = await req(base, `/api/targets/${t1}`);
+    assert.equal(legacy.status, 200); assert.equal(legacy.data.id, t1);
+  });
+});
