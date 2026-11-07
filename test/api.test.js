@@ -215,6 +215,17 @@ test('optional admin auth protects API when enabled', async () => {
   }
 });
 
+test('input and date filter validation returns 400', async () => {
+  await withServer(async (base) => {
+    const longName = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'x'.repeat(121), template: 'generic', targets: 'a@example.com' }) });
+    assert.equal(longName.status, 400);
+    const badDate = await req(base, '/api/stats?from=2026-99-99');
+    assert.equal(badDate.status, 400);
+    const badRange = await req(base, '/api/stats?from=2026-12-31&to=2026-01-01');
+    assert.equal(badRange.status, 400);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

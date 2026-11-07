@@ -55,9 +55,13 @@
 - [x] Add dashboard login/logout UI affordance and graceful auth-disabled behavior
 - [x] Update docs/logs and commit/push per item
 
-## Phase 11 — UI/UX Polish (expansion)
-- [ ] Toast notifications, dark/light toggle persistence, responsive refinements
+## Phase 11 — Edge Cases & Validation (in progress)
+- [x] Enforce campaign/template input limits and clearer validation errors (name/body/target count) with tests — 13/13 passing
+- [x] Validate stats date filter format (`YYYY-MM-DD`) and return 400 on invalid ranges; add tests
+- [ ] Add dashboard toast notifications for create/delete/send/simulate actions (non-blocking UX)
+- [ ] Run verification, docs/log updates, commit/push per item
 
-## Phase 12 — Edge Cases & Performance (expansion)
-- [ ] Additional validation/pagination/query optimizations as needed
+## Phase 12 — Performance & Robustness (expansion)
+- [ ] Optimize DB read patterns for list/stats where safe (single pass helpers) with regression tests
+- [ ] Add defensive JSON body limits and CSV filename/content safety checks with tests
 

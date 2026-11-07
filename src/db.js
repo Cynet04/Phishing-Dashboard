@@ -51,8 +51,11 @@ function normalizeTemplate(input = {}, existingId) {
   const subject = String(input.subject || '').trim();
   const body = String(input.body || input.preview || '').trim();
   if (!name) throw Object.assign(new Error('template name required'), { status: 400 });
+  if (name.length > 120) throw Object.assign(new Error('template name too long (max 120)'), { status: 400 });
   if (!subject) throw Object.assign(new Error('template subject required'), { status: 400 });
+  if (subject.length > 200) throw Object.assign(new Error('template subject too long (max 200)'), { status: 400 });
   if (!body) throw Object.assign(new Error('template body required'), { status: 400 });
+  if (body.length > 5000) throw Object.assign(new Error('template body too long (max 5000)'), { status: 400 });
   const id = existingId || String(input.id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `tpl-${Date.now()}`);
   return { id, name, subject, body, preview: body.slice(0, 160), custom: true, updatedAt: now() };
 }
@@ -91,10 +94,12 @@ function normalizeEmails(rawInput) {
   for (const item of items) {
     const email = String(item || '').trim().toLowerCase();
     if (!email) continue;
+    if (email.length > 254) throw Object.assign(new Error('target email too long'), { status: 400 });
     if (!EMAIL_RE.test(email)) throw Object.assign(new Error('invalid target email'), { status: 400 });
     if (seen.has(email)) continue;
     seen.add(email);
     result.push(email);
+    if (result.length > 500) throw Object.assign(new Error('too many target emails (max 500)'), { status: 400 });
   }
 
   if (!result.length) throw Object.assign(new Error('target emails required'), { status: 400 });
@@ -104,7 +109,9 @@ function normalizeEmails(rawInput) {
 function createCampaign(input = {}) {
   const name = String(input.name || '').trim();
   if (!name) throw Object.assign(new Error('name required'), { status: 400 });
+  if (name.length > 120) throw Object.assign(new Error('campaign name too long (max 120)'), { status: 400 });
   const template = String(input.template || 'generic').trim() || 'generic';
+  if (template.length > 80) throw Object.assign(new Error('template id too long'), { status: 400 });
   const emails = normalizeEmails(input.targets);
   const db = load();
   const campaign = { id: nextId(db, 'campaign'), name, template, status: 'draft', createdAt: now() };
@@ -173,13 +180,23 @@ function recordEvent(input = {}) {
   return event;
 }
 
+function parseDateFilter(value, name) {
+  if (value == null || value === '') return '';
+  const s = String(value).slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s) || Number.isNaN(Date.parse(`${s}T00:00:00Z`))) {
+    throw Object.assign(new Error(`invalid ${name} date (expected YYYY-MM-DD)`), { status: 400 });
+  }
+  return s;
+}
+
 function stats(id, opts = {}) {
   const db = load();
   const targets = id ? db.targets.filter(t => t.campaignId === String(id)) : db.targets;
   const campaigns = id ? db.campaigns.filter(c => c.id === String(id)) : db.campaigns;
   let events = id ? db.events.filter(e => e.campaignId === String(id)) : db.events;
-  const from = opts.from ? String(opts.from).slice(0, 10) : '';
-  const to = opts.to ? String(opts.to).slice(0, 10) : '';
+  const from = parseDateFilter(opts.from, 'from');
+  const to = parseDateFilter(opts.to, 'to');
+  if (from && to && from > to) throw Object.assign(new Error('invalid date range: from must be <= to'), { status: 400 });
   if (from) events = events.filter(e => String(e.at).slice(0, 10) >= from);
   if (to) events = events.filter(e => String(e.at).slice(0, 10) <= to);
   const totalTargets = targets.length;
