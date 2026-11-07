@@ -244,6 +244,10 @@ function setAutoRefresh(on) {
 }
 $('#autoRefreshBtn')?.addEventListener('click', () => setAutoRefresh(!autoTimer));
 setAutoRefresh(localStorage.getItem('pd-auto-refresh') === '1');
+$('#eventsExportType')?.addEventListener('change', () => {
+  const type = String($('#eventsExportType')?.value || '').trim();
+  const a = $('#eventsExportLink'); if (a) a.href = '/api/events/export.csv' + (type ? `?type=${encodeURIComponent(type)}` : '');
+});
 $('#eventsTypeFilter')?.addEventListener('change', () => loadEvents(true).catch((e) => toast(`Events filter failed: ${e.message}`, 'error')));
 $('#loadMoreEventsBtn').addEventListener('click', async () => { state.eventsOffset += state.eventsLimit; await loadEvents(false); });
 

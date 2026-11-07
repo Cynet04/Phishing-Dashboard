@@ -38,4 +38,8 @@
 
 ## 2026-11-07 11:36Z — Phase 58: filtered events CSV export
 - `/api/events/export.csv` accepts optional `type` filter (backward-compatible) in addition to `campaignId`. Added regression test; README updated.
-- `node --check` (server/tests); `node --test --test-concurrency=1` — 52/52 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 52/52 passing. Committed/pushed.
+
+## 2026-11-07 11:37Z — Phase 59: filtered events export UI
+- Dashboard Recent Targets section now includes events export type filter (`opened/clicked/submitted`) updating `GET /api/events/export.csv?type=` link.
+- `node --check` (ui); `node --test --test-concurrency=1` — 52/52 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5, restarted). View: Recent Targets controls → events type dropdown → **Export Events CSV**.

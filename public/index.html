@@ -84,7 +84,10 @@
           </select>
           <a id="targetsExportLink" class="btn small secondary" href="/api/targets/export.csv">Export Targets CSV</a>
           <button id="loadMoreTargetsBtn" class="btn small secondary">Load more</button>
-          <a class="btn small secondary" href="/api/events/export.csv">Export Events CSV</a>
+          <select id="eventsExportType" aria-label="Export events type filter">
+            <option value="">All event types</option><option value="opened">opened</option><option value="clicked">clicked</option><option value="submitted">submitted</option>
+          </select>
+          <a id="eventsExportLink" class="btn small secondary" href="/api/events/export.csv">Export Events CSV</a>
         </div>
       </div>
       <div class="table-wrap" style="margin-top:12px">

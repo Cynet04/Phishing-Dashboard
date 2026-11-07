@@ -269,7 +269,11 @@
 - [x] Backend/API: `GET /api/events/export.csv` now supports `type` filter (backward-compatible); regression test added — 52/52 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 59 — Expansion (active, in progress)
-- [~] Frontend UI: add global events export type filter control (matches recent events type filter) updating `/api/events/export.csv` link
+## Phase 59 — Expansion (complete)
+- [x] Frontend UI: added global events export type filter control updating `/api/events/export.csv?type=` link (matches recent events filter semantics) — 52/52 API tests passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 60 — Expansion (active, in progress)
+- [~] Backend/DB: add `GET /api/targets/recent?campaignId=&status=` filter support and tests (backward-compatible)
 - [ ] Run verification, docs/log updates, commit/push per item
 
