@@ -38,13 +38,13 @@
 - 2026-11-07 08:27Z: Initial blockers (no Node/npm, no push auth) resolved by environment fix.
 - 2026-11-07 09:14Z: Verified Node v26.13.0 at `C:\Program Files\nodejs`. Smoke tests pass (2/2). End-to-end server sanity check passed (health, create campaign, send simulation, stats). Local commits pushed/synced to `origin/main`.
 
-## Hardening (autonomous loop)
-- [x] Fix dashboard UI mojibake/encoding artifacts in `public/app.js`
-- [x] Validate and deduplicate campaign target emails; reject empty/invalid submissions
-- [x] Expand API smoke tests (validation, opened flow, unknown target handling)
-- [x] Re-run tests and push hardening commit
-- [x] Exclude runtime `data/` directory from git
-- [x] Record `opened` event when mock landing page is loaded; add regression test
-- [x] Verify all smoke tests pass (5/5) and push
-- [ ] Add additional polish only if defects are found during loop
+## Phase 6 — Final Verification & Hardening (active)
+- [x] Re-read task/progress state after environment restore; baseline tests 5/5
+- [x] Review unstaged data-layer refactor; verify compatibility and run tests
+- [x] Commit/push data-layer normalization/compat hardening
+- [ ] Add security/robustness polish (headers, safe static routing, API 404 consistency)
+- [ ] Expand metrics: include opened count/rate and opened activity where useful
+- [ ] Extend tests for new behavior and run full verification
+- [ ] Update README/PROGRESS/TASKS; commit/push each completed item
+- [ ] Final end-to-end smoke (server + UI/API paths) and clean status check
 

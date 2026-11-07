@@ -3,6 +3,8 @@ const path = require('path');
 const crypto = require('crypto');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function dbFile() { return process.env.PHISH_DASH_DB || path.join(DATA_DIR, 'db.json'); }
 
 function emptyDb() {
@@ -21,7 +23,7 @@ function load() {
   const file = dbFile();
   try {
     const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-    return { ...emptyDb(), ...data };
+    return { ...emptyDb(), ...data, seq: { ...emptyDb().seq, ...(data && data.seq ? data.seq : {}) } };
   } catch {
     const data = emptyDb();
     save(data);
@@ -44,29 +46,37 @@ function nextId(db, key) {
 
 function now() { return new Date().toISOString(); }
 
-function normalizeEmail(raw) {
-  const email = String(raw || '').trim().toLowerCase();
-  if (!email) return null;
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return null;
-  return email;
+function normalizeEmails(rawInput) {
+  const items = Array.isArray(rawInput) ? rawInput : String(rawInput ?? '').split(/[\n,;]+/);
+  const result = [];
+  const seen = new Set();
+
+  for (const item of items) {
+    const email = String(item || '').trim().toLowerCase();
+    if (!email) continue;
+    if (!EMAIL_RE.test(email)) throw Object.assign(new Error('invalid target email'), { status: 400 });
+    if (seen.has(email)) continue;
+    seen.add(email);
+    result.push(email);
+  }
+
+  if (!result.length) throw Object.assign(new Error('target emails required'), { status: 400 });
+  return result;
 }
 
-function createCampaign(input) {
+function createCampaign(input = {}) {
   const name = String(input.name || '').trim();
   if (!name) throw Object.assign(new Error('name required'), { status: 400 });
   const template = String(input.template || 'generic').trim() || 'generic';
-  const emails = Array.isArray(input.targets) ? input.targets : String(input.targets || '').split(/[\n,;]+/);
+  const emails = normalizeEmails(input.targets);
   const db = load();
   const campaign = { id: nextId(db, 'campaign'), name, template, status: 'draft', createdAt: now() };
+
   db.campaigns.unshift(campaign);
-  const seen = new Set();
-  for (const raw of emails) {
-    const email = normalizeEmail(raw);
-    if (!email || seen.has(email)) continue;
-    seen.add(email);
+  for (const email of emails) {
     db.targets.push({ id: nextId(db, 'target'), campaignId: campaign.id, email, status: 'pending', createdAt: now(), updatedAt: now() });
   }
-  if (!seen.size) throw Object.assign(new Error('at least one valid target email required'), { status: 400 });
+
   save(db);
   return { ...campaign, targetCount: db.targets.filter(t => t.campaignId === campaign.id).length };
 }
@@ -94,7 +104,9 @@ function sendSimulation(id) {
   let sent = 0;
   for (const t of db.targets) {
     if (t.campaignId === campaign.id && t.status === 'pending') {
-      t.status = 'sent'; t.updatedAt = now(); sent++;
+      t.status = 'sent';
+      t.updatedAt = now();
+      sent++;
       db.events.unshift({ id: nextId(db, 'event'), campaignId: campaign.id, targetId: t.id, type: 'sent', at: now() });
     }
   }
@@ -103,15 +115,21 @@ function sendSimulation(id) {
   return { campaignId: campaign.id, sent };
 }
 
-function recordEvent(input) {
+function recordEvent(input = {}) {
   const type = String(input.type || '').trim().toLowerCase();
   const allowed = new Set(['opened', 'clicked', 'submitted']);
   if (!allowed.has(type)) throw Object.assign(new Error('invalid event type'), { status: 400 });
+
   const db = load();
   const target = db.targets.find(t => t.id === String(input.targetId));
   if (!target) throw Object.assign(new Error('target not found'), { status: 404 });
+
   const rank = { pending: 0, sent: 1, opened: 2, clicked: 3, submitted: 4 };
-  if ((rank[type] || 0) > (rank[target.status] || 0)) { target.status = type; target.updatedAt = now(); }
+  if ((rank[type] || 0) > (rank[target.status] || 0)) {
+    target.status = type;
+    target.updatedAt = now();
+  }
+
   const event = { id: nextId(db, 'event'), campaignId: target.campaignId, targetId: target.id, type, at: now(), meta: input.meta || null };
   db.events.unshift(event);
   save(db);
@@ -124,26 +142,30 @@ function stats(id) {
   const campaigns = id ? db.campaigns.filter(c => c.id === String(id)) : db.campaigns;
   const events = id ? db.events.filter(e => e.campaignId === String(id)) : db.events;
   const totalTargets = targets.length;
-  const sent = targets.filter(t => ['sent','opened','clicked','submitted'].includes(t.status)).length;
-  const clicked = targets.filter(t => ['clicked','submitted'].includes(t.status)).length;
+  const sent = targets.filter(t => ['sent', 'opened', 'clicked', 'submitted'].includes(t.status)).length;
+  const clicked = targets.filter(t => ['clicked', 'submitted'].includes(t.status)).length;
   const submitted = targets.filter(t => t.status === 'submitted').length;
   const rate = (n, d) => d ? Math.round((n / d) * 1000) / 10 : 0;
   const byDay = {};
+
   for (const e of events) {
     if (e.type !== 'clicked' && e.type !== 'submitted') continue;
     const day = String(e.at).slice(0, 10);
     byDay[day] = byDay[day] || { day, clicked: 0, submitted: 0 };
     byDay[day][e.type]++;
   }
+
   return {
     totals: {
       campaigns: campaigns.length,
       emailsSent: sent,
       clickRate: rate(clicked, sent || totalTargets),
       submitRate: rate(submitted, sent || totalTargets),
-      targets: totalTargets, clicked, submitted,
+      targets: totalTargets,
+      clicked,
+      submitted,
     },
-    timeline: Object.values(byDay).sort((a,b)=>a.day.localeCompare(b.day)).slice(-14),
+    timeline: Object.values(byDay).sort((a, b) => a.day.localeCompare(b.day)).slice(-14),
   };
 }
 
@@ -152,7 +174,7 @@ function recentTargets(limit = 50) {
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
   return db.targets
     .slice()
-    .sort((a,b)=>String(b.updatedAt||b.createdAt).localeCompare(String(a.updatedAt||a.createdAt)))
+    .sort((a, b) => String(b.updatedAt || b.createdAt).localeCompare(String(a.updatedAt || a.createdAt)))
     .slice(0, limit)
     .map(t => ({ ...t, campaignName: cmap[t.campaignId] || t.campaignId }));
 }
@@ -164,3 +186,5 @@ function resetForTests(file) {
 }
 
 module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, sendSimulation, recordEvent, stats, recentTargets, resetForTests, dbFile };
+Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
+
