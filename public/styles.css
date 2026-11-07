@@ -15,6 +15,9 @@ input,select,textarea{width:100%;margin-top:6px;margin-bottom:12px;background:#0
 .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
 .btn.small{padding:6px 10px;font-size:.85rem}
 .list .item{padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);margin-bottom:8px;cursor:pointer}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.panel-head h2{margin:0}
+.panel-head input[type=search]{width:min(280px,100%);min-width:120px}
 .list .item:hover{border-color:#35508f}
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.78rem;border:1px solid var(--line);background:#0d1530}
 .pill.sent{color:var(--accent)} .pill.clicked{color:var(--warn)} .pill.submitted{color:var(--bad)} .pill.opened{color:var(--good)}

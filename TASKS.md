@@ -173,7 +173,11 @@
 - [x] Add `GET /api/campaigns?q=` safe case-insensitive name substring filter and tests
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 35 — Expansion (active, in progress)
-- [~] Frontend UI: add campaign search input and use lighter summary loading where safe; improve dashboard polish/responsiveness
+## Phase 35 — Expansion (complete)
+- [x] Frontend UI: campaign search input wired to `GET /api/campaigns?q=` with safe error toasts/polished empty state; responsive header/search styles — 37/37 tests passing (API/backend unaffected)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 36 — Expansion (active, in progress)
+- [~] Security/Auth hardening: add `POST /api/auth/login`/`/api/auth/logout` JSON 405 consistency (covered) and add simple rate-limit guard for login attempts (in-memory, demo-safe) + tests
 - [ ] Run verification, docs/log updates, commit/push per item
 

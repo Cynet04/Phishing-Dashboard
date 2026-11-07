@@ -85,14 +85,15 @@ function renderChart(timeline) {
 }
 
 async function loadCampaigns() {
-  const campaigns = await api('/api/campaigns');
+  const q = String($('#campaignSearch')?.value || '').trim();
+  const path = '/api/campaigns' + (q ? `?q=${encodeURIComponent(q)}` : '');
+  campaigns = await api(path);
   $('#campaigns').innerHTML = campaigns.length ? campaigns.map(c => `
-    <div class="item" data-id="${esc(c.id)}">
-      <strong>${esc(c.name)}</strong> <span class="pill ${esc(c.status)}">${esc(c.status)}</span>
-      <div class="muted">Template: ${esc(c.template)} · Targets: ${c.targetCount || 0} · Statuses: ${esc(Object.entries(c.statusCounts||{}).map(([k,v])=>`${k}:${v}`).join(', ') || '—')}</div>
-    </div>`).join('') : '<div class="muted">No campaigns yet.</div>';
-  $('#campaigns').querySelectorAll('.item').forEach(el => el.addEventListener('click', () => selectCampaign(el.dataset.id)));
-  if (state.selected) await selectCampaign(state.selected, true);
+    <button class="item" data-id="${c.id}">
+      <strong>${esc(c.name)}</strong><span class="muted">${c.targetCount} targets · ${c.createdAt.slice(0,10)}</span>
+      <span class="muted">${Object.entries(c.statusCounts||{}).map(([k,v])=>`${esc(k)}:${v}`).join(' · ') || 'no targets'}</span>
+    </button>`).join('') : '<p class="muted">No campaigns match.</p>';
+  $$('#campaigns .item').forEach(b => b.onclick = () => openCampaign(b.dataset.id));
 }
 
 async function selectCampaign(id, quiet) {
@@ -233,5 +234,6 @@ $('#logoutBtn').addEventListener('click', async () => {
   location.href = '/login';
 });
 
+$('#campaignSearch')?.addEventListener('input', () => loadCampaigns().catch((e) => toast(`Search failed: ${e.message}`, 'error')));
 $('#refreshBtn').addEventListener('click', refresh);
 loadTemplates().then(async () => { await loadAuthStatus(); await refresh(); }).catch(err => { $('#formMsg').textContent = `Load error: ${err.message}`; });
