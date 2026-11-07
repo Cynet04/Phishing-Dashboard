@@ -612,6 +612,10 @@
 - [x] Backend/API: optional `?campaignId=` ownership validation for `POST /api/targets/:id/click` (404-safe, backward-compatible; validates campaign/ownership in `db.recordEvent` and passes query in server) — README/test updated — 84/84 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 156 — Expansion (active, in progress)
-- [~] Frontend UI: pass resolved campaign context to dashboard **Simulate Click** actions (targets table/campaign detail rows where campaignId known) using `?campaignId=` hardening; keep backward-compatible fallback
+## Phase 156 — Expansion (complete)
+- [x] Frontend UI: **Simulate Click** in Recent Targets table now passes `campaignId` query for ownership hardening (backward-compatible) — 84/84 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 157 — Expansion (active, in progress)
+- [~] Backend/API: allow optional `campaignId` in `POST /api/events` body for ownership-validated event recording (uses existing db.recordEvent validation; backward-compatible) with README/test
 - [ ] Run verification, docs/log updates, commit/push per item

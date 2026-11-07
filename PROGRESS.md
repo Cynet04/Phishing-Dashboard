@@ -384,3 +384,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-08 02:15Z — Phase 155: optional campaignId ownership validation for target click
 - Added optional `?campaignId=` ownership validation to `POST /api/targets/:id/click` (server passes query; `db.recordEvent` validates campaign/target ownership when provided, 404-safe, backward-compatible). README/test updated. 84/84 passing. Committed/pushed.
+
+## 2026-11-08 02:30Z — Phase 156: campaign context for Simulate Click UI actions
+- Recent Targets **Simulate Click** now passes optional `campaignId` ownership context (backward-compatible). UI syntax checked, 84/84 passing. Committed/pushed.
