@@ -155,3 +155,9 @@ ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (3c60432). Das
 - 
 ode --check (ui); 
 ode --test --test-concurrency=1 — 62/62 passing. Committed/pushed (7bbfe81). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: set events target/type filters ? **Export Events CSV** href reflects filters.
+
+## 2026-11-07 14:18Z — Phase 86: target detail enrichment
+- Enriched GET /api/targets/:id (db.getTarget) with backward-compatible eventCount, eventCounts, and lastEventAt. README updated; target detail regression assertions added.
+- 
+ode --check (db/tests); 
+ode --test --test-concurrency=1 — 62/62 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
