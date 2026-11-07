@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:17Z — Phase 39: Recent Events type filter UI
-- Dashboard Recent Events panel has `opened/clicked/submitted` filter wired to `/api/events?type=` with pagination reset and safe error toasts. README `/api/stats` docs include `campaignId`.
-- `node --check` (ui); `node --test --test-concurrency=1` — 40/40 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:18Z — Phase 40: event filter and cascade safety tests
+- Added tests: unknown `type` filter returns stable empty events shape; campaign delete cascades events (scoped JSON events list returns empty stable shape for removed campaign ID, scoped CSV export returns 404 when campaign missing).
+- `node --check` (tests); `node --test --test-concurrency=1` — 42/42 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

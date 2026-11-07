@@ -193,7 +193,11 @@
 - [x] Frontend UI/data table polish: added Recent Events type filter (`opened/clicked/submitted`) wired to `/api/events?type=` with pagination reset/safe errors; README stats docs include `campaignId` — 40/40 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 40 — Expansion (active, in progress)
-- [~] Testing/DB: add tests for `GET /api/events` invalid type handling behavior (current: accepts filter value; add coverage) and add campaign deletion cascade safety check for events list/export shape
+## Phase 40 — Expansion (complete)
+- [x] Testing/DB: added coverage for unknown event `type` filter stable empty shape and delete-campaign cascade safety (scoped events JSON returns empty stable shape; scoped CSV export 404 when campaign removed) — 42/42 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 41 — Expansion (active, in progress)
+- [~] Backend/API: add `GET /api/targets/:id` detail endpoint (safe 404) and tests for inspection/debugging
 - [ ] Run verification, docs/log updates, commit/push per item
 

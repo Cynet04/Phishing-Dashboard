@@ -522,6 +522,34 @@ test('global stats accepts campaignId filter', async () => {
   });
 });
 
+test('events list returns empty stable shape for unknown type filter', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TypeFilter', template: 'generic', targets: 'tf@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const r = await req(base, '/api/events?type=not-a-real-type');
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.data.items, []);
+    assert.equal(typeof r.data.total, 'number');
+  });
+});
+
+test('delete campaign cascades events so scoped exports/lists stay clean', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Cascade', template: 'generic', targets: 'ca@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const del = await req(base, `/api/campaigns/${created.data.id}`, { method: 'DELETE' });
+    assert.equal(del.status, 200);
+    const list = await req(base, `/api/campaigns/${created.data.id}/events`);
+    assert.equal(list.status, 200);
+    assert.deepEqual(list.data.items, []);
+    assert.equal(list.data.total, 0);
+    const csv = await req(base, `/api/campaigns/${created.data.id}/events.csv`);
+    assert.equal(csv.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
