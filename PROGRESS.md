@@ -87,3 +87,7 @@
 ## 2026-11-07 11:49Z — Phase 71: campaign events.csv filter passthrough
 - `GET /api/campaigns/:id/events.csv` now forwards `type` and `targetId` filters to event export (backward-compatible). Added regression test.
 - `node --check` (server/tests); `node --test --test-concurrency=1` — 58/58 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+
+## 2026-11-07 11:50Z — Phase 72: target route method consistency
+- `GET /api/targets/:id` and `GET /api/targets/:id/events` enforce GET-only handling (405 for unsupported methods). Added regression test.
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 59/59 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
