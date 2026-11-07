@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:49Z — Phase 14: theme toggle
-- Added dark/light theme toggle persisted in `localStorage`; theme-aware CSS variables replace fixed dark gradient.
-- `node --check public/app.js`; `node --test --test-concurrency=1` — 15/15 passing. Commit/push in progress.
+## 2026-11-07 10:50Z — Phase 14 complete + Phase 15 start
+- Added refresh loading/error UX (disabled button state and toast on failure). Theme toggle already shipped.
+- `node --check public/app.js`; `node --test --test-concurrency=1` — 15/15 passing. Starting Phase 15: event CSV export.

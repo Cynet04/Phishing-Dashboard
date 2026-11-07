@@ -141,7 +141,11 @@ async function loadTargets(reset = false) {
 }
 
 async function refresh() {
-  await Promise.all([loadStats(), loadCampaigns(), loadTargets(true)]);
+  const btn = $('#refreshBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...'; }
+  try {
+    await Promise.all([loadStats(), loadCampaigns(), loadTargets(true)]);
+  } catch (e) { toast(e.message || 'Refresh failed', 'error'); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
 }
 
 $('#loadMoreTargetsBtn').addEventListener('click', async () => {

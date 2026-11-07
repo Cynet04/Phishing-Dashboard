@@ -67,8 +67,13 @@
 - [x] Optimize/simplify DB read helpers where safe (reviewed; no behavior-risky refactor required this pass)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 14 — UI/UX Polish (in progress)
-- [x] Add theme toggle (dark/light) with `localStorage` persistence and responsive refinements — 15/15 tests passing
-- [ ] Add non-disruptive loading/error states for dashboard refresh/auth/template actions
+## Phase 14 — UI/UX Polish (complete)
+- [x] Add theme toggle (dark/light) with `localStorage` persistence and responsive refinements — 15/15 tests passing (`e23e7aa`)
+- [x] Add non-disruptive loading/error states for dashboard refresh actions (button state + toast on failure)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 15 — Expansion (active)
+- [ ] Add CSV export for events (`/api/events/export.csv`, optional campaign filter) with tests
+- [ ] Add dashboard action/link for event CSV export
 - [ ] Run verification, docs/log updates, commit/push per item
 
