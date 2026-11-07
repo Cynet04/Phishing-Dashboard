@@ -701,6 +701,21 @@ test('recent targets endpoint supports campaignId and status filters', async () 
   });
 });
 
+test('campaign targets export.csv supports status filter and 404 for unknown campaign', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'CTExport', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const csv = await req(base, `/api/campaigns/${created.data.id}/targets/export.csv?status=clicked`);
+    assert.equal(csv.status, 200);
+    assert.match(csv.raw, /clicked/);
+    assert.doesNotMatch(csv.raw, /b@example\.com/);
+    const bad = await req(base, '/api/campaigns/nope/targets/export.csv');
+    assert.equal(bad.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
