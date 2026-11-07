@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:01Z — Phase 23: per-campaign targets CSV UI/test
-- Added campaign detail "Export Targets CSV" link and regression test for per-campaign targets CSV filename/content.
-- `node --check public/app.js`; `node --test --test-concurrency=1` — 25/25 passing. Commit/push in progress.
+## 2026-11-07 11:02Z — Phase 24: auth status regression + 401 UI handling
+- Added `/api/auth/status` default-state regression test. Dashboard API client now redirects to `/login` on 401 (except auth endpoints) for graceful auth-enabled sessions.
+- `node --check public/app.js`; `node --test --test-concurrency=1` — 26/26 passing. Commit/push in progress.

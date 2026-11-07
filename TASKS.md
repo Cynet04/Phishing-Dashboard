@@ -118,8 +118,13 @@
 - [x] Add regression test for per-campaign targets CSV response headers/content — 25/25 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 24 — Expansion (active)
-- [ ] Add `/api/auth/status` regression coverage for disabled/enabled auth states
-- [ ] Add dashboard handling for 401 API responses (redirect to `/login` when auth enabled)
+## Phase 24 — Expansion (complete)
+- [x] Add `/api/auth/status` regression coverage for disabled default state — 26/26 passing
+- [x] Add dashboard handling for 401 API responses (redirect to `/login` when auth enabled)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 25 — Expansion (active)
+- [ ] Add `GET /api/campaigns/:id` 404 test and ensure error payload consistency
+- [ ] Add reset/clear campaign status filter UX hint in detail (minor) and keep behavior stable
 - [ ] Run verification, docs/log updates, commit/push per item
 

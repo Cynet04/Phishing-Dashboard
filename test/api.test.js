@@ -370,6 +370,23 @@ test('per-campaign targets CSV export has attachment filename', async () => {
   });
 });
 
+test('auth status reports disabled state by default', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/auth/status');
+    assert.equal(r.status, 200);
+    assert.equal(r.data.authEnabled, false);
+    assert.equal(r.data.authenticated, true);
+  });
+});
+
+test('campaign detail returns 404 JSON for unknown campaign', async () => {
+  await withServer(async (base) => {
+    const r = await req(base, '/api/campaigns/99999');
+    assert.equal(r.status, 404);
+    assert.equal(r.data.error, 'campaign not found');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

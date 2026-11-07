@@ -12,6 +12,10 @@ $('#themeBtn').addEventListener('click', () => applyTheme(document.documentEleme
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (res.status === 401 && !path.startsWith('/api/auth/')) {
+    location.href = '/login';
+    throw new Error('Authentication required');
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
