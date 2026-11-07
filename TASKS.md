@@ -293,7 +293,11 @@
 - [x] Testing: added templates endpoint shape + custom template delete 404 coverage (documents current PUT-upsert behavior) — 55/55 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 65 — Expansion (active, in progress)
-- [~] Backend security hardening: add `Cache-Control: no-store` for `/api/*` JSON responses and test header presence on representative endpoints
+## Phase 65 — Expansion (complete)
+- [x] Backend security hardening: JSON/object responses now include `Cache-Control: no-store` (covers `/api/*` JSON and JSON error bodies); health endpoint test asserts header — 55/55 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 66 — Expansion (active, in progress)
+- [~] Frontend UI: add “Copy JSON” / download helper in target detail modal and improve modal accessibility (Escape closes, focus-safe button)
 - [ ] Run verification, docs/log updates, commit/push per item
 

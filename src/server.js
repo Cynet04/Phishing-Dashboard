@@ -21,6 +21,7 @@ function send(res, status, body, headers = {}) {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'no-referrer',
+    ...(isObj ? { 'Cache-Control': 'no-store' } : {}),
     ...headers,
   });
   res.end(data);

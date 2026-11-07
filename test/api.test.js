@@ -38,6 +38,7 @@ test('health endpoint', async () => {
     assert.equal(typeof r.data.uptimeSeconds, 'number');
     assert.match(String(r.data.node || ''), /^v\d+/);
     assert.match(JSON.stringify(r.headers), /x-content-type-options/i);
+    assert.match(String(r.headers['cache-control'] || ''), /no-store/i);
 
     const missing = await req(base, '/api/campaigns/9999');
     assert.equal(missing.status, 404);
