@@ -730,6 +730,20 @@ test('templates endpoint shape and custom template 404 behavior', async () => {
   });
 });
 
+test('global events CSV supports targetId filter', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EventsCsvTarget', template: 'generic', targets: 'a@example.com,b@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${detail.data.targets[1].id}/click`, { method: 'POST', body: '{}' });
+    const csv = await req(base, `/api/events/export.csv?targetId=${detail.data.targets[0].id}`);
+    assert.equal(csv.status, 200);
+    assert.match(csv.raw, new RegExp(`,${detail.data.targets[0].id},`));
+    assert.doesNotMatch(csv.raw, new RegExp(`,${detail.data.targets[1].id},`));
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

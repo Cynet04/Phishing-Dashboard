@@ -372,8 +372,13 @@ function exportEventsCsv(opts = {}) {
     const id = String(opts.campaignId);
     if (!db.campaigns.some(c => c.id === id)) throw Object.assign(new Error('campaign not found'), { status: 404 });
   }
+  if (opts.targetId) {
+    const id = String(opts.targetId);
+    if (!db.targets.some(t => t.id === id)) throw Object.assign(new Error('target not found'), { status: 404 });
+  }
   let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
   if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
+  if (opts.targetId) rows = rows.filter(r => r.targetId === String(opts.targetId));
   if (opts.type) rows = rows.filter(r => r.type === String(opts.type).toLowerCase());
   rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
   return eventsToCsv(rows);

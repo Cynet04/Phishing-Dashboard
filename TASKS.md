@@ -301,7 +301,11 @@
 - [x] Frontend UI: target detail modal adds “Copy JSON” (clipboard/prompt fallback), stores target+events payload, Escape/click-outside close, and focus handling — 55/55 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 67 — Expansion (active, in progress)
-- [~] Backend/API: add `GET /api/events/export.csv` support for `targetId` filter and test (backward-compatible); update README
+## Phase 67 — Expansion (complete)
+- [x] Backend/API: `GET /api/events/export.csv` supports `targetId` filter (404-safe for unknown target; backward-compatible) and regression test added — 56/56 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 68 — Expansion (active, in progress)
+- [~] Frontend UI: add “Export Target Events CSV” action in target detail modal using `/api/events/export.csv?targetId=`; keep modal UX polished
 - [ ] Run verification, docs/log updates, commit/push per item
 
