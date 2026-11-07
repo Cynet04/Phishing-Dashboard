@@ -425,7 +425,7 @@ let targetDetailEventsTotal = 0;
 let targetDetailEventsItems = [];
 let targetDetailTarget = null;
 function setTargetDetailScopeLabel() { const el = $('#targetDetailScope'); if (el) el.textContent = targetDetailCampaignId ? `campaign-scoped (campaign ${targetDetailCampaignId})` : 'global'; }
-function targetDetailEventsPath(offset = targetDetailEventsOffset) {
+function targetDetailEventsPath(offset = targetDetailEventsOffset, resolvedCampaignId = targetDetailResolvedCampaignId) {
   if (!targetDetailId) return '';
   const base = targetDetailCampaignId
     ? `/api/campaigns/${encodeURIComponent(targetDetailCampaignId)}/targets/${encodeURIComponent(targetDetailId)}/events?limit=20&offset=${encodeURIComponent(offset)}`
@@ -466,12 +466,23 @@ function renderTargetDetailBody(t) {
 async function refreshTargetDetailEvents(reset = true) {
   if (!targetDetailId) return;
   const body = $('#targetDetailBody'); if (!body) return;
-  if (reset) { targetDetailEventsOffset = 0; targetDetailEventsTotal = 0; targetDetailEventsItems = []; body.textContent = 'Loading...'; body.className = 'muted'; }
+  if (reset) { targetDetailEventsOffset = 0; targetDetailEventsTotal = 0; targetDetailEventsItems = []; targetDetailResolvedCampaignId = targetDetailCampaignId || ''; body.textContent = 'Loading...'; body.className = 'muted'; }
   try {
     const detailPath = targetDetailCampaignId
       ? `/api/campaigns/${encodeURIComponent(targetDetailCampaignId)}/targets/${encodeURIComponent(targetDetailId)}`
       : `/api/targets/${encodeURIComponent(targetDetailId)}`;
-    const [t, ev] = reset ? await Promise.all([api(detailPath), api(targetDetailEventsPath(0))]) : [targetDetailTarget, await api(targetDetailEventsPath(targetDetailEventsOffset))];
+    let t = targetDetailTarget; let ev;
+    if (reset && !targetDetailCampaignId) {
+      t = await api(detailPath);
+      targetDetailResolvedCampaignId = String(t?.campaignId || targetDetailResolvedCampaignId || '').trim();
+      syncTargetDetailExportLink();
+      ev = await api(targetDetailEventsPath(0, targetDetailResolvedCampaignId));
+    } else if (reset) {
+      [t, ev] = await Promise.all([api(detailPath), api(targetDetailEventsPath(0))]);
+      targetDetailResolvedCampaignId = targetDetailCampaignId;
+    } else {
+      ev = await api(targetDetailEventsPath(targetDetailEventsOffset, targetDetailResolvedCampaignId));
+    }
     targetDetailTarget = t || targetDetailTarget;
     const page = ev && Array.isArray(ev.items) ? ev.items : (Array.isArray(ev) ? ev : []);
     targetDetailEventsTotal = Number(ev?.total ?? page.length) || 0;
@@ -482,7 +493,7 @@ async function refreshTargetDetailEvents(reset = true) {
 }
 function closeTargetDetail() {
   $('#targetDetailModal')?.classList.add('hidden');
-  targetDetailJson = ''; targetDetailId = ''; targetDetailCampaignId = ''; targetDetailType = ''; targetDetailFrom = ''; targetDetailTo = '';
+  targetDetailJson = ''; targetDetailId = ''; targetDetailCampaignId = ''; targetDetailResolvedCampaignId = ''; targetDetailType = ''; targetDetailFrom = ''; targetDetailTo = '';
   targetDetailEventsOffset = 0; targetDetailEventsTotal = 0; targetDetailEventsItems = []; targetDetailTarget = null;
   const a = $('#exportTargetEventsLink'); if (a) a.href = '#';
   ['#targetDetailFrom','#targetDetailTo','#targetDetailType'].forEach(id => { const el = $(id); if (el) el.value = ''; });
@@ -492,7 +503,7 @@ function closeTargetDetail() {
 }
 async function openTargetDetail(targetId, campaignId = '') {
   const modal = $('#targetDetailModal'); const body = $('#targetDetailBody');
-  targetDetailJson = ''; targetDetailEventsItems = []; targetDetailTarget = null; targetDetailEventsOffset = 0; targetDetailEventsTotal = 0;
+  targetDetailJson = ''; targetDetailEventsItems = []; targetDetailTarget = null; targetDetailEventsOffset = 0; targetDetailEventsTotal = 0; targetDetailResolvedCampaignId = '';
   targetDetailId = String(targetId || '').trim();
   targetDetailCampaignId = String(campaignId || '').trim();
   targetDetailType = ''; targetDetailFrom = ''; targetDetailTo = '';
