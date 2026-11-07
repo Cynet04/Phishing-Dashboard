@@ -69,6 +69,7 @@ const loginAttempts = new Map();
 const LOGIN_WINDOW_MS = 10 * 60 * 1000;
 const LOGIN_MAX = 10;
 function checkLoginRate(ip) {
+  if (!adminPassword()) return;
   const nowMs = Date.now();
   const row = loginAttempts.get(ip) || { count: 0, resetAt: nowMs + LOGIN_WINDOW_MS };
   if (nowMs > row.resetAt) { row.count = 0; row.resetAt = nowMs + LOGIN_WINDOW_MS; }
@@ -237,6 +238,9 @@ async function handler(req, res) {
   }
 }
 
-function createServer() { return http.createServer(handler); }
+function createServer(opts = {}) {
+  if (opts.resetLoginAttempts) loginAttempts.clear();
+  return http.createServer(handler);
+}
 if (require.main === module) createServer().listen(PORT, () => console.log(`phishing-dashboard listening on http://localhost:${PORT}`));
 module.exports = { createServer, handler };

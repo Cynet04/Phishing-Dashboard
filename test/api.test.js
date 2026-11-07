@@ -642,6 +642,25 @@ test('campaigns endpoint supports pagination envelope when requested', async () 
   });
 });
 
+test('auth login rate limit returns 429 after repeated failures', async () => {
+  const prev = process.env.ADMIN_PASSWORD;
+  process.env.ADMIN_PASSWORD = 'secret';
+  const srv = createServer({ resetLoginAttempts: true });
+  await new Promise((r) => srv.listen(0, '127.0.0.1', r));
+  const base = `http://127.0.0.1:${srv.address().port}`;
+  try {
+    let status = 0;
+    for (let i = 0; i < 12; i++) {
+      const res = await fetch(`${base}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: 'wrong' }), redirect: 'manual' });
+      status = res.status;
+    }
+    assert.equal(status, 429);
+  } finally {
+    await new Promise((r) => srv.close(r));
+    if (prev == null) delete process.env.ADMIN_PASSWORD; else process.env.ADMIN_PASSWORD = prev;
+  }
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
