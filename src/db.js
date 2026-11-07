@@ -417,7 +417,20 @@ function listCampaignTargets(campaignId, opts = {}) {
   if (limitRaw != null || offsetRaw != null) return { items, total: rows.length, limit, offset };
   return items;
 }
-module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, getTarget, listCampaignTargets, sendSimulation, recordEvent, deleteEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
+function getCampaignTarget(campaignId, targetId) {
+  const db = load();
+  const cid = String(campaignId);
+  if (!db.campaigns.some(c => c.id === cid)) throw Object.assign(new Error('campaign not found'), { status: 404 });
+  const tid = String(targetId);
+  const target = db.targets.find(t => t.id === tid && t.campaignId === cid);
+  if (!target) throw Object.assign(new Error('target not found in campaign'), { status: 404 });
+  const campaign = db.campaigns.find(c => c.id === cid);
+  const events = db.events.filter(e => e.targetId === tid && e.campaignId === cid);
+  const eventCounts = events.reduce((acc, e) => { const k = String(e.type || 'unknown'); acc[k] = (acc[k] || 0) + 1; return acc; }, {});
+  const lastEventAt = events.reduce((m, e) => (String(e.at || '') > m ? String(e.at) : m), '');
+  return { ...target, campaignName: campaign ? campaign.name : cid, eventCount: events.length, eventCounts, lastEventAt: lastEventAt || null };
+}
+module.exports = { ensure, load, createCampaign, listCampaigns, getCampaign, deleteCampaign, addTargets, getTarget, getCampaignTarget, listCampaignTargets, sendSimulation, recordEvent, deleteEvent, stats, recentTargets, exportTargetsCsv, listEvents, exportEventsCsv, listCustomTemplates, saveCustomTemplate, deleteCustomTemplate, resetForTests, dbFile };
 Object.defineProperty(module.exports, 'DB_FILE', { enumerable: true, get: () => dbFile() });
 
 

@@ -863,6 +863,28 @@ test('campaign targets endpoint supports pagination envelope when requested', as
   });
 });
 
+test('campaign-scoped target endpoint validates campaign ownership and method', async () => {
+  await withServer(async (base) => {
+    const c1 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'C1', template: 'generic', targets: 'a@example.com' }) });
+    const c2 = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'C2', template: 'generic', targets: 'b@example.com' }) });
+    const d1 = await req(base, `/api/campaigns/${c1.data.id}`);
+    const tid = d1.data.targets[0].id;
+    const ok = await req(base, `/api/campaigns/${c1.data.id}/targets/${tid}`);
+    assert.equal(ok.status, 200);
+    assert.equal(ok.data.email, 'a@example.com');
+    assert.equal(ok.data.campaignId, c1.data.id);
+    assert.equal(typeof ok.data.eventCount, 'number');
+    assert.ok(ok.data.eventCounts && typeof ok.data.eventCounts === 'object');
+    const wrong = await req(base, `/api/campaigns/${c2.data.id}/targets/${tid}`);
+    assert.equal(wrong.status, 404);
+    assert.match(String(wrong.data.error || ''), /not found in campaign/i);
+    const missingCampaign = await req(base, `/api/campaigns/nope/targets/${tid}`);
+    assert.equal(missingCampaign.status, 404);
+    const method = await req(base, `/api/campaigns/${c1.data.id}/targets/${tid}`, { method: 'DELETE' });
+    assert.equal(method.status, 405);
+  });
+});
+
 test('global events export routes enforce GET method', async () => {
   await withServer(async (base) => {
     for (const path of ['/api/events/export.csv', '/api/events.csv']) {

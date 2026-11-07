@@ -181,3 +181,8 @@ ode --test --test-concurrency=1 — 64/64 passing. Commit/push in progress. Dashbo
 - 
 ode --check (ui); 
 ode --test --test-concurrency=1 â€” 64/64 passing. Committed/pushed (10beea1). Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5). View: select campaign â†’ pick target â†’ **Show Target Events**.
+## 2026-11-07 14:23Z — Phase 92: campaign-scoped target detail endpoint
+- Added GET /api/campaigns/:id/targets/:targetId via db.getCampaignTarget (campaign ownership validation, 404 for missing campaign/target-not-in-campaign, GET-only 405). Updated route guard to preserve 	argets/export.csv. README and regression test added.
+- 
+ode --check (db/server/tests); 
+ode --test --test-concurrency=1 — 65/65 passing. Commit/push in progress. Dashboard: http://localhost:3000 (bgp_1b5dbc2ac001bDJPDFL4r16xd5).

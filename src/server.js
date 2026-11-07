@@ -217,6 +217,11 @@ async function handler(req, res) {
       return send(res, 200, db.getTarget(decodeURIComponent(pathname.split('/')[3] || '')));
     }
     if (req.method === 'GET' && pathname === '/api/stats') return send(res, 200, db.stats(searchParams.get('campaignId') || null, { from: searchParams.get('from'), to: searchParams.get('to') }));
+    const ct = pathname.match(/^\/api\/campaigns\/([^/]+)\/targets\/([^/]+)$/);
+    if (ct && ct[2] !== 'export.csv') {
+      if (req.method !== 'GET') return send(res, 405, { error: 'method not allowed' });
+      return send(res, 200, db.getCampaignTarget(decodeURIComponent(ct[1]), decodeURIComponent(ct[2])));
+    }
     const m = pathname.match(/^\/api\/campaigns\/([^/]+)(?:\/(send|stats|export\.csv|events\.csv|events|targets(?:\/export\.csv)?|summary))?$/);
     if (m && req.method === 'GET' && !m[2]) return send(res, 200, db.getCampaign(m[1], { status: searchParams.get('status'), includeTargets: searchParams.get('includeTargets') }));
     if (m && req.method === 'DELETE' && !m[2]) return send(res, 200, db.deleteCampaign(m[1]));
