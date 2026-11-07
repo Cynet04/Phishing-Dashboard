@@ -158,8 +158,13 @@
 - [x] Improve template save UX validation/toasts (client-side required fields) with no API regression
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 32 — Expansion (active)
-- [ ] Add `GET /api/campaigns/:id/events` JSON endpoint (pagination/filter) and tests
-- [ ] Add dashboard event view scoped to selected campaign (optional filter state) where safe
+## Phase 32 — Expansion (complete)
+- [x] Add `GET /api/campaigns/:id/events` JSON endpoint (pagination/filter) and tests — 35/35 passing
+- [x] Keep dashboard behavior stable (no breaking UI dependency required for this endpoint)
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 33 — Expansion (active)
+- [ ] Add README API docs for campaign events JSON endpoint and templates/campaign targets endpoints added recently
+- [ ] Add `GET /api/auth/logout` safety handling (405/redirect behavior consistency) and tests
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -456,6 +456,19 @@ test('campaign create rejects non-object JSON payload', async () => {
   });
 });
 
+test('campaign events JSON endpoint returns paginated filtered events', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'Camp Events', template: 'generic', targets: 'ce@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    await req(base, `/api/targets/${detail.data.targets[0].id}/click`, { method: 'POST', body: '{}' });
+    const r = await req(base, `/api/campaigns/${created.data.id}/events?type=clicked&limit=10`);
+    assert.equal(r.status, 200);
+    assert.ok(Array.isArray(r.data.items));
+    assert.equal(r.data.items[0].type, 'clicked');
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });
