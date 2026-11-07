@@ -168,5 +168,18 @@ $('#templateDeleteBtn').addEventListener('click', async () => {
 ['templateName','templateSubject','templateBody'].forEach(id => $(`#${id}`).addEventListener('input', renderTemplatePreview));
 $('#templateSelect').addEventListener('change', renderTemplatePreview);
 
+async function loadAuthStatus() {
+  try {
+    const auth = await api('/api/auth/status');
+    $('#authState').textContent = auth.authEnabled ? (auth.authenticated ? 'Admin session active' : 'Auth enabled') : 'Auth disabled';
+    $('#logoutBtn').style.display = auth.authEnabled && auth.authenticated ? '' : 'none';
+  } catch { $('#authState').textContent = ''; $('#logoutBtn').style.display = 'none'; }
+}
+
+$('#logoutBtn').addEventListener('click', async () => {
+  await fetch('/api/auth/logout', { method: 'POST', redirect: 'follow' });
+  location.href = '/login';
+});
+
 $('#refreshBtn').addEventListener('click', refresh);
-loadTemplates().then(refresh).catch(err => { $('#formMsg').textContent = `Load error: ${err.message}`; });
+loadTemplates().then(async () => { await loadAuthStatus(); await refresh(); }).catch(err => { $('#formMsg').textContent = `Load error: ${err.message}`; });

@@ -29,7 +29,8 @@ node --test --test-concurrency=1
 > Note (Windows PowerShell): `npm.ps1` may be blocked by execution policy in some environments. Use `node --test` or `npm.cmd test`.
 
 ## Optional admin auth
-Set `ADMIN_PASSWORD` to protect the dashboard and management APIs with a simple signed session cookie.
+Set `ADMIN_PASSWORD` to protect the dashboard and management APIs with a simple signed session cookie. The dashboard shows auth status and a logout action when enabled.
+
 ```bash
 # PowerShell
 $env:ADMIN_PASSWORD='change-me'; npm start

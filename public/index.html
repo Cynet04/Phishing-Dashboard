@@ -12,7 +12,11 @@
       <h1>Phishing Dashboard</h1>
       <p class="muted">Educational simulation environment — no real credentials collected.</p>
     </div>
-    <button id="refreshBtn" class="btn secondary">Refresh</button>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span id="authState" class="muted"></span>
+      <button id="logoutBtn" class="btn secondary" style="display:none">Logout</button>
+      <button id="refreshBtn" class="btn secondary">Refresh</button>
+    </div>
   </header>
 
   <main class="container">

@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 10:41Z — Phase 10: optional admin auth API
-- Added env-configured admin auth (`ADMIN_PASSWORD`): signed cookie session, `/api/auth/status|login|logout`, `/login` page, dashboard/API protection while keeping health/simulation pages public.
-- Added auth regression test (401 without cookie, 200 with session; health remains public). `node --test --test-concurrency=1` — 12/12 passing. Commit/push in progress.
+## 2026-11-07 10:42Z — Phase 10 auth UI
+- Added dashboard auth status/logout controls; UI shows "Auth disabled" when no `ADMIN_PASSWORD` is configured.
+- Verified: `node --check public/app.js`; `node --test --test-concurrency=1` — 12/12 passing. Commit/push in progress.
