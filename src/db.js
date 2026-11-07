@@ -349,6 +349,7 @@ function listEvents(opts = {}) {
   const cmap = Object.fromEntries(db.campaigns.map(c => [c.id, c.name]));
   let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
   if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
+  if (opts.targetId) rows = rows.filter(r => r.targetId === String(opts.targetId));
   if (opts.type) rows = rows.filter(r => r.type === String(opts.type).toLowerCase());
   rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
   const limit = Math.max(1, Math.min(200, Number(opts.limit ?? 50) || 50));

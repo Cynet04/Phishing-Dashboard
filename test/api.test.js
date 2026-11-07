@@ -599,6 +599,23 @@ test('POST /api/events validates type and target', async () => {
   });
 });
 
+test('target events endpoint returns target-scoped paginated events', async () => {
+  await withServer(async (base) => {
+    const created = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'TargetEvents', template: 'generic', targets: 'te1@example.com,te2@example.com' }) });
+    await req(base, `/api/campaigns/${created.data.id}/send`, { method: 'POST', body: '{}' });
+    const detail = await req(base, `/api/campaigns/${created.data.id}`);
+    const [t1, t2] = detail.data.targets;
+    await req(base, `/api/targets/${t1.id}/click`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${t2.id}/click`, { method: 'POST', body: '{}' });
+    const r = await req(base, `/api/targets/${t1.id}/events?type=clicked`);
+    assert.equal(r.status, 200);
+    assert.equal(r.data.total, 1);
+    assert.equal(r.data.items[0].targetId, t1.id);
+    const bad = await req(base, '/api/targets/nope/events');
+    assert.equal(bad.status, 404);
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

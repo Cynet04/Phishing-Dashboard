@@ -225,7 +225,11 @@
 - [x] Frontend UI/UX: added campaign detail “Copy Landing Link” helper (clipboard with prompt fallback) and improved action button layout — 46/46 API tests passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 48 — Expansion (active, in progress)
-- [~] Backend/refactor: add `GET /api/targets/:id/events` endpoint (target-scoped event history, paginated/filterable) and tests
+## Phase 48 — Expansion (complete)
+- [x] Backend/refactor: added `GET /api/targets/:id/events` (target-scoped, paginated/filterable, 404-safe) and DB `listEvents` `targetId` support — 47/47 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 49 — Expansion (active, in progress)
+- [~] Frontend UI: show target event history in target detail modal (uses `/api/targets/:id/events`) with safe rendering
 - [ ] Run verification, docs/log updates, commit/push per item
 
