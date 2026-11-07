@@ -1039,3 +1039,23 @@ test('global targets.csv alias supports filters and 405', async () => {
     assert.equal(m.status, 405);
   });
 });
+
+
+test('global events export supports from/to date filters and validation', async () => {
+  await withServer(async (base) => {
+    const c = await req(base, '/api/campaigns', { method: 'POST', body: JSON.stringify({ name: 'EDATE', template: 'generic', targets: 'a@example.com' }) });
+    const d = await req(base, `/api/campaigns/${c.data.id}`);
+    const tid = d.data.targets[0].id;
+    await req(base, `/api/campaigns/${c.data.id}/send`, { method: 'POST', body: '{}' });
+    await req(base, `/api/targets/${tid}/click`, { method: 'POST', body: '{}' });
+    const today = new Date().toISOString().slice(0,10);
+    const ok = await req(base, `/api/events.csv?campaignId=${c.data.id}&from=${today}&to=${today}`);
+    assert.equal(ok.status, 200);
+    assert.match(ok.raw, /clicked/);
+    const empty = await req(base, `/api/events.csv?campaignId=${c.data.id}&from=2000-01-01&to=2000-01-02`);
+    assert.equal(empty.status, 200);
+    assert.doesNotMatch(empty.raw, /clicked/);
+    const bad = await req(base, '/api/events.csv?from=bad-date');
+    assert.equal(bad.status, 400);
+  });
+});

@@ -395,10 +395,15 @@ function exportEventsCsv(opts = {}) {
     const id = String(opts.targetId);
     if (!db.targets.some(t => t.id === id)) throw Object.assign(new Error('target not found'), { status: 404 });
   }
+  const from = parseDateFilter(opts.from, 'from');
+  const to = parseDateFilter(opts.to, 'to');
+  if (from && to && from > to) throw Object.assign(new Error('invalid date range: from must be <= to'), { status: 400 });
   let rows = db.events.map(e => ({ ...e, campaignName: cmap[e.campaignId] || e.campaignId }));
   if (opts.campaignId) rows = rows.filter(r => r.campaignId === String(opts.campaignId));
   if (opts.targetId) rows = rows.filter(r => r.targetId === String(opts.targetId));
   if (opts.type) rows = rows.filter(r => r.type === String(opts.type).toLowerCase());
+  if (from) rows = rows.filter(r => String(r.at || '').slice(0, 10) >= from);
+  if (to) rows = rows.filter(r => String(r.at || '').slice(0, 10) <= to);
   rows.sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')) || String(b.id).localeCompare(String(a.id)));
   return eventsToCsv(rows);
 }

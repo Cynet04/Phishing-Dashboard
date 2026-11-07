@@ -267,3 +267,6 @@ ode --test --test-concurrency=1 � 65/65 passing. Committed/pushed ( 151777). D
 
 ## 2026-11-07 17:34Z — Phase 114: System Status request ID
 - Dashboard captures `X-Request-Id` from API responses in `api()` and displays last request ID in System Status (`#sysRequestId`). Existing behavior preserved. `node --check`; 72/72 passing. Committed/pushed.
+
+## 2026-11-07 17:40Z — Phase 115: events export date filters
+- Global events exports (`/api/events/export.csv`, `/api/events.csv`) now accept `from=`/`to=` (validated/range-checked) via `db.exportEventsCsv` + server wiring. README updated. Regression test added. `node --check`; 73/73 passing. Committed/pushed.
