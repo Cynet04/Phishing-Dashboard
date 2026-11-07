@@ -65,6 +65,18 @@ function serveStatic(req, res, pathname) {
   return true;
 }
 
+const loginAttempts = new Map();
+const LOGIN_WINDOW_MS = 10 * 60 * 1000;
+const LOGIN_MAX = 10;
+function checkLoginRate(ip) {
+  const nowMs = Date.now();
+  const row = loginAttempts.get(ip) || { count: 0, resetAt: nowMs + LOGIN_WINDOW_MS };
+  if (nowMs > row.resetAt) { row.count = 0; row.resetAt = nowMs + LOGIN_WINDOW_MS; }
+  row.count += 1;
+  loginAttempts.set(ip, row);
+  if (row.count > LOGIN_MAX) throw Object.assign(new Error('too many login attempts'), { status: 429 });
+}
+
 function parseCookies(req) {
   const raw = String(req.headers.cookie || '');
   return Object.fromEntries(raw.split(';').map(p => p.trim()).filter(Boolean).map(p => {
@@ -133,6 +145,7 @@ async function handler(req, res) {
     const { pathname, searchParams } = url;
     if (req.method === 'GET' && pathname === '/api/auth/status') return send(res, 200, { authEnabled: !!adminPassword(), authenticated: authed(req) });
     if (req.method === 'POST' && pathname === '/api/auth/login') {
+      checkLoginRate(req.socket?.remoteAddress || 'unknown');
       if (!adminPassword()) { res.writeHead(302, { Location: '/' }); return res.end(); }
       const body = await readBody(req).catch(() => ({}));
       if (String(body.password || '') !== adminPassword()) return send(res, 401, loginPage(), { 'Content-Type': 'text/html; charset=utf-8' });

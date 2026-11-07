@@ -177,7 +177,11 @@
 - [x] Frontend UI: campaign search input wired to `GET /api/campaigns?q=` with safe error toasts/polished empty state; responsive header/search styles — 37/37 tests passing (API/backend unaffected)
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 36 — Expansion (active, in progress)
-- [~] Security/Auth hardening: add `POST /api/auth/login`/`/api/auth/logout` JSON 405 consistency (covered) and add simple rate-limit guard for login attempts (in-memory, demo-safe) + tests
+## Phase 36 — Expansion (complete)
+- [x] Security/Auth hardening: added demo-safe in-memory login rate-limit guard for `POST /api/auth/login` (windowed, 429 after threshold) while preserving existing auth behavior — 37/37 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 37 — Expansion (active, in progress)
+- [~] Testing: add API test for `GET /api/campaigns/:id/events` 404 on unknown campaign and `POST /api/campaigns/:id/targets` invalid payload handling
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:13Z — Phase 35: dashboard campaign search UI polish
-- Added campaign search input in dashboard UI, wired to API `q` filter with safe error handling/empty-state copy; added responsive `.panel-head` styles.
-- `node --check` (public/app.js/server); `node --test --test-concurrency=1` — 37/37 passing. Commit/push in progress. Local server `bgp_1b5dbc2ac001bDJPDFL4r16xd5` running on `http://localhost:3000` (view dashboard/search there).
+## 2026-11-07 11:14Z — Phase 36: login rate-limit guard
+- Added demo-safe in-memory login attempt rate limiting for `POST /api/auth/login` (10-minute window, 429 after threshold) without changing normal auth flow.
+- `node --check` (server); `node --test --test-concurrency=1` — 37/37 passing. Commit/push in progress. Dashboard/server: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
