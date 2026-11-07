@@ -144,7 +144,8 @@ async function handler(req, res) {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const { pathname, searchParams } = url;
     if (req.method === 'GET' && pathname === '/api/auth/status') return send(res, 200, { authEnabled: !!adminPassword(), authenticated: authed(req) });
-    if (req.method === 'POST' && pathname === '/api/auth/login') {
+    if (pathname === '/api/auth/login') {
+      if (req.method !== 'POST') return send(res, 405, { error: 'method not allowed' });
       checkLoginRate(req.socket?.remoteAddress || 'unknown');
       if (!adminPassword()) { res.writeHead(302, { Location: '/' }); return res.end(); }
       const body = await readBody(req).catch(() => ({}));

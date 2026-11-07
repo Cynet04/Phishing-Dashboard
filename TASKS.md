@@ -209,7 +209,11 @@
 - [x] Refactor/backend: added `GET /api/campaigns/:id/summary` alias (lightweight, no targets/events) with compatibility preserved — 44/44 passing
 - [x] Run verification, docs/log updates, commit/push per item
 
-## Phase 44 — Expansion (active, in progress)
-- [~] Backend/testing: validate `GET /api/events` `type` query (optional strict 400 for unknown types? keep backward-compatible: ignore/return empty is current) — add test documenting behavior; add `POST /api/auth/login` method/content-type safety tests
+## Phase 44 — Expansion (complete)
+- [x] Backend/testing: hardened `POST /api/auth/login` to return 405 for non-POST methods; added auth login method/body safety tests (unknown event type behavior already covered as stable empty shape) — 45/45 passing
+- [x] Run verification, docs/log updates, commit/push per item
+
+## Phase 45 — Expansion (active, in progress)
+- [~] Frontend UI: add dashboard “system status” card showing API health, auth status, and DB counts (lightweight fetches); responsive/professional styling
 - [ ] Run verification, docs/log updates, commit/push per item
 

@@ -575,6 +575,15 @@ test('campaign summary alias returns lightweight campaign payload', async () => 
   });
 });
 
+test('auth login method and body safety', async () => {
+  await withServer(async (base) => {
+    const get = await fetch(`${base}/api/auth/login`, { method: 'GET', redirect: 'manual' });
+    assert.equal(get.status, 405);
+    const bad = await fetch(`${base}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{', redirect: 'manual' });
+    assert.ok([302, 400, 401].includes(bad.status)); // invalid body parse falls back safely; auth disabled redirects
+  });
+});
+
 test('unknown target errors cleanly', async () => {
   await withServer(async (base) => {
     const r = await req(base, '/api/events', { method: 'POST', body: JSON.stringify({ targetId: '999', type: 'clicked' }) });

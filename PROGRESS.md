@@ -32,6 +32,6 @@
 - Repaired accidental test-structure corruption and added regression test for landing-page open tracking.
 - `node --test --test-concurrency=1 test/api.test.js` — 5/5 passing.
 - `node --check` passed for modified server/test files.
-## 2026-11-07 11:21Z — Phase 43: campaign summary alias
-- Added `GET /api/campaigns/:id/summary` (alias for lightweight campaign summary without targets/events) and regression test; README updated.
-- `node --check` (server/tests); `node --test --test-concurrency=1` — 44/44 passing. Commit/push in progress. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
+## 2026-11-07 11:22Z — Phase 44: auth login method safety
+- `POST /api/auth/login` now returns 405 for non-POST methods (still handles invalid body/auth-disabled safely). Added auth login method/body safety tests.
+- `node --check` (server/tests); `node --test --test-concurrency=1` — 45/45 passing. Committed/pushed. Dashboard: `http://localhost:3000` (bgp_1b5dbc2ac001bDJPDFL4r16xd5).
